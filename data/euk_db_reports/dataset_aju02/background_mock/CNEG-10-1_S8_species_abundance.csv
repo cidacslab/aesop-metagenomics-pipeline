@@ -1,0 +1,11 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5799,2,eukaryota,5800,Eimeria,51,23898
+5800,1,eukaryota,5804,Eimeria maxima,51,23898
+4777,2,eukaryota,4783,Phytophthora,1,468
+4783,1,eukaryota,4787,Phytophthora infestans,1,468
+1344955,2,eukaryota,4842,Rhizopus,45,21087
+4842,1,eukaryota,936053,Rhizopus delemar,45,21087
+5593,2,eukaryota,41687,Scedosporium,2,937
+41687,1,eukaryota,563466,Scedosporium apiospermum,2,937
+43219,2,eukaryota,82105,Cladophialophora,1,468
+82105,1,eukaryota,86049,Cladophialophora carrionii,1,468

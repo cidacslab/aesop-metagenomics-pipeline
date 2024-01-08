@@ -1,0 +1,38 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5799,2,eukaryota,5800,Eimeria,339,2107
+5800,1,eukaryota,5804,Eimeria maxima,275,1709
+5800,1,eukaryota,51315,Eimeria necatrix,60,373
+5800,1,eukaryota,5801,Eimeria acervulina,3,18
+5809,2,eukaryota,5810,Toxoplasma,3,18
+5810,1,eukaryota,5811,Toxoplasma gondii,3,18
+4764,2,eukaryota,100860,Aphanomyces,225,1398
+100860,1,eukaryota,112090,Aphanomyces astaci,225,1398
+65355,2,eukaryota,65356,Albugo,92,572
+65356,1,eukaryota,653948,Albugo laibachii,92,572
+4782,2,eukaryota,1448052,Globisporangium,4,24
+1448052,1,eukaryota,2052682,Globisporangium ultimum,4,24
+33677,2,eukaryota,5754,Acanthamoeba,52,323
+5754,1,eukaryota,65661,Acanthamoeba healyi,42,261
+5754,1,eukaryota,65658,Acanthamoeba astronyxis,10,62
+43219,2,eukaryota,82105,Cladophialophora,12,74
+82105,1,eukaryota,86049,Cladophialophora carrionii,12,74
+33184,2,eukaryota,40411,Chrysosporium,2,12
+40411,1,eukaryota,264361,Chrysosporium queenslandicum,2,12
+33184,2,eukaryota,166111,Byssoonygena,1,6
+166111,1,eukaryota,166112,Byssoonygena ceratinophila,1,6
+110618,2,eukaryota,5506,Fusarium,4,24
+5148,2,eukaryota,5146,Sordaria,2,12
+5146,1,eukaryota,5147,Sordaria macrospora,2,12
+4893,2,eukaryota,374468,Nakaseomyces,4,24
+374468,1,eukaryota,5478,Nakaseomyces glabratus,4,24
+5408,2,eukaryota,1851509,Naganishia,4,24
+1851509,1,eukaryota,100951,Naganishia albida,4,24
+742845,2,eukaryota,55193,Malassezia,2,12
+55193,1,eukaryota,76773,Malassezia globosa,2,12
+4806,2,eukaryota,28581,Allomyces,6,37
+28581,1,eukaryota,28583,Allomyces macrogynus,6,37
+5654,2,eukaryota,5690,Trypanosoma,26,161
+5690,2,eukaryota,669453,Trypanosoma with unspecified subgenus,26,161
+669453,1,eukaryota,67003,Trypanosoma theileri,26,161
+1286322,2,eukaryota,5683,Leptomonas,1,6
+5683,1,eukaryota,157538,Leptomonas pyrrhocoris,1,6

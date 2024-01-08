@@ -1,0 +1,127 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5799,2,eukaryota,5800,Eimeria,289,311
+5800,1,eukaryota,5804,Eimeria maxima,250,269
+5800,1,eukaryota,51315,Eimeria necatrix,23,24
+5800,1,eukaryota,5801,Eimeria acervulina,10,10
+5800,1,eukaryota,51314,Eimeria brunetti,2,2
+5809,2,eukaryota,5810,Toxoplasma,15,16
+5810,1,eukaryota,5811,Toxoplasma gondii,15,16
+5809,2,eukaryota,5812,Sarcocystis,5,5
+5812,1,eukaryota,42890,Sarcocystis neurona,5,5
+5809,2,eukaryota,29175,Neospora,4,4
+29175,1,eukaryota,29176,Neospora caninum,4,4
+5809,2,eukaryota,242060,Cystoisospora,3,3
+242060,1,eukaryota,483139,Cystoisospora suis,3,3
+5809,2,eukaryota,99157,Hammondia,2,2
+99157,1,eukaryota,99158,Hammondia hammondi,2,2
+35088,2,eukaryota,35089,Gregarina,1,1
+35089,1,eukaryota,110365,Gregarina niphandrodes,1,1
+1639119,2,eukaryota,5820,Plasmodium,50,53
+5820,2,eukaryota,418103,Plasmodium (Plasmodium),49,52
+418103,1,eukaryota,5855,Plasmodium vivax,39,42
+418103,1,eukaryota,5827,Plasmodium cynomolgi,1,1
+5820,2,eukaryota,418107,Plasmodium (Laverania),1,1
+32594,2,eukaryota,5864,Babesia,6,6
+5864,1,eukaryota,5868,Babesia microti,6,6
+2605701,2,eukaryota,505692,Chromera,3,3
+505692,1,eukaryota,505693,Chromera velia,3,3
+4764,2,eukaryota,100860,Aphanomyces,15,16
+100860,1,eukaryota,157072,Aphanomyces invadans,15,16
+4764,2,eukaryota,4769,Saprolegnia,2,2
+4769,1,eukaryota,112098,Saprolegnia diclina,2,2
+4777,2,eukaryota,4783,Phytophthora,12,12
+4783,1,eukaryota,67593,Phytophthora sojae,7,7
+4783,1,eukaryota,4787,Phytophthora infestans,3,3
+4783,1,eukaryota,4792,Phytophthora parasitica,1,1
+4782,2,eukaryota,1448052,Globisporangium,6,6
+1448052,1,eukaryota,2052682,Globisporangium ultimum,5,5
+1448052,1,eukaryota,115417,Globisporangium iwayamae,1,1
+742845,2,eukaryota,55193,Malassezia,154,166
+55193,1,eukaryota,76775,Malassezia restricta,148,159
+55193,1,eukaryota,76773,Malassezia globosa,6,6
+5268,2,eukaryota,63265,Sporisorium,2,2
+63265,1,eukaryota,72558,Sporisorium reilianum,2,2
+396331,2,eukaryota,2492674,Phanerodontia,12,12
+2492674,1,eukaryota,2822231,Phanerodontia chrysosporium,12,12
+1884633,2,eukaryota,490731,Kwoniella,6,6
+490731,1,eukaryota,324769,Kwoniella bestiolae,6,6
+1884633,2,eukaryota,5206,Cryptococcus,1,1
+5259,2,eukaryota,5260,Melampsora,1,1
+5260,1,eukaryota,203908,Melampsora laricis-populina,1,1
+5593,2,eukaryota,41687,Scedosporium,11,11
+41687,1,eukaryota,563466,Scedosporium apiospermum,11,11
+5129,2,eukaryota,5543,Trichoderma,6,6
+5543,1,eukaryota,51453,Trichoderma reesei,6,6
+110618,2,eukaryota,5506,Fusarium,3,3
+5506,2,eukaryota,171631,Fusarium oxysporum species complex,2,2
+171631,1,eukaryota,5507,Fusarium oxysporum,2,2
+5506,2,eukaryota,171627,Fusarium fujikuroi species complex,1,1
+171627,1,eukaryota,117187,Fusarium verticillioides,1,1
+5148,2,eukaryota,5140,Neurospora,4,4
+5148,2,eukaryota,5146,Sordaria,2,2
+5146,1,eukaryota,5147,Sordaria macrospora,2,2
+28983,2,eukaryota,5179,Sclerotinia,2,2
+5179,1,eukaryota,5180,Sclerotinia sclerotiorum,2,2
+28983,2,eukaryota,33196,Botrytis,1,1
+33196,1,eukaryota,40559,Botrytis cinerea,1,1
+299071,2,eukaryota,5036,Histoplasma,8,8
+5036,1,eukaryota,5037,Histoplasma capsulatum,8,8
+33184,2,eukaryota,166111,Byssoonygena,1,1
+166111,1,eukaryota,166112,Byssoonygena ceratinophila,1,1
+1593277,2,eukaryota,38946,Paracoccidioides,1,1
+38946,1,eukaryota,121759,Paracoccidioides brasiliensis,1,1
+1131492,2,eukaryota,5052,Aspergillus,7,7
+5052,2,eukaryota,2720870,Aspergillus subgen. Nidulantes,2,2
+2720870,1,eukaryota,75750,Aspergillus sydowii,2,2
+5052,1,eukaryota,319629,Aspergillus brasiliensis,1,1
+5052,2,eukaryota,2720871,Aspergillus subgen. Circumdati,1,1
+2720871,1,eukaryota,5053,Aspergillus aculeatus,1,1
+5052,2,eukaryota,2720872,Aspergillus subgen. Fumigati,1,1
+2720872,1,eukaryota,5057,Aspergillus clavatus,1,1
+5052,2,eukaryota,2720874,Aspergillus subgen. Aspergillus,1,1
+2720874,1,eukaryota,41413,Aspergillus glaucus,1,1
+43219,2,eukaryota,5583,Exophiala,2,2
+5583,1,eukaryota,215243,Exophiala oligosperma,2,2
+1341112,2,eukaryota,226991,Cyphellophora,2,2
+226991,1,eukaryota,293227,Cyphellophora europaea,2,2
+93133,2,eukaryota,1047167,Zymoseptoria,4,4
+1047167,1,eukaryota,1047171,Zymoseptoria tritici,4,4
+1535325,2,eukaryota,5475,Candida,1,1
+5475,1,eukaryota,5482,Candida tropicalis,1,1
+4806,2,eukaryota,28581,Allomyces,13,14
+28581,1,eukaryota,28583,Allomyces macrogynus,13,14
+103457,2,eukaryota,1176354,Hamiltosporidium,3,3
+1176354,1,eukaryota,1176355,Hamiltosporidium tvaerminnensis,3,3
+27970,2,eukaryota,27971,Enterocytozoon,2,2
+27971,1,eukaryota,646526,Enterocytozoon hepatopenaei,2,2
+1344955,2,eukaryota,4842,Rhizopus,2,2
+4842,1,eukaryota,936053,Rhizopus delemar,2,2
+34489,2,eukaryota,4830,Mucor,1,1
+4830,1,eukaryota,29924,Mucor lusitanicus,1,1
+36751,2,eukaryota,1129544,Rhizophagus,1,1
+1129544,1,eukaryota,588596,Rhizophagus irregularis,1,1
+1142503,2,eukaryota,100474,Batrachochytrium,1,1
+100474,1,eukaryota,109871,Batrachochytrium dendrobatidis,1,1
+33677,2,eukaryota,5754,Acanthamoeba,149,160
+5754,1,eukaryota,65661,Acanthamoeba healyi,66,71
+5754,1,eukaryota,28015,Acanthamoeba palestinensis,3,3
+5754,1,eukaryota,29196,Acanthamoeba lenticulata,3,3
+5754,1,eukaryota,43142,Acanthamoeba culbertsoni,2,2
+5754,1,eukaryota,5755,Acanthamoeba castellanii,1,1
+5754,1,eukaryota,196912,Acanthamoeba mauritaniensis,1,1
+1286322,2,eukaryota,5658,Leishmania,11,11
+5658,2,eukaryota,38568,Leishmania,11,11
+38568,2,eukaryota,38574,Leishmania donovani species complex,5,5
+38568,2,eukaryota,38581,Leishmania major species complex,4,4
+38581,1,eukaryota,5664,Leishmania major,4,4
+38568,2,eukaryota,38582,Leishmania mexicana species complex,2,2
+38582,1,eukaryota,5665,Leishmania mexicana,1,1
+1286322,2,eukaryota,5683,Leptomonas,1,1
+5683,1,eukaryota,5684,Leptomonas seymouri,1,1
+5654,2,eukaryota,5690,Trypanosoma,3,3
+5690,2,eukaryota,47570,Schizotrypanum,2,2
+47570,1,eukaryota,5693,Trypanosoma cruzi,2,2
+5690,2,eukaryota,669453,Trypanosoma with unspecified subgenus,1,1
+669453,1,eukaryota,67003,Trypanosoma theileri,1,1
+5654,2,eukaryota,1470208,Paratrypanosoma,1,1
+1470208,1,eukaryota,1470209,Paratrypanosoma confusum,1,1

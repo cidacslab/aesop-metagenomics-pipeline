@@ -1,0 +1,77 @@
+"","category","AM-AESOP-BR1_S6","AM-AESOP-P1_S1","AM-AESOP-P2_S2","AM-AESOP-P3_S3","AM-AESOP-P4_S4","AM-AESOP-P5_S5","mean_rpm"
+"Human mastadenovirus B","viruses",0,4,10,931976,1,34,186405
+"Severe acute respiratory syndrome-related coronavirus","viruses",914458,21,7,1,1,12,152416.666666667
+"Human alphaherpesvirus 1","viruses",0,0,0,0,118658,2,59330
+"Streptococcus pneumoniae","bacteria",0,10989,247,29,299,0,2891
+"Stutzerimonas stutzeri","bacteria",2779,0,0,0,0,0,2779
+"Proteus mirabilis","bacteria",0,208,2830,0,0,4777,2605
+"Acinetobacter baumannii","bacteria",0,0,0,0,0,1972,1972
+"Dolosigranulum pigrum","bacteria",0,4525,779,0,94,66,1366
+"Moraxella catarrhalis","bacteria",0,3223,547,20,23,0,953.25
+"Acinetobacter nosocomialis","bacteria",0,0,0,0,0,902,902
+"Mycobacterium leprae","bacteria",789,0,0,0,0,0,789
+"Neisseria meningitidis","bacteria",0,17,0,1361,0,0,689
+"Corynebacterium pseudodiphtheriticum","bacteria",0,1506,1121,0,83,32,685.5
+"Corynebacterium propinquum","bacteria",0,790,378,0,1218,62,612
+"Enterovirus C","viruses",0,591,0,0,0,0,591
+"Schaalia odontolytica","bacteria",0,10,0,0,0,1045,527.5
+"Enterovirus A","viruses",0,384,0,0,0,0,384
+"Stenotrophomonas maltophilia","bacteria",80,0,0,0,0,593,336.5
+"Enterovirus D","viruses",0,296,0,0,0,0,296
+"Moraxella nonliquefaciens","bacteria",0,572,13,0,0,0,292.5
+"Haemophilus influenzae","bacteria",0,21,180,0,741,19,240.25
+"Staphylococcus aureus","bacteria",49,186,557,12,603,20,237.833333333333
+"Morganella morganii","bacteria",0,0,0,0,0,233,233
+"Bacillus licheniformis","bacteria",230,0,0,0,0,0,230
+"Staphylococcus epidermidis","bacteria",0,128,12,0,689,14,210.75
+"Sphingomonas paucimobilis","bacteria",205,0,0,0,0,0,205
+"Mycobacterium gordonae","bacteria",167,0,0,0,0,0,167
+"Delftia acidovorans","bacteria",130,0,0,0,0,0,130
+"Streptococcus mitis","bacteria",174,134,181,18,0,0,126.75
+"Haemophilus parainfluenzae","bacteria",0,103,0,0,0,0,103
+"Kingella kingae","bacteria",0,0,0,103,0,0,103
+"Klebsiella pneumoniae","bacteria",18,13,0,0,0,255,95.3333333333333
+"Escherichia coli","bacteria",192,98,0,0,18,25,83.25
+"Cladophialophora carrionii","eukaryota",74,0,0,0,0,0,74
+"Finegoldia magna","bacteria",0,66,0,0,0,0,66
+"Acanthamoeba astronyxis","eukaryota",62,0,0,0,0,0,62
+"Streptococcus mutans","bacteria",62,0,0,0,0,0,62
+"Chlamydia pneumoniae","bacteria",0,59,0,0,0,0,59
+"Human mastadenovirus E","viruses",0,0,0,57,0,0,57
+"Rothia mucilaginosa","bacteria",62,31,0,27,0,103,55.75
+"Neisseria mucosa","bacteria",74,36,0,0,0,0,55
+"Serratia marcescens","bacteria",0,0,0,0,0,50,50
+"Dialister pneumosintes","bacteria",0,47,0,0,0,0,47
+"Burkholderia gladioli","bacteria",0,145,21,12,20,32,46
+"Burkholderia pseudomallei","bacteria",0,45,0,0,0,0,45
+"Weizmannia coagulans","bacteria",43,0,0,0,0,0,43
+"Kytococcus sedentarius","bacteria",0,0,0,0,0,42,42
+"Pseudomonas aeruginosa","bacteria",0,11,99,15,0,0,41.6666666666667
+"Neisseria gonorrhoeae","bacteria",0,0,0,37,0,0,37
+"Human mastadenovirus C","viruses",0,0,0,35,0,0,35
+"Burkholderia glumae","bacteria",0,32,0,0,0,0,32
+"Fusobacterium nucleatum","bacteria",0,30,0,0,0,0,30
+"Nakaseomyces glabratus","eukaryota",24,0,0,0,0,0,24
+"Corynebacterium striatum","bacteria",0,21,0,0,0,0,21
+"Haemophilus parahaemolyticus","bacteria",0,0,0,0,20,0,20
+"Salmonella enterica","bacteria",0,0,0,0,0,19,19
+"Bacillus anthracis","bacteria",18,0,0,0,0,0,18
+"Corynebacterium minutissimum","bacteria",0,18,0,0,0,0,18
+"Prevotella melaninogenica","bacteria",0,24,0,11,0,0,17.5
+"Human betaherpesvirus 5","viruses",0,31,3,0,0,0,17
+"Veillonella parvula","bacteria",0,17,0,0,0,0,17
+"Corynebacterium diphtheriae","bacteria",0,16,0,0,0,0,16
+"Toxoplasma gondii","eukaryota",18,12,0,0,0,0,15
+"Haemophilus haemolyticus","bacteria",0,14,0,0,0,0,14
+"Burkholderia thailandensis","bacteria",0,12,0,0,0,0,12
+"Enterobacter cloacae","bacteria",0,0,0,0,0,12,12
+"Macacine alphaherpesvirus 1","viruses",0,0,0,0,12,0,12
+"Moraxella osloensis","bacteria",12,12,0,0,0,0,12
+"Streptococcus dysgalactiae","bacteria",12,0,0,0,0,0,12
+"Streptococcus gordonii","bacteria",12,0,0,0,0,0,12
+"Actinotignum schaalii","bacteria",0,0,0,0,0,10,10
+"Streptococcus suis","bacteria",0,10,0,0,0,0,10
+"Influenza A virus","viruses",0,0,8,0,0,0,8
+"Rhinovirus C","viruses",0,0,0,0,0,7,7
+"Rhinovirus A","viruses",0,0,0,0,0,6,6
+"Human gammaherpesvirus 4","viruses",0,0,1,0,0,0,1

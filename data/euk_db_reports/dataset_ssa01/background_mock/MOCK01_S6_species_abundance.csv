@@ -1,0 +1,65 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5809,2,eukaryota,5812,Sarcocystis,3,0
+5812,1,eukaryota,42890,Sarcocystis neurona,3,0
+5809,2,eukaryota,5810,Toxoplasma,1,0
+5810,1,eukaryota,5811,Toxoplasma gondii,1,0
+5799,2,eukaryota,5800,Eimeria,2,0
+5800,1,eukaryota,5801,Eimeria acervulina,1,0
+5800,1,eukaryota,51315,Eimeria necatrix,1,0
+2605701,2,eukaryota,505692,Chromera,1,0
+505692,1,eukaryota,505693,Chromera velia,1,0
+4764,2,eukaryota,100860,Aphanomyces,4,0
+100860,1,eukaryota,157072,Aphanomyces invadans,4,0
+4782,2,eukaryota,1448052,Globisporangium,2,0
+1448052,1,eukaryota,2052682,Globisporangium ultimum,2,0
+65355,2,eukaryota,65356,Albugo,2,0
+65356,1,eukaryota,653948,Albugo laibachii,2,0
+1131492,2,eukaryota,5052,Aspergillus,9,0
+5052,2,eukaryota,2720871,Aspergillus subgen. Circumdati,4,0
+2720871,1,eukaryota,33178,Aspergillus terreus,2,0
+2720871,1,eukaryota,5053,Aspergillus aculeatus,1,0
+5052,1,eukaryota,5068,Aspergillus tubingensis,1,0
+5052,2,eukaryota,2720872,Aspergillus subgen. Fumigati,1,0
+2720872,1,eukaryota,746128,Aspergillus fumigatus,1,0
+5052,2,eukaryota,2720874,Aspergillus subgen. Aspergillus,1,0
+2720874,1,eukaryota,41413,Aspergillus glaucus,1,0
+1131492,2,eukaryota,5073,Penicillium,2,0
+5073,2,eukaryota,254878,Penicillium chrysogenum species complex,2,0
+254878,1,eukaryota,1108849,Penicillium rubens,2,0
+299071,2,eukaryota,5036,Histoplasma,5,0
+5036,1,eukaryota,5037,Histoplasma capsulatum,5,0
+1341112,2,eukaryota,226991,Cyphellophora,1,0
+226991,1,eukaryota,293227,Cyphellophora europaea,1,0
+5129,2,eukaryota,5543,Trichoderma,4,0
+5543,1,eukaryota,51453,Trichoderma reesei,4,0
+110618,2,eukaryota,5506,Fusarium,1,0
+5506,2,eukaryota,171627,Fusarium fujikuroi species complex,1,0
+171627,1,eukaryota,5127,Fusarium fujikuroi,1,0
+5593,2,eukaryota,1549750,Lomentospora,3,0
+1549750,1,eukaryota,41688,Lomentospora prolificans,3,0
+5152,2,eukaryota,29907,Sporothrix,1,0
+29907,1,eukaryota,545650,Sporothrix brasiliensis,1,0
+2528436,2,eukaryota,48558,Pyricularia,1,0
+48558,1,eukaryota,318829,Pyricularia oryzae,1,0
+93133,2,eukaryota,1047167,Zymoseptoria,1,0
+1047167,1,eukaryota,1047171,Zymoseptoria tritici,1,0
+4894,2,eukaryota,4895,Schizosaccharomyces,2,0
+4895,1,eukaryota,4897,Schizosaccharomyces japonicus,2,0
+184208,2,eukaryota,184431,Coprinopsis,1,0
+184431,1,eukaryota,5346,Coprinopsis cinerea,1,0
+4806,2,eukaryota,28581,Allomyces,2,0
+28581,1,eukaryota,28583,Allomyces macrogynus,2,0
+36751,2,eukaryota,1129544,Rhizophagus,1,0
+1129544,1,eukaryota,588596,Rhizophagus irregularis,1,0
+1344966,2,eukaryota,4836,Phycomyces,1,0
+4836,1,eukaryota,4837,Phycomyces blakesleeanus,1,0
+33677,2,eukaryota,5754,Acanthamoeba,14,1
+5754,1,eukaryota,65661,Acanthamoeba healyi,5,0
+5754,1,eukaryota,43142,Acanthamoeba culbertsoni,1,0
+5654,2,eukaryota,5690,Trypanosoma,1,0
+5690,2,eukaryota,47570,Schizotrypanum,1,0
+47570,1,eukaryota,5693,Trypanosoma cruzi,1,0
+1286322,2,eukaryota,5658,Leishmania,1,0
+5658,2,eukaryota,37616,Viannia,1,0
+302780,2,eukaryota,302781,Monocercomonoides,1,0
+302781,1,eukaryota,2049356,Monocercomonoides exilis,1,0

@@ -1,0 +1,7 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5799,2,eukaryota,5800,Eimeria,16,5324
+5800,1,eukaryota,5804,Eimeria maxima,16,5324
+33677,2,eukaryota,5754,Acanthamoeba,5,1663
+1131492,2,eukaryota,5052,Aspergillus,4,1331
+5052,2,eukaryota,2720870,Aspergillus subgen. Nidulantes,4,1331
+2720870,1,eukaryota,162425,Aspergillus nidulans,4,1331

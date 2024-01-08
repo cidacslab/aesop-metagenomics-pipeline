@@ -1,0 +1,22 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm
+5799,2,eukaryota,5800,Eimeria,16,273
+5800,1,eukaryota,5804,Eimeria maxima,15,256
+5800,1,eukaryota,51315,Eimeria necatrix,1,17
+5809,2,eukaryota,5810,Toxoplasma,1,17
+5810,1,eukaryota,5811,Toxoplasma gondii,1,17
+2605701,2,eukaryota,505692,Chromera,1,17
+505692,1,eukaryota,505693,Chromera velia,1,17
+4764,2,eukaryota,100860,Aphanomyces,13,222
+100860,1,eukaryota,157072,Aphanomyces invadans,13,222
+4782,2,eukaryota,1448052,Globisporangium,1,17
+1448052,1,eukaryota,2052682,Globisporangium ultimum,1,17
+33677,2,eukaryota,5754,Acanthamoeba,66,1129
+5754,1,eukaryota,65661,Acanthamoeba healyi,23,393
+5754,1,eukaryota,29196,Acanthamoeba lenticulata,2,34
+5754,1,eukaryota,43142,Acanthamoeba culbertsoni,1,17
+299071,2,eukaryota,5036,Histoplasma,1,17
+5036,1,eukaryota,5037,Histoplasma capsulatum,1,17
+1131492,2,eukaryota,5052,Aspergillus,1,17
+5052,2,eukaryota,2720871,Aspergillus subgen. Circumdati,1,17
+27970,2,eukaryota,27971,Enterocytozoon,1,17
+27971,1,eukaryota,646526,Enterocytozoon hepatopenaei,1,17

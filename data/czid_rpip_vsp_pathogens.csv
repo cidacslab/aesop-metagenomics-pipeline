@@ -1,0 +1,665 @@
+realm,organism,tax_id,kit
+Bacteria,Abiotrophia defectiva,46125,CZID
+Bacteria,Achromobacter denitrificans,32002,RPIP
+Bacteria,Achromobacter xylosoxidans,85698,CZID
+Bacteria,Acinetobacter baumannii,470,RPIP
+Bacteria,Acinetobacter lwoffii,28090,RPIP
+Bacteria,Acinetobacter nosocomialis,106654,RPIP
+Bacteria,Acinetobacter pittii,48296,RPIP
+Bacteria,Actinomyces graevenitzii,55565,RPIP
+Bacteria,Actinomyces israelii,1659,RPIP
+Bacteria,Actinomyces meyeri,52773,RPIP
+Bacteria,Actinotignum schaalii,59505,CZID
+Bacteria,Aerococcus sanguinicola,119206,CZID
+Bacteria,Aerococcus urinae,1376,CZID
+Bacteria,Aeromonas caviae,648,CZID
+Bacteria,Aeromonas hydrophila,644,CZID
+Bacteria,Aeromonas sobria,646,RPIP
+Bacteria,Aeromonas veronii,654,CZID
+Bacteria,Aggregatibacter actinomycetemcomitans,714,CZID
+Bacteria,Aggregatibacter aphrophilus,732,CZID
+Bacteria,Anaerococcus prevotii,33034,CZID
+Bacteria,Anaplasma phagocytophilum,948,CZID
+Bacteria,Arcanobacterium haemolyticum,28264,CZID
+Bacteria,Bacillus anthracis,1392,CZID
+Bacteria,Bacillus cereus,1396,CZID
+Bacteria,Bacillus licheniformis,1402,CZID
+Bacteria,Bacillus thuringiensis,1428,RPIP
+Bacteria,Bacteroides fragilis,817,RPIP
+Bacteria,Bartonella bacilliformis,774,CZID
+Bacteria,Bartonella elizabethae,807,CZID
+Bacteria,Bartonella grahamii,33045,CZID
+Bacteria,Bartonella henselae,38323,CZID
+Bacteria,Bartonella quintana,803,CZID
+Bacteria,Bordetella bronchiseptica,518,RPIP
+Bacteria,Bordetella hinzii,103855,RPIP
+Bacteria,Bordetella holmesii,35814,RPIP
+Bacteria,Bordetella parapertussis,519,RPIP
+Bacteria,Bordetella pertussis,520,CZID
+Bacteria,Bordetella petrii,94624,RPIP
+Bacteria,Borrelia miyamotoi,47466,CZID
+Bacteria,Borrelia recurrentis,44449,CZID
+Bacteria,Borreliella burgdorferi,139,CZID
+Bacteria,Borreliella mayonii,1674146,CZID
+Bacteria,Brachyspira hyodysenteriae,159,CZID
+Bacteria,Brevibacillus brevis,1393,CZID
+Bacteria,Brevibacillus laterosporus,1465,CZID
+Bacteria,Brucella abortus,235,CZID
+Bacteria,Brucella anthropi,529,RPIP
+Bacteria,Brucella canis,36855,CZID
+Bacteria,Brucella melitensis,29459,CZID
+Bacteria,Brucella suis,29461,CZID
+Bacteria,Burkholderia cepacia complex,87882,RPIP
+Bacteria,Burkholderia gladioli,28095,RPIP
+Bacteria,Burkholderia glumae,337,RPIP
+Bacteria,Burkholderia mallei,13373,CZID
+Bacteria,Burkholderia pseudomallei,28450,CZID
+Bacteria,Burkholderia thailandensis,57975,RPIP
+Bacteria,Campylobacter concisus,199,RPIP
+Bacteria,Campylobacter curvus,200,CZID
+Bacteria,Campylobacter fetus,196,CZID
+Bacteria,Campylobacter jejuni,197,CZID
+Bacteria,Campylobacter lari,201,CZID
+Bacteria,Capnocytophaga gingivalis,1017,RPIP
+Bacteria,Capnocytophaga leadbetteri,327575,RPIP
+Bacteria,Capnocytophaga sputigena,1019,RPIP
+Bacteria,Cardiobacterium hominis,2718,RPIP
+Bacteria,Cardiobacterium valvarum,194702,RPIP
+Bacteria,Chlamydia pneumoniae,83558,CZID
+Bacteria,Chlamydia psittaci,83554,CZID
+Bacteria,Chlamydia trachomatis,813,CZID
+Bacteria,Chromobacterium violaceum,536,RPIP
+Bacteria,Citrobacter freundii,546,RPIP
+Bacteria,Citrobacter koseri,545,RPIP
+Bacteria,Clostridioides difficile,1496,CZID
+Bacteria,Clostridium botulinum,1491,CZID
+Bacteria,Clostridium perfringens,1502,CZID
+Bacteria,Clostridium septicum,1504,CZID
+Bacteria,Clostridium tetani,1513,CZID
+Bacteria,Corynebacterium diphtheriae,1717,CZID
+Bacteria,Corynebacterium jeikeium,38289,RPIP
+Bacteria,Corynebacterium minutissimum,38301,CZID
+Bacteria,Corynebacterium propinquum,43769,RPIP
+Bacteria,Corynebacterium pseudodiphtheriticum,37637,RPIP
+Bacteria,Corynebacterium pseudotuberculosis,1719,RPIP
+Bacteria,Corynebacterium striatum,43770,RPIP
+Bacteria,Corynebacterium ulcerans,65058,RPIP
+Bacteria,Coxiella burnetii,777,CZID
+Bacteria,Cronobacter sakazakii,28141,RPIP
+Bacteria,Delftia acidovorans,80866,RPIP
+Bacteria,Dialister pneumosintes,39950,RPIP
+Bacteria,Dolosigranulum pigrum,29394,RPIP
+Bacteria,Ehrlichia chaffeensis,945,CZID
+Bacteria,Ehrlichia ewingii,947,CZID
+Bacteria,Ehrlichia muris,35795,CZID
+Bacteria,Eikenella corrodens,539,RPIP
+Bacteria,Elizabethkingia anophelis,1117645,CZID
+Bacteria,Elizabethkingia meningoseptica,238,CZID
+Bacteria,Enterobacter cloacae,550,CZID
+Bacteria,Enterobacter cloacae complex,354276,RPIP
+Bacteria,Enterococcus faecalis,1351,CZID
+Bacteria,Enterococcus faecium,1352,RPIP
+Bacteria,Erysipelothrix rhusiopathiae,1648,CZID
+Bacteria,Escherichia coli,562,CZID
+Bacteria,Eubacterium brachy,35517,RPIP
+Bacteria,Eubacterium limosum,1736,RPIP
+Bacteria,Eubacterium nodatum,35518,RPIP
+Bacteria,Finegoldia magna,1260,CZID
+Bacteria,Francisella tularensis,263,CZID
+Bacteria,Fusobacterium necrophorum,859,CZID
+Bacteria,Fusobacterium nucleatum,851,CZID
+Bacteria,Gardnerella vaginalis,2702,CZID
+Bacteria,Gemella haemolysans,1379,RPIP
+Bacteria,Gemella morbillorum,29391,RPIP
+Bacteria,Gordonia araii,263909,RPIP
+Bacteria,Gordonia bronchialis,2054,RPIP
+Bacteria,Haemophilus aegyptius,197575,CZID
+Bacteria,Haemophilus ducreyi,730,CZID
+Bacteria,Haemophilus haemolyticus,726,RPIP
+Bacteria,Haemophilus influenzae,727,CZID
+Bacteria,Haemophilus parahaemolyticus,735,RPIP
+Bacteria,Haemophilus parainfluenzae,729,CZID
+Bacteria,Haemophilus pittmaniae,249188,RPIP
+Bacteria,Hafnia alvei,569,RPIP
+Bacteria,Hoylesella pleuritidis,407975,RPIP
+Bacteria,Kingella denitrificans,502,CZID
+Bacteria,Kingella kingae,504,RPIP
+Bacteria,Klebsiella aerogenes,548,CZID
+Bacteria,Klebsiella granulomatis,39824,CZID
+Bacteria,Klebsiella oxytoca,571,RPIP
+Bacteria,Klebsiella pneumoniae,573,CZID
+Bacteria,Klebsiella quasipneumoniae,1463165,RPIP
+Bacteria,Klebsiella variicola,244366,RPIP
+Bacteria,Kytococcus sedentarius,1276,RPIP
+Bacteria,Leclercia adecarboxylata,83655,RPIP
+Bacteria,Legionella anisa,28082,RPIP
+Bacteria,Legionella feeleii,453,RPIP
+Bacteria,Legionella longbeachae,450,RPIP
+Bacteria,Legionella maceachernii,466,RPIP
+Bacteria,Legionella pneumophila,446,CZID
+Bacteria,Legionella wadsworthii,28088,RPIP
+Bacteria,Leptospira alexanderi,100053,CZID
+Bacteria,Leptospira alstonii,28452,CZID
+Bacteria,Leptospira borgpetersenii,174,CZID
+Bacteria,Leptospira interrogans,173,CZID
+Bacteria,Leptospira kirschneri,29507,CZID
+Bacteria,Leptospira kmetyi,408139,CZID
+Bacteria,Leptospira mayottensis,1137606,CZID
+Bacteria,Leptospira noguchii,28182,CZID
+Bacteria,Leptospira santarosai,28183,CZID
+Bacteria,Leptospira weilii,28184,CZID
+Bacteria,Leptotrichia buccalis,40542,RPIP
+Bacteria,Listeria monocytogenes,1639,CZID
+Bacteria,Metamycoplasma hominis,2098,CZID
+Bacteria,Metamycoplasma salivarium,2124,CZID
+Bacteria,Moraxella catarrhalis,480,CZID
+Bacteria,Moraxella lacunata,477,CZID
+Bacteria,Moraxella nonliquefaciens,478,CZID
+Bacteria,Moraxella osloensis,34062,RPIP
+Bacteria,Morganella morganii,582,CZID
+Bacteria,Mycobacterium avium complex sp.,37162,RPIP
+Bacteria,Mycobacterium gordonae,1778,RPIP
+Bacteria,Mycobacterium kansasii,1768,RPIP
+Bacteria,Mycobacterium leprae,1769,CZID
+Bacteria,Mycobacterium malmoense,1780,CZID
+Bacteria,Mycobacterium marinum,1781,CZID
+Bacteria,Mycobacterium parascrofulaceum,240125,RPIP
+Bacteria,Mycobacterium scrofulaceum,1783,RPIP
+Bacteria,Mycobacterium simiae,1784,CZID
+Bacteria,Mycobacterium szulgai,1787,RPIP
+Bacteria,Mycobacterium tuberculosis,1773,CZID
+Bacteria,Mycobacterium ulcerans,1809,CZID
+Bacteria,Mycobacterium xenopi,1789,CZID
+Bacteria,Mycobacteroides abscessus ,36809,RPIP
+Bacteria,Mycobacteroides chelonae,1774,RPIP
+Bacteria,Mycobacteroides immunogenum,83262,RPIP
+Bacteria,Mycolicibacter terrae,1788,CZID
+Bacteria,Mycolicibacterium fortuitum,1766,CZID
+Bacteria,Mycolicibacterium wolinskyi,59750,CZID
+Bacteria,Mycoplasmoides genitalium,2097,CZID
+Bacteria,Mycoplasmoides pneumoniae,2104,CZID
+Bacteria,Neisseria flavescens,484,RPIP
+Bacteria,Neisseria gonorrhoeae,485,CZID
+Bacteria,Neisseria lactamica,486,RPIP
+Bacteria,Neisseria meningitidis,487,CZID
+Bacteria,Neisseria mucosa,488,RPIP
+Bacteria,Nocardia abscessus,120957,RPIP
+Bacteria,Nocardia arthritidis,228602,RPIP
+Bacteria,Nocardia beijingensis,95162,RPIP
+Bacteria,Nocardia brasiliensis,37326,CZID
+Bacteria,Nocardia cyriacigeorgica,135487,RPIP
+Bacteria,Nocardia farcinica,37329,RPIP
+Bacteria,Nocardia nova,37330,RPIP
+Bacteria,Nocardia otitidiscaviarum,1823,RPIP
+Bacteria,Nocardia transvalensis,37333,RPIP
+Bacteria,Nocardia veterana,132249,RPIP
+Bacteria,Orientia tsutsugamushi,784,CZID
+Bacteria,Pandoraea pulmonicola,93221,RPIP
+Bacteria,Pantoea agglomerans,549,RPIP
+Bacteria,Paraclostridium bifermentans,1490,CZID
+Bacteria,Parvimonas micra,33033,CZID
+Bacteria,Pasteurella multocida,747,CZID
+Bacteria,Pediococcus acidilactici,1254,RPIP
+Bacteria,Peptoniphilus asaccharolyticus,1258,CZID
+Bacteria,Peptostreptococcus anaerobius,1261,CZID
+Bacteria,Plesiomonas shigelloides,703,CZID
+Bacteria,Porphyromonas gingivalis,837,CZID
+Bacteria,Prescottella equi,43767,RPIP
+Bacteria,Prevotella bivia,28125,CZID
+Bacteria,Prevotella buccae,28126,RPIP
+Bacteria,Prevotella intermedia,28131,CZID
+Bacteria,Prevotella melaninogenica,28132,CZID
+Bacteria,Proteus mirabilis,584,CZID
+Bacteria,Proteus penneri,102862,RPIP
+Bacteria,Proteus vulgaris,585,RPIP
+Bacteria,Providencia stuartii,588,RPIP
+Bacteria,Pseudomonas aeruginosa,287,RPIP
+Bacteria,Pseudomonas fluorescens,294,RPIP
+Bacteria,Ralstonia pickettii,329,RPIP
+Bacteria,Raoultella ornithinolytica,54291,RPIP
+Bacteria,Raoultella planticola,575,RPIP
+Bacteria,Rickettsia africae,35788,CZID
+Bacteria,Rickettsia akari,786,CZID
+Bacteria,Rickettsia australis,787,CZID
+Bacteria,Rickettsia conorii,781,CZID
+Bacteria,Rickettsia felis,42862,CZID
+Bacteria,Rickettsia japonica,35790,CZID
+Bacteria,Rickettsia prowazekii,782,CZID
+Bacteria,Rickettsia rickettsii,783,CZID
+Bacteria,Rickettsia sibirica,35793,CZID
+Bacteria,Rickettsia typhi,785,CZID
+Bacteria,Rothia mucilaginosa,43675,RPIP
+Bacteria,Salmonella bongori,54736,CZID
+Bacteria,Salmonella enterica,28901,CZID
+Bacteria,Schaalia meyeri,1655,RPIP
+Bacteria,Schaalia odontolytica,1660,RPIP
+Bacteria,Serratia marcescens,615,RPIP
+Bacteria,Shewanella putrefaciens,24,RPIP
+Bacteria,Shigella boydii,621,CZID
+Bacteria,Shigella dysenteriae,622,CZID
+Bacteria,Shigella flexneri,623,CZID
+Bacteria,Shigella sonnei,624,CZID
+Bacteria,Slackia exigua,84109,RPIP
+Bacteria,Sphingomonas paucimobilis,13689,RPIP
+Bacteria,Staphylococcus aureus,1280,CZID
+Bacteria,Staphylococcus capitis,29388,CZID
+Bacteria,Staphylococcus epidermidis,1282,CZID
+Bacteria,Staphylococcus haemolyticus,1283,CZID
+Bacteria,Staphylococcus saccharolyticus,33028,CZID
+Bacteria,Staphylococcus saprophyticus,29385,CZID
+Bacteria,Stenotrophomonas maltophilia,40324,RPIP
+Bacteria,Streptobacillus moniliformis,34105,CZID
+Bacteria,Streptococcus agalactiae,1311,CZID
+Bacteria,Streptococcus anginosus,1328,CZID
+Bacteria,Streptococcus constellatus,76860,RPIP
+Bacteria,Streptococcus dysgalactiae,1334,RPIP
+Bacteria,Streptococcus equinus,1335,CZID
+Bacteria,Streptococcus gordonii,1302,CZID
+Bacteria,Streptococcus intermedius,1338,CZID
+Bacteria,Streptococcus mitis,28037,CZID
+Bacteria,Streptococcus mutans,1309,CZID
+Bacteria,Streptococcus pneumoniae,1313,CZID
+Bacteria,Streptococcus pyogenes,1314,CZID
+Bacteria,Streptococcus sanguinis,1305,CZID
+Bacteria,Streptococcus suis,1307,CZID
+Bacteria,Stutzerimonas stutzeri,316,RPIP
+Bacteria,Suttonella indologenes,13276,CZID
+Bacteria,Tannerella forsythia,28112,CZID
+Bacteria,Tatlockia micdadei,451,CZID
+Bacteria,Treponema denticola,158,CZID
+Bacteria,Treponema pallidum,160,CZID
+Bacteria,Treponema vincentii,69710,CZID
+Bacteria,Tropheryma whipplei,2039,CZID
+Bacteria,Tsukamurella pulmonis,47312,RPIP
+Bacteria,Tsukamurella tyrosinosolvens,57704,RPIP
+Bacteria,Ureaplasma parvum,134821,RPIP
+Bacteria,Ureaplasma urealyticum,2130,CZID
+Bacteria,Veillonella parvula,29466,RPIP
+Bacteria,Vibrio alginolyticus,663,CZID
+Bacteria,Vibrio cholerae,666,CZID
+Bacteria,Vibrio parahaemolyticus,670,CZID
+Bacteria,Vibrio vulnificus,672,CZID
+Bacteria,Weizmannia coagulans,1398,CZID
+Bacteria,Williamsia muralis,85044,RPIP
+Bacteria,Yersinia enterocolitica,630,CZID
+Bacteria,Yersinia pestis,632,CZID
+Bacteria,Yersinia pseudotuberculosis,633,CZID
+Eukaryota,Acanthamoeba astronyxis,65658,CZID
+Eukaryota,Acanthamoeba castellanii,5755,CZID
+Eukaryota,Acanthamoeba culbertsoni,43142,CZID
+Eukaryota,Acanthamoeba divionensis,202919,CZID
+Eukaryota,Acanthamoeba hatchetti,65660,CZID
+Eukaryota,Acanthamoeba lenticulata,29196,CZID
+Eukaryota,Acanthamoeba lugdunensis,61605,CZID
+Eukaryota,Acanthamoeba polyphaga,5757,CZID
+Eukaryota,Acanthamoeba rhysodes,32599,CZID
+Eukaryota,Alternaria alternata,5599,RPIP
+Eukaryota,Alternaria infectoria,45303,RPIP
+Eukaryota,Angiostrongylus cantonensis,6313,CZID
+Eukaryota,Anisakis simplex,6269,CZID
+Eukaryota,Anncaliia algerae,723287,CZID
+Eukaryota,Apophysomyces elegans,90269,RPIP
+Eukaryota,Apophysomyces variabilis,760013,CZID
+Eukaryota,Ascaris lumbricoides,6252,CZID
+Eukaryota,Aspergillus flavus,5059,CZID
+Eukaryota,Aspergillus fumigatus,746128,CZID
+Eukaryota,Aspergillus nidulans,162425,CZID
+Eukaryota,Aspergillus niger,5061,CZID
+Eukaryota,Aspergillus terreus,33178,CZID
+Eukaryota,Aspergillus versicolor,46472,RPIP
+Eukaryota,Babesia microti,5868,CZID
+Eukaryota,Babesia sp. venatorum,171411,CZID
+Eukaryota,Balamuthia mandrillaris,66527,CZID
+Eukaryota,Balantioides coli,71585,CZID
+Eukaryota,Basidiobolus ranarum,34480,CZID
+Eukaryota,Blastocystis hominis,12968,CZID
+Eukaryota,Blastomyces dermatitidis,5039,CZID
+Eukaryota,Blastomyces gilchristii,1681229,CZID
+Eukaryota,Blastomyces helicus,465036,CZID
+Eukaryota,Brugia malayi,6279,CZID
+Eukaryota,Candida albicans,5476,CZID
+Eukaryota,Candida auris,498019,RPIP
+Eukaryota,Candida parapsilosis,5480,CZID
+Eukaryota,Candida tropicalis,5482,CZID
+Eukaryota,Cladophialophora bantiana,89940,CZID
+Eukaryota,Cladophialophora boppii,82106,CZID
+Eukaryota,Cladophialophora carrionii,86049,CZID
+Eukaryota,Clinostomum complanatum,235145,CZID
+Eukaryota,Coccidioides immitis,5501,CZID
+Eukaryota,Coccidioides posadasii,199306,CZID
+Eukaryota,Conidiobolus coronatus,34488,CZID
+Eukaryota,Conidiobolus incongruus,90249,CZID
+Eukaryota,Cryptococcus gattii VGI,37769,CZID
+Eukaryota,Cryptococcus neoformans,5207,CZID
+Eukaryota,Cryptosporidium hominis,237895,CZID
+Eukaryota,Cryptosporidium parvum,5807,CZID
+Eukaryota,Cunninghamella bertholletiae,90251,RPIP
+Eukaryota,Curvularia australiensis,91365,CZID
+Eukaryota,Curvularia geniculata,418126,RPIP
+Eukaryota,Curvularia hawaiiensis,1230527,CZID
+Eukaryota,Curvularia lunata,5503,RPIP
+Eukaryota,Curvularia spicifera,145392,CZID
+Eukaryota,Cyclospora cayetanensis,88456,CZID
+Eukaryota,Demodex brevis,574145,CZID
+Eukaryota,Demodex folliculorum,481310,CZID
+Eukaryota,Dirofilaria immitis,6287,CZID
+Eukaryota,Dirofilaria repens,31241,CZID
+Eukaryota,Echinococcus granulosus,6210,CZID
+Eukaryota,Echinococcus multilocularis,6211,CZID
+Eukaryota,Echinococcus oligarthrus,6212,CZID
+Eukaryota,Echinococcus vogeli,6213,CZID
+Eukaryota,Edenia gomezpompae,461172,CZID
+Eukaryota,Encephalitozoon cuniculi,6035,CZID
+Eukaryota,Encephalitozoon hellem,27973,CZID
+Eukaryota,Encephalitozoon intestinalis,58839,CZID
+Eukaryota,Entamoeba histolytica,5759,CZID
+Eukaryota,Enterocytozoon bieneusi,31281,CZID
+Eukaryota,Exophiala dermatitidis,5970,RPIP
+Eukaryota,Fusarium oxysporum,5507,RPIP
+Eukaryota,Fusarium proliferatum,948311,RPIP
+Eukaryota,Fusarium solani,169388,RPIP
+Eukaryota,Fusarium verticillioides,117187,RPIP
+Eukaryota,Giardia intestinalis,5741,CZID
+Eukaryota,Histoplasma capsulatum,5037,CZID
+Eukaryota,Leishmania aethiopica,5667,CZID
+Eukaryota,Leishmania amazonensis,5659,CZID
+Eukaryota,Leishmania braziliensis,5660,CZID
+Eukaryota,Leishmania chagasi,44271,CZID
+Eukaryota,Leishmania colombiensis,93413,CZID
+Eukaryota,Leishmania donovani,5661,CZID
+Eukaryota,Leishmania guyanensis,5670,CZID
+Eukaryota,Leishmania infantum,5671,CZID
+Eukaryota,Leishmania major,5664,CZID
+Eukaryota,Leishmania martiniquensis,1580590,CZID
+Eukaryota,Leishmania mexicana,5665,CZID
+Eukaryota,Leishmania naiffi,5678,CZID
+Eukaryota,Leishmania panamensis,5679,CZID
+Eukaryota,Leishmania peruviana,5681,CZID
+Eukaryota,Leishmania tropica,5666,CZID
+Eukaryota,Lichtheimia corymbifera,42458,CZID
+Eukaryota,Lichtheimia ramosa,688394,CZID
+Eukaryota,Loa loa,7209,CZID
+Eukaryota,Lomentospora prolificans,41688,CZID
+Eukaryota,Microascus cinereus,186339,RPIP
+Eukaryota,Microascus cirrosus,5595,RPIP
+Eukaryota,Microascus paisii,1651253,RPIP
+Eukaryota,Mucor circinelloides,36080,CZID
+Eukaryota,Mucor indicus,64623,RPIP
+Eukaryota,Mucor racemosus,4841,RPIP
+Eukaryota,Naegleria fowleri,5763,CZID
+Eukaryota,Nakaseomyces glabratus,5478,CZID
+Eukaryota,Onchocerca volvulus,6282,CZID
+Eukaryota,Paecilomyces variotii,264951,RPIP
+Eukaryota,Paracoccidioides brasiliensis,121759,CZID
+Eukaryota,Paragonimus africanus,434055,CZID
+Eukaryota,Paragonimus heterotremus,100268,CZID
+Eukaryota,Paragonimus kellicotti,100269,CZID
+Eukaryota,Paragonimus mexicanus,100270,CZID
+Eukaryota,Paragonimus siamensis,100271,CZID
+Eukaryota,Paragonimus skrjabini,59630,CZID
+Eukaryota,Paragonimus westermani,34504,CZID
+Eukaryota,Phialophora verrucosa,39412,CZID
+Eukaryota,Pichia kudriavzevii,4909,CZID
+Eukaryota,Plasmodium falciparum,5833,CZID
+Eukaryota,Plasmodium malariae,5858,CZID
+Eukaryota,Plasmodium ovale,36330,CZID
+Eukaryota,Plasmodium vivax,5855,CZID
+Eukaryota,Pneumocystis jirovecii,42068,CZID
+Eukaryota,Pogonomyrmex uruguayensis,269704,CZID
+Eukaryota,Purpureocillium lilacinum,33203,RPIP
+Eukaryota,Rasamsonia aegroticola,1233418,RPIP
+Eukaryota,Rasamsonia argillacea,69808,RPIP
+Eukaryota,Rhinosporidium seeberi,90339,CZID
+Eukaryota,Rhizomucor pusillus,4840,CZID
+Eukaryota,Rhizopus arrhizus,64495,CZID
+Eukaryota,Rhizopus azygosporus,86630,RPIP
+Eukaryota,Rhizopus microsporus,58291,CZID
+Eukaryota,Saksenaea erythrospora,931868,CZID
+Eukaryota,Saksenaea vasiformis,90258,CZID
+Eukaryota,Sarcoptes scabiei,52283,CZID
+Eukaryota,Sarocladium kiliense,45277,RPIP
+Eukaryota,Scedosporium apiospermum,563466,CZID
+Eukaryota,Schistosoma guineensis,393876,CZID
+Eukaryota,Schistosoma haematobium,6185,CZID
+Eukaryota,Schistosoma intercalatum,6187,CZID
+Eukaryota,Schistosoma japonicum,6182,CZID
+Eukaryota,Schistosoma malayensis,53353,CZID
+Eukaryota,Schistosoma mansoni,6183,CZID
+Eukaryota,Schistosoma mekongi,38744,CZID
+Eukaryota,Schizophyllum commune,5334,RPIP
+Eukaryota,Scopulariopsis brevicaulis,561152,RPIP
+Eukaryota,Scopulariopsis brumptii,40376,RPIP
+Eukaryota,Sporothrix schenckii,29908,CZID
+Eukaryota,Strongyloides stercoralis,6248,CZID
+Eukaryota,Syncephalastrum racemosum,13706,RPIP
+Eukaryota,Taenia solium,6204,CZID
+Eukaryota,Talaromyces marneffei,37727,RPIP
+Eukaryota,Toxoplasma gondii,5811,CZID
+Eukaryota,Trachipleistophora hominis,72359,CZID
+Eukaryota,Trichinella pseudospiralis,6337,CZID
+Eukaryota,Trichinella spiralis,6334,CZID
+Eukaryota,Trichomonas vaginalis,5722,CZID
+Eukaryota,Trichosporon asahii,82508,RPIP
+Eukaryota,Trypanosoma brucei,5691,CZID
+Eukaryota,Trypanosoma cruzi,5693,CZID
+Eukaryota,Tubulinosema acridophagus,307626,CZID
+Eukaryota,Vittaforma corneae,42399,CZID
+Eukaryota,Wuchereria bancrofti,6293,CZID
+Viruses,Adeno-associated virus,272636,CZID
+Viruses,Aichivirus A,72149,CZID
+Viruses,Aichivirus B,194965,VSP
+Viruses,Aichivirus B3,2919880,VSP
+Viruses,Aichivirus C,1298633,VSP
+Viruses,Aichivirus D,1897731,VSP
+Viruses,Aichivirus E,1986958,VSP
+Viruses,Aichivirus F,1986959,VSP
+Viruses,Aichivirus F2,2755032,VSP
+Viruses,Alphapapillomavirus 4,337043,CZID
+Viruses,Alphapapillomavirus 7,337042,CZID
+Viruses,Alphapapillomavirus 9,337041,CZID
+Viruses,Alphapolyomavirus quintihominis,493803,CZID
+Viruses,Argentinian mammarenavirus,2169991,CZID
+Viruses,Astrovirus MLB1,568715,VSP
+Viruses,Astrovirus MLB2,683172,VSP
+Viruses,Astrovirus SG,767521,VSP
+Viruses,Astrovirus sp.,178530,VSP
+Viruses,Astrovirus VA1,645687,VSP
+Viruses,Astrovirus VA2,683173,VSP
+Viruses,Astrovirus VA3,683174,VSP
+Viruses,Astrovirus VA4,1247113,VSP
+Viruses,Banna virus,77763,CZID
+Viruses,Barmah Forest virus,11020,CZID
+Viruses,Betapolyomavirus hominis,1891762,CZID
+Viruses,Betapolyomavirus quartihominis,1891765,CZID
+Viruses,Betapolyomavirus secuhominis,1891763,CZID
+Viruses,Betapolyomavirus tertihominis,1891764,CZID
+Viruses,Bundibugyo ebolavirus,565995,CZID
+Viruses,Bunyamwera orthobunyavirus,1933179,CZID
+Viruses,Cali mammarenavirus,2169993,CZID
+Viruses,California encephalitis orthobunyavirus,1933264,CZID
+Viruses,Cardiovirus A,1821749,CZID
+Viruses,Chapare mammarenavirus,499556,CZID
+Viruses,Chikungunya virus,37124,CZID
+Viruses,Cosavirus A,1330491,CZID
+Viruses,Cowpox virus,10243,CZID
+Viruses,Coxsackievirus,12066,CZID
+Viruses,Coxsackievirus B1,12071,RPIP
+Viruses,Coxsackievirus B2,82632,RPIP
+Viruses,Coxsackievirus B3,12072,RPIP
+Viruses,Coxsackievirus B4,12073,RPIP
+Viruses,Coxsackievirus B5,12074,RPIP
+Viruses,Coxsackievirus B6,74561,RPIP
+Viruses,Crimean-Congo hemorrhagic fever orthonairovirus,1980519,CZID
+Viruses,Cytomegalovirus,10358,RPIP
+Viruses,Dabie bandavirus,2509281,CZID
+Viruses,Dengue virus,12637,CZID
+Viruses,Dengue virus type 2,11060,VSP
+Viruses,Dengue virus type 3,11069,VSP
+Viruses,Dengue virus type 4,11070,VSP
+Viruses,dengue virus type I,11053,VSP
+Viruses,Dugbe orthonairovirus,1980521,CZID
+Viruses,Eastern equine encephalitis virus,11021,CZID
+Viruses,Ebola virus,1570291,VSP
+Viruses,Echovirus,33758,CZID
+Viruses,Enterovirus B,138949,VSP
+Viruses,Enterovirus E,12064,VSP
+Viruses,Enterovirus F,1330520,VSP
+Viruses,Enterovirus G,106966,VSP
+Viruses,Enterovirus H,310907,VSP
+Viruses,Enterovirus I,2040663,VSP
+Viruses,Enterovirus J,1330521,VSP
+Viruses,Enterovirus K,2169884,VSP
+Viruses,Enterovirus L,2169885,VSP
+Viruses,Enterovirus A,138948,CZID
+Viruses,Enterovirus A71,39054,RPIP
+Viruses,Enterovirus C,138950,CZID
+Viruses,Enterovirus D,138951,CZID
+Viruses,Enterovirus D68,42789,RPIP
+Viruses,European bat lyssavirus,38768,CZID
+Viruses,Getah virus,59300,CZID
+Viruses,Guanarito mammarenavirus,45219,CZID
+Viruses,Hantaan orthohantavirus,1980471,CZID
+Viruses,Orthohantavirus,1980442,VSP
+Viruses,Heartland banyangvirus,2560519,CZID
+Viruses,Hendra henipavirus,63330,CZID
+Viruses,Hepacivirus C,11103,CZID
+Viruses,Hepatitis B virus,10407,CZID
+Viruses,Hepatitis C virus genotype 1,41856,VSP
+Viruses,Hepatitis C virus genotype 3,356114,VSP
+Viruses,Hepatitis C virus genotype 4,33745,VSP
+Viruses,Hepatitis delta virus,12475,CZID
+Viruses,Hepeviridae 1,291484,VSP
+Viruses,Hepatovirus A,12092,CZID
+Viruses,Human adenovirus sp.,1907210,CZID
+Viruses,Human alphaherpesvirus 1,10298,CZID
+Viruses,Human alphaherpesvirus 2,10310,CZID
+Viruses,Human alphaherpesvirus 3,10335,CZID
+Viruses,Human astrovirus,1868658,CZID
+Viruses,Human betaherpesvirus 5,10359,CZID
+Viruses,Human betaherpesvirus 6,10368,CZID
+Viruses,Human betaherpesvirus 7,10372,CZID
+Viruses,Human bocavirus 1,689403,RPIP
+Viruses,Human coronavirus 229E,11137,RPIP
+Viruses,Human coronavirus HKU1,290028,RPIP
+Viruses,Human coronavirus NL63,277944,RPIP
+Viruses,Human coronavirus OC43,31631,RPIP
+Viruses,Human gammaherpesvirus 4,10376,CZID
+Viruses,Human gammaherpesvirus 8,37296,CZID
+Viruses,Human immunodeficiency virus,12721,CZID
+Viruses,Human immunodeficiency virus 1,11676,VSP
+Viruses,Human immunodeficiency virus 2,11709,VSP
+Viruses,Human mastadenovirus B,108098,RPIP
+Viruses,Human mastadenovirus C,129951,RPIP
+Viruses,Human mastadenovirus E,130308,RPIP
+Viruses,Human metapneumovirus,162145,RPIP
+Viruses,Human orthopneumovirus,11250,CZID
+Viruses,Human orthorubulavirus 2,2560525,RPIP
+Viruses,Human orthorubulavirus 4,2560526,RPIP
+Viruses,Human parvovirus B19,10798,RPIP
+Viruses,Human respirovirus 1,12730,CZID
+Viruses,Human respirovirus 3,11216,CZID
+Viruses,Human rhinovirus sp.,169066,CZID
+Viruses,Human rubulavirus 2,1979160,CZID
+Viruses,Human rubulavirus 4,1979161,CZID
+Viruses,Human torovirus,67605,CZID
+Viruses,Influenza A virus,11320,CZID
+Viruses,Influenza B virus,11520,CZID
+Viruses,Influenza C virus,11552,CZID
+Viruses,Jamestown Canyon orthobunyavirus,2560532,CZID
+Viruses,Japanese encephalitis virus,11072,CZID
+Viruses,Kyasanur Forest disease virus,33743,CZID
+Viruses,La Crosse orthobunyavirus,2560547,CZID
+Viruses,Langat virus,11085,CZID
+Viruses,Lassa mammarenavirus,11620,CZID
+Viruses,Louping ill virus,11086,CZID
+Viruses,Lymphocytic choriomeningitis mammarenavirus,11623,CZID
+Viruses,Lyssavirus australis,90961,CZID
+Viruses,Lyssavirus duvenhage,38767,CZID
+Viruses,Lyssavirus lagos,38766,CZID
+Viruses,Lyssavirus mokola,12538,CZID
+Viruses,Lyssavirus rabies,11292,CZID
+Viruses,Macacine alphaherpesvirus 1,10325,CZID
+Viruses,Machupo mammarenavirus,11628,CZID
+Viruses,Mammalian orthorubulavirus 5,2560580,RPIP
+Viruses,Mammalian rubulavirus 5,1979162,CZID
+Viruses,Marburg marburgvirus,11269,CZID
+Viruses,Mayaro virus,59301,CZID
+Viruses,Measles morbillivirus,11234,CZID
+Viruses,Metapneumovirus,162387,VSP
+Viruses,Middle East respiratory syndrome-related coronavirus,1335626,CZID
+Viruses,Molluscum contagiosum virus,10279,CZID
+Viruses,Monkeypox virus,10244,CZID
+Viruses,Mumps orthorubulavirus,2560602,RPIP
+Viruses,Mumps rubulavirus,1979165,CZID
+Viruses,Mupapillomavirus 1,334203,CZID
+Viruses,Murray Valley encephalitis virus,11079,CZID
+Viruses,New York hantavirus,44755,CZID
+Viruses,Nipah henipavirus,121791,CZID
+Viruses,Norovirus,142786,VSP
+Viruses,Norwalk virus,11983,CZID
+Viruses,Omsk hemorrhagic fever virus,12542,CZID
+Viruses,Onyong-nyong virus,2169701,CZID
+Viruses,Orf virus,10258,CZID
+Viruses,Oropouche orthobunyavirus,1933309,CZID
+Viruses,Parechovirus,138954,VSP
+Viruses,Parechovirus A,1803956,RPIP
+Viruses,Paslahepevirus balayani,1678143,CZID
+Viruses,Pegivirus C,1985356,CZID
+Viruses,Polyomavirus sp.,36362,VSP
+Viruses,Powassan virus,11083,CZID
+Viruses,Primate erythroparvovirus 1,1511900,CZID
+Viruses,Primate T-lymphotropic virus 1,194440,CZID
+Viruses,Primate T-lymphotropic virus 2,194441,CZID
+Viruses,Protoparvovirus,1506574,VSP
+Viruses,Punta Toro phlebovirus,1933186,CZID
+Viruses,Puumala orthohantavirus,1980486,CZID
+Viruses,Respiratory syncytial virus type A,1439707,RPIP
+Viruses,Respiratory syncytial virus type B,1615611,RPIP
+Viruses,Rhinovirus A,147711,RPIP
+Viruses,Rhinovirus B,147712,RPIP
+Viruses,Rhinovirus C,463676,RPIP
+Viruses,Rift Valley fever phlebovirus,1933187,CZID
+Viruses,Rift Valley fever virus,11588,VSP
+Viruses,Rosavirus A,1511805,CZID
+Viruses,Ross River virus,11029,CZID
+Viruses,Rotavirus A,28875,CZID
+Viruses,Rotavirus B,28876,CZID
+Viruses,Rotavirus C,36427,CZID
+Viruses,Rubella virus,11041,RPIP
+Viruses,Rubivirus rubellae,2846071,CZID
+Viruses,Sabia virus,2907957,VSP
+Viruses,Saint Louis encephalitis virus,11080,CZID
+Viruses,Salivirus A,1330524,CZID
+Viruses,Sapovirus,95341,VSP
+Viruses,Sapporo virus,95342,CZID
+Viruses,Semliki Forest virus,11033,CZID
+Viruses,Seoul orthohantavirus,1980490,CZID
+Viruses,Severe acute respiratory syndrome coronavirus,2901879,RPIP
+Viruses,Severe acute respiratory syndrome coronavirus 2,2697049,RPIP
+Viruses,Severe acute respiratory syndrome-related coronavirus,694009,CZID
+Viruses,Sicilian phlebovirus,28292,CZID
+Viruses,Simian foamy virus,11642,CZID
+Viruses,Sindbis virus,11034,CZID
+Viruses,Snowshoe hare orthobunyavirus,2560767,CZID
+Viruses,Sudan ebolavirus,186540,CZID
+Viruses,Tai Forest ebolavirus,186541,CZID
+Viruses,Tanapox virus,99000,CZID
+Viruses,Thogotovirus dhoriense,11318,CZID
+Viruses,Tick-borne encephalitis virus,11084,CZID
+Viruses,Torque teno virus,68887,CZID
+Viruses,Toscana phlebovirus,2734478,CZID
+Viruses,Trivittatus orthobunyavirus,2560823,CZID
+Viruses,unidentified adenovirus,10535,VSP
+Viruses,unidentified human coronavirus,694448,CZID
+Viruses,Uukuniemi uukuvirus,2749936,CZID
+Viruses,Vaccinia virus,10245,CZID
+Viruses,Variola virus,10255,CZID
+Viruses,Venezuelan equine encephalitis virus,11036,CZID
+Viruses,Vesicular stomatitis virus,11276,CZID
+Viruses,Vesiculovirus chandipura,1972576,CZID
+Viruses,West Nile virus,11082,CZID
+Viruses,Western equine encephalitis virus,11039,CZID
+Viruses,Yaba monkey tumor virus,38804,CZID
+Viruses,Yellow fever virus,11089,CZID
+Viruses,Zaire ebolavirus,186538,CZID
+Viruses,Zika virus,64320,CZID
