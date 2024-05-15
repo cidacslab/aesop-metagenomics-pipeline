@@ -30,16 +30,16 @@ input_dir=$3
 output_dir=$4
 
 input_id=$(basename $input_id .fastq)
-input_id=${input_id/_R1/}
-input_id=${input_id/_R2/}
-input_file1="${input_dir}/${input_id}_R1.fastq"
-input_file2="${input_dir}/${input_id}_R2.fastq"
+input_id=${input_id/_1/}
+input_id=${input_id/_2/}
+input_file1="${input_dir}/${input_id}_1.fastq"
+input_file2="${input_dir}/${input_id}_2.fastq"
 
 output_sam="${output_dir}/SAM_FILES/${input_id}_mapped_and_unmapped.sam"
 output_bam="${output_dir}/BAM_FILES/${input_id}_mapped_and_unmapped.bam"
-#output_sorted_bam="${output_dir}/BAM_FILES/${input_id}_mapped_and_unmapped.sorted.bam"
-output_fasta="${output_dir}/UNMAPPED_FASTA/${input_id}.fasta"
-output_final="${output_dir}/${input_id}.fasta"
+output_fastq1="${output_dir}/UNMAPPED_SEQ/${input_id}_1.fastq"
+output_fastq2="${output_dir}/UNMAPPED_SEQ/${input_id}_2.fastq"
+output_final="${output_dir}/${input_id}_1.fastq"
 
 path_to_db="/scratch/pablo.viana/databases/bowtie2db_host_genomes/all_host_genomes_index"
 bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
@@ -70,23 +70,17 @@ echo "Executing Bowtie2 to map sample reads to the contaminats db:"
 echo "$bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam"
 $bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam
 
-echo "Executing samtools to convert mapped output to bam format:"
-echo "$samtools_script view -bS $output_sam > $output_bam"
-$samtools_script view -bS $output_sam > $output_bam
+echo "Executing samtools to filter aligned reads to hosts and convert to bam format:"
+echo "$samtools_script view -b -F 4 $output_sam > $output_bam"
+$samtools_script view -b -F 4 $output_sam > $output_bam
 
-#echo "Executing samtools to sort results:"
-#echo "$samtools_script sort $output_sam -o $output_sorted_bam"
-#$samtools_script sort $output_sam -o $output_sorted_bam
+echo "Executing samtools to generate cleaned FASTQ files:"
+echo "$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_bam"
+$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_bam
 
-echo "Executing samtools to remove reads mapped to contaminats from samples:"
-echo "$samtools_script fasta -f 4 $output_bam > $output_fasta"
-$samtools_script fasta -f 4 $output_bam > $output_fasta
-
-echo "Moving final output: mv $output_fasta $output_dir"
-mv $output_fasta $output_dir
-
-echo "Removing intermediate files: rm $output_sam $output_bam"
-#rm $output_sam $output_bam #$output_sorted_bam
+echo "Moving final outputs: mv $output_fastq1 $output_dir \ mv $output_fastq2 $output_dir"
+mv $output_fastq1 $output_dir
+mv $output_fastq2 $output_dir
 
 # Finish script profile
 finish=$(date +%s.%N)

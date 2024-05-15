@@ -68,25 +68,49 @@ df_ordered <- df_unmelt %>%
   column_to_rownames(var = "name")
 
 
+category_name <- "complete"
+if (length(category_types) == 1) {
+  category_name <- category_types[1]
+}
+
+# # csv output name
+# output_csv <- paste0(
+#     output_folder,
+#     dataset_name, "_", category_name,
+#     "_pathogens_with_z_score.csv")
+
+# # write csv
+# write.csv(df_ordered, file = output_csv, row.names = TRUE)
+
+# # csv output name
+# output_csv <- paste0(
+#     output_folder,
+#     dataset_name, "_", category_name,
+#     "_pathogens_ungrouped_with_z_score.csv")
+
+# # write csv
+# write.csv(df_patho_taxons, file = output_csv, row.names = TRUE)
+
 ################################################################################
 ##################################  HEATMAP  ###################################
 ################################################################################
 
-for (category in category_types) {
-  #  output name
-  output_heatmap <- paste0(
-      output_folder,
-      "heatmap_", dataset_name,
-      "_", category, "_pathogens")
+# for (category in category_types) {
+#   #  output name
+#   output_heatmap <- paste0(
+#       output_folder,
+#       "heatmap_", dataset_name,
+#       "_", category, "_pathogens")
 
-  category_filter <- c(category)
-  source("src/3-generate_reports/main_heatmap.r")
-}
+#   category_filter <- c(category)
+#   source("src/3-generate_reports/main_heatmap.r")
+# }
 
 
 ################################################################################
 ##################################  BARPLOT  ###################################
 ################################################################################
+
 
 # arrange data and plot
 # df_means <- df_final %>%
@@ -108,14 +132,23 @@ for (category in category_types) {
 #   )
 
 # sum(df_means["mean_rpm"])
+#########################################################################
+df_means <- df_ordered
+df_means$name <- rownames(df_means)
+rownames(df_means) <- NULL
 
-# for (category in category_type) {
-#   #  output name
-#   output_barplot <- paste0(
-#       output_folder,
-#       "barplot_", dataset_name,
-#       "_", category, "_pathogens")
+df_final <- df_means
 
-#   category_filter <- c(category)
-#   source("src/aesop/main_barplot.r")
-# }
+df_final <- df_final %>%
+  mutate(
+    name = factor(name, levels = rev(df_final$name))
+  )
+
+for (category in category_types) {
+  # category <- category_types[1]
+  category_filter <- c(category)
+  source("src/3-generate_reports/main_barplot.r")
+}
+category <- category_types
+
+source("src/3-generate_reports/main_barplot.r")

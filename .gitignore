@@ -1,0 +1,22 @@
+# Python files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# R files
+*.RData
+*.Rhistory
+.Rproj.user/
+.Ruserdata
+
+# Bash scripts
+*.sh~
+
+# Temporary files
+*~
+
+# Miscellaneous
+.DS_Store
+data/**
+results/**

@@ -1,7 +1,16 @@
 
+if (length(category) == 1) {
+  #  output name
+  output_barplot <- paste0(
+      output_folder,
+      "barplot_", dataset_name,
+      "_", category, "_pathogens.png")
 
-if (length(category_type) == 1) {
-  ggplot(df_means, aes(y = name, x = mean_rpm, fill = mean_rpm)) +
+  df_final <- df_means %>%
+    filter(category %in% category_filter) %>%
+    select(name, mean_rpm)
+
+  ggplot(df_final, aes(y = name, x = mean_rpm, fill = mean_rpm)) +
     geom_bar(stat = "identity") +
     scale_x_continuous(position = "top") +
     scale_fill_viridis_c() +
@@ -19,7 +28,12 @@ if (length(category_type) == 1) {
     )
 
 } else {
-  category_colors <- c("viruses" = "#b7bf22", "bacteria" = "#e40909")
+  output_barplot <- paste0(
+    output_folder,
+    "barplot_", dataset_name,
+    "_complete_pathogens.png")
+
+  category_colors <- c("viruses" = "#b7bf22", "bacteria" = "#e40909", "eukarya" = "#135813")
 
   ggplot(df_means, aes(y = name, x = mean_rpm, fill = category)) +
     geom_bar(stat = "identity") +
@@ -39,4 +53,4 @@ if (length(category_type) == 1) {
     )
 }
 
-ggsave(out_file, plot = last_plot(), width = 7, height = 15, dpi = 300)
+ggsave(output_barplot, plot = last_plot(), width = 7, height = 15, dpi = 300)
