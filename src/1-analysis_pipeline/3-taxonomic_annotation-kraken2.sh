@@ -27,10 +27,11 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_id=$2
-input_dir=$3
-output_dir=$4
-path_to_db=$5
-read_length=130
+#input_suffix=$3 # NOT USED
+input_dir=$4
+output_dir=$5
+path_to_db=$6
+read_length=$7
 
 input_id=$(basename $input_id .fastq)
 input_id=${input_id/_1/}
@@ -41,8 +42,8 @@ input_file="${input_dir}/${input_id}#.fastq"
 
 output_kraken_output="${output_dir}/${input_id}.kout"
 output_kraken_report="${output_dir}/${input_id}.kreport"
-output_braken="${output_dir}/${input_id}.bracken"
 nthreads_chosen=8
+
 
 # if exists output
 if [ -f $output_kraken_report ]; then
@@ -67,17 +68,12 @@ start=$(date +%s.%N)
 echo "Started task Input: $2 Count: $1"
 
 echo "Running kraken command: "
-echo "kraken2 --db $path_to_db -- paired $input_file --output $output_kraken_output" \
+echo "kraken2 --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
   "--report $output_kraken_report --threads $nthreads_chosen"
 
-kraken2 --db $path_to_db -- paired $input_file --output $output_kraken_output \
+kraken2 --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
   --report $output_kraken_report --threads $nthreads_chosen
   
-
-echo "Running bracken command: "
-echo "bracken -d $path_to_db -i $output_kraken_report -o $output_bkraken -r $read_length"
-
-bracken -d $path_to_db -i $output_kraken_report -o $output_bkraken -r $read_length
 
 # Finish script profile
 finish=$(date +%s.%N)

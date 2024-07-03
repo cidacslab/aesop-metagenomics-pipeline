@@ -33,12 +33,10 @@ if [ "$#" -lt 6 ]; then
 fi
 
 # Extract the number of proccesses to be run in parallel (first argument)
-num_processes=$1
-shift # Remove the first argument from the list
+num_processes="$1"
 
 # Extract the script file path (second argument)
 task_script="$2"
-shift # Remove the second argument from the list
 
 # Check if the script file exists
 if [ ! -f "$task_script" ]; then
@@ -46,18 +44,20 @@ if [ ! -f "$task_script" ]; then
     exit 1
 fi
 script_name=$(basename "$task_script")
-script_name={script_name%.*}
+script_name=${script_name%.*}
 
 # Dataset name
 dataset_name="$3"
-shift # Remove the third argument from the list
-
 # Suffix of the input files
 input_suffix="$4"
 # Path containing the input files
 input_dir="$5"
 # Destination folder for the output files
 output_dir="$6"
+
+shift # Remove the first argument from the list
+shift # Remove the second argument from the list
+shift # Remove the third argument from the list
 
 ###############################################################################
 ############################## SCRIPT EXECUTION ###############################
@@ -67,11 +67,16 @@ output_dir="$6"
 ini=$(date +%s.%N)
 echo "Started Executing $script_name"
 
+args=($@)
+args_str=$(printf '%s ' "${args[@]}")
+echo "Parameters: $args_str"
+
 rm -rf $output_dir
+mkdir -p $output_dir
 
 find "$input_dir" -type f -name "*${input_suffix}" | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
-  xargs -I {} -P $num_processes sh -c "$task_script {} $#"
+  xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 
 echo "Tar gziping log files: tar -czf ${dataset_name}_${script_name}_logs.tar.gz *.log *.err"
 tar -czf "${dataset_name}_${script_name}_logs.tar.gz" *.log *.err

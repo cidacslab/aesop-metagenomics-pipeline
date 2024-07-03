@@ -9,7 +9,7 @@ params $1 - Line number
 params $2 - Input id
 params $3 - Input directory
 params $4 - Output directory
-params $5 - Database directory
+params $5 - Kraken DB directory
 DOC
 
 # create alias to echo command to log time at each call
@@ -27,18 +27,28 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_id=$2
-input_dir=$3
-output_dir=$4
-path_to_db=$5
+input_suffix=$3
+input_dir=$4
+output_dir=$5
+path_to_db=$6
+read_length=$7
 
-diamond_script="/scratch/pablo.viana/softwares/diamond"
+input_id=$(basename $input_id .kreport)
+input_kraken_report="${input_dir}/${input_id}.kreport"
+output_bracken="${output_dir}/${input_id}.bracken"
 
-input_id=$(basename $input_id .fasta)
-input_file="${input_dir}/${input_id}.fasta"
-output_file="${output_dir}/${input_id}_diamond_result.tsv"
+bracken_script="/scratch/pablo.viana/softwares/Bracken-master/bracken"
 
-if [ ! -f $input_file ]; then
-  echo "Input file not found: $input_file" >&2
+
+# if exists output
+if [ -f $output_bracken ]; then
+  echo "Output file already exists: $output_bracken" >&2
+  exit 1
+fi
+
+# if not exists input
+if [ ! -f $input_kraken_report ]; then
+  echo "Input report not found: $input_kraken_report" >&2
   exit 1
 fi
 
@@ -47,14 +57,11 @@ fi
 start=$(date +%s.%N)
 
 echo "Started task Input: $2 Count: $1"
-echo "Running diamond command: "
 
-echo "Go to database folder: cd $path_to_db"
-cd $path_to_db
+echo "Running bracken command: "
+echo "$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t 1"
 
-echo "$diamond_script blastx -d nr -q $input_file -o $output_file"
-$diamond_script blastx -d nr -q $input_file -o $output_file --threads 16 --max-target-seqs 20
- 
+$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t 1
 
 # Finish script profile
 finish=$(date +%s.%N)
