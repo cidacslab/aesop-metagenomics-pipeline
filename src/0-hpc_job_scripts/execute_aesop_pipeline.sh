@@ -23,17 +23,6 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 start=$(date +%s.%N)
 echo "Started running job!"
 
-# Script to execute the tasks
-custom_script="/home/pablo.viana/metagenomics_src/0-hpc_job_scripts/execute_custom_script.sh"
-# Script to download samples from basespace
-download_script="/home/pablo.viana/metagenomics_src/0-hpc_job_scripts/execute_download_script.sh"
-
-################################################################################
-############################### ATTENTION !!!!! ################################
-################################################################################
-################### FOR EACH ANALYSIS FILL THESE INFORMATION ###################
-################################################################################
-
 #number of parallel processes
 num_processes=$1
 # name of the run folder
@@ -41,12 +30,35 @@ run_name=$2
 # Basespace project ID
 basespace_project_id=$3
 
+
+################################################################################
+############################### ATTENTION !!!!! ################################
+################################################################################
+################### FOR EACH ANALYSIS FILL THESE INFORMATION ###################
+################################################################################
+
 # run_name="rs01"
 dataset_name="aesop_${run_name}"
-# old_path="/scratch/pablo.viana/aesop/dataset_manaus01"
-# /scratch/pablo.viana/aesop/dataset_manaus01/0-raw_samples/
-# old_path="/scratch/pablo.viana/aesop/pipeline_v2/dataset_${run_name}"
-base_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
+
+# old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
+# old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v2/dataset_${run_name}"
+base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
+
+# Bowtie2 index to remove hosts reads
+bowtie2_hosts_index="/scratch/pablo.viana/databases/bowtie2db_host_genomes_v2/hosts_index"
+
+# Kraken2 database
+kraken2_database="/scratch/pablo.viana/databases/kraken_db/aesop_kraken2db_20240619"
+
+# Location of src folder in the github directory
+repository_src="/home/pablo.viana/metagenomics_src"
+
+# Script to execute the tasks
+custom_script="$repository_src/0-hpc_job_scripts/execute_custom_script.sh"
+
+# Script to download samples from basespace
+download_script="$repository_src/0-hpc_job_scripts/execute_download_script.sh"
+
 
 ################################################################################
 ################################## DOWNLOAD ####################################
@@ -60,8 +72,8 @@ params=("$num_processes"
         "/scratch/pablo.viana/softwares/basespace_illumina/bs"
         "$dataset_name"
         "$input_suffix"
-        "$base_path/0-download"
-        "$base_path/0-raw_samples"
+        "$base_dataset_path/0-download"
+        "$base_dataset_path/0-raw_samples"
         "$basespace_project_id")
 
 $download_script "${params[@]}"
@@ -75,8 +87,8 @@ params=("$num_processes"
         "/home/pablo.viana/metagenomics_src/1-analysis_pipeline/1-quality_control-fastp_filters.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_path/0-raw_samples"
-        "$base_path/1-fastp_output")
+        "$base_dataset_path/0-raw_samples"
+        "$base_dataset_path/1-fastp_output")
 
 $custom_script "${params[@]}"
 
@@ -85,21 +97,20 @@ tar -czf "${dataset_name}_fastp_filters_reports.tar.gz" *.html *.json
 
 rm -vf *.html *.json
 
+
 ################################################################################
 ##################################  BOWTIE2  ###################################
 ################################################################################
 
 # Suffix of each sample forward sequence
-input_suffix="*_1.fastq"
-
-bowtie2_hosts_index="/scratch/pablo.viana/databases/bowtie2db_host_genomes_v2/hosts_index"
+input_suffix="_1.fastq"
 
 params=("$num_processes"
         "/home/pablo.viana/metagenomics_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove_host_reads.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_path/1-fastp_output"
-        "$base_path/2-bowtie_output"
+        "$base_dataset_path/1-fastp_output"
+        "$base_dataset_path/2-bowtie_output"
         $bowtie2_hosts_index)
 
 $custom_script "${params[@]}"
@@ -109,22 +120,24 @@ $custom_script "${params[@]}"
 #############################  KRAKEN2 e BRACKEN  ##############################
 ################################################################################
 
-kraken2_database="/scratch/pablo.viana/databases/kraken_db/aesop_kraken2db_20240619"
-
 params=("$num_processes"
         "/home/pablo.viana/metagenomics_src/1-analysis_pipeline/3-taxonomic_annotation-kraken2.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_path/2-bowtie_output"
-        "$base_path/3-kraken_results"
-        "$kraken2_database"
-        "130")
+        "$base_dataset_path/2-bowtie_output"
+        "$base_dataset_path/3-kraken_results"
+        "$kraken2_database")
 
 $custom_script "${params[@]}"
 
 
 ################################################################################
 ################################################################################
+
+# echo ""
+# df
+# du -hd 4 /scratch/pablo.viana
+# find /scratch/pablo.viana 
 
 #  Finish pipeline profile
 finish=$(date +%s.%N)

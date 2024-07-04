@@ -33,16 +33,20 @@ input_suffix=$3
 input_dir=$4
 output_dir=$5
 
-input_suffix1=$input_suffix
-input_suffix2=${input_suffix/_R1/_R2}
+input_id=$(basename $input_id $input_suffix)
 
-input_id=$(basename $input_id $input_suffix1)
+input_suffix1=$input_suffix
+input_suffix2=${input_suffix1/_R1/_R2}
+input_suffix2=${input_suffix2/_1/_2}
+
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 
 output_file1="${output_dir}/${input_id}_1.fastq"
 output_file2="${output_dir}/${input_id}_2.fastq"
-fastp_script="/scratch/pablo.viana/softwares/fastp-0.23.2"
+
+# fastp_script="/scratch/pablo.viana/softwares/fastp-0.23.2"
+fastp_script="fastp"
 
 if [ ! -f $input_file1 ]; then
   echo "Input file not found: $input_file1" >&2

@@ -78,8 +78,8 @@ find "$input_dir" -type f -name "*${input_suffix}" | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 
-echo "Tar gziping log files: tar -czf ${dataset_name}_${script_name}_logs.tar.gz *.log *.err"
-tar -czf "${dataset_name}_${script_name}_logs.tar.gz" *.log *.err
+echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${dataset_name}_${script_name}_logs.tar.gz"
+find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${dataset_name}_${script_name}_logs.tar.gz"
 
 echo "Removing log files: rm -rf [0-9]*.log"
 rm -rf [0-9]*.log

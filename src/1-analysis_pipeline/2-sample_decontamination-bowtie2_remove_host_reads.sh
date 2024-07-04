@@ -26,27 +26,41 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_id=$2
-#input_suffix=$3 # NOT USED
+input_suffix=$3
 input_dir=$4
 output_dir=$5
 path_to_db=$6
 
-input_id=$(basename $input_id .fastq)
-input_id=${input_id/_1/}
-input_id=${input_id/_2/}
-input_file1="${input_dir}/${input_id}_1.fastq"
-input_file2="${input_dir}/${input_id}_2.fastq"
+# input_id=$(basename $input_id $input_suffix)
+# input_id=${input_id/_1/}
+# input_id=${input_id/_2/}
+# input_file1="${input_dir}/${input_id}_1.fastq"
+# input_file2="${input_dir}/${input_id}_2.fastq"
+
+input_id=$(basename $input_id $input_suffix)
+
+input_suffix1=$input_suffix
+input_suffix2=${input_suffix1/_R1./_R2.}
+input_suffix2=${input_suffix2/_1./_2.}
+
+input_file1="${input_dir}/${input_id}${input_suffix1}"
+input_file2="${input_dir}/${input_id}${input_suffix2}"
+
+input_id=${input_id/_metadata/}
+output_final="${output_dir}/${input_id}_1.fastq"
+output_fastq="${output_dir}/${input_id}_%.fastq"
 
 # output_sam="${output_dir}/SAM_FILES/${input_id}_mapped_and_unmapped.sam"
 # output_bam="${output_dir}/BAM_FILES/${input_id}_mapped_and_unmapped.bam"
 # output_fastq1="${output_dir}/UNMAPPED_SEQ/${input_id}_1.fastq"
 # output_fastq2="${output_dir}/UNMAPPED_SEQ/${input_id}_2.fastq"
-output_final="${output_dir}/${input_id}_1.fastq"
-output_fastq="${output_dir}/${input_id}_%.fastq"
+# output_final="${output_dir}/${input_id}_1.fastq"
+# output_fastq="${output_dir}/${input_id}_%.fastq"
 
 # path_to_db="/scratch/pablo.viana/databases/bowtie2db_host_genomes/all_host_genomes_index"
 # path_to_db="/scratch/pablo.viana/databases/bowtie2db_host_genomes_v2/hosts_index"
-bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
+# bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
+bowtie2_script="bowtie2"
 # samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
 
 # if exists output
@@ -75,7 +89,7 @@ start=$(date +%s.%N)
 echo "Started task! Input: $2 Count: $1"
 
 
-$bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 --un-conc $output_fastq > /dev/null
+$bowtie2_script --threads 20 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 --un-conc $output_fastq > /dev/null
 
 # echo "Executing Bowtie2 to map sample reads to the contaminats db:"
 # echo "$bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam"
