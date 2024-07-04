@@ -23,6 +23,10 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 start=$(date +%s.%N)
 echo "Started running job!"
 
+################################################################################
+################################## INPUT ARGS ##################################
+################################################################################
+
 #number of parallel processes
 num_processes=$1
 # name of the run folder
@@ -37,24 +41,36 @@ basespace_project_id=$3
 ################### FOR EACH ANALYSIS FILL THESE INFORMATION ###################
 ################################################################################
 
+# Name of the run folder
 # run_name="rs01"
-dataset_name="aesop_${run_name}"
-
 # old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
 # old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v2/dataset_${run_name}"
-base_dataset_path="/home/work/aesop/results_pipeline_v4/dataset_${run_name}"
+# base_dataset_path="/home/work/aesop/results_pipeline_v4/dataset_${run_name}"
+base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
 
 # Bowtie2 index to remove ercc reads
-bowtie2_ercc_index="/home/work/aesop/czid_bowtie2db_20240626/ercc/ercc"
+# bowtie2_ercc_index="/home/work/aesop/czid_bowtie2db_20240626/ercc/ercc"
+bowtie2_ercc_index="/scratch/pablo.viana/databases/kraken_db/czid_kraken2db_20240626/ercc/ercc"
 
 # Bowtie2 index to remove human reads
-bowtie2_human_index="/home/work/aesop/czid_bowtie2db_20240626/human_telomere/human_telomere"
+# bowtie2_human_index="/home/work/aesop/czid_bowtie2db_20240626/human_telomere/human_telomere"
+bowtie2_human_index="/scratch/pablo.viana/databases/kraken_db/czid_kraken2db_20240626/human_telomere/human_telomere"
 
 # Kraken2 database
-kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
+# kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
+kraken2_database="/scratch/pablo.viana/databases/kraken_db/aesop_kraken2db_20240619"
 
 # Location of src folder in the github directory
-repository_src="/home/work/aesop/github/aesop-metagenomics/src"
+# repository_src="/home/work/aesop/github/aesop-metagenomics/src"
+repository_src="/home/pablo.viana/metagenomics_src"
+
+
+################################################################################
+############################### LOCAL VARIABLES ################################
+################################################################################
+
+# Dataset folder name
+dataset_name="aesop_${run_name}"
 
 # Script to execute the tasks
 custom_script="$repository_src/0-hpc_job_scripts/execute_custom_script.sh"
@@ -64,7 +80,7 @@ download_script="$repository_src/0-hpc_job_scripts/execute_download_script.sh"
 
 
 ################################################################################
-################################## DOWNLOAD ####################################
+################################### DOWNLOAD ###################################
 ################################################################################
 
 # Basespace file suffix
@@ -85,6 +101,7 @@ params=("$num_processes"
 ################################################################################
 ##################################  BOWTIE2  ###################################
 ################################################################################
+
 # Suffix of each sample forward sequence
 input_suffix="_150_reads_R1.fastq"
 
@@ -105,6 +122,7 @@ params=("$num_processes"
 ################################################################################
 ###################################  FASTP  ####################################
 ################################################################################
+
 # Suffix of each sample forward sequence
 input_suffix="_1.fastq"
 

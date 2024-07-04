@@ -35,16 +35,17 @@ path_to_db=$6
 input_id=$(basename $input_id $input_suffix)
 
 input_suffix1=$input_suffix
-input_suffix2=${input_suffix1/_R1/_R2}
-input_suffix2=${input_suffix2/_1/_2}
+input_suffix2=${input_suffix1/_R1./_R2.}
+input_suffix2=${input_suffix2/_1./_2.}
 
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 input_file="${input_dir}/${input_id}#.fastq"
 
-output_kraken_output="${output_dir}/${input_id}.kout"
+output_kraken_output="/dev/null"
+# output_kraken_output="${output_dir}/${input_id}.kout"
 output_kraken_report="${output_dir}/${input_id}.kreport"
-nthreads_chosen=20
+nthreads_chosen=8
 
 kraken2_script="kraken2"
 
@@ -73,8 +74,9 @@ echo "Started task Input: $2 Count: $1"
 echo "Running kraken command: "
 echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
   "--report $output_kraken_report --threads $nthreads_chosen"
-# --output $output_kraken_output \
-$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --report $output_kraken_report --threads $nthreads_chosen > /dev/null
+
+$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
+  --report $output_kraken_report --threads $nthreads_chosen
   
 
 # Finish script profile

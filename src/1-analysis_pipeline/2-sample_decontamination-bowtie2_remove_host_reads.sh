@@ -50,18 +50,8 @@ input_id=${input_id/_metadata/}
 output_final="${output_dir}/${input_id}_1.fastq"
 output_fastq="${output_dir}/${input_id}_%.fastq"
 
-# output_sam="${output_dir}/SAM_FILES/${input_id}_mapped_and_unmapped.sam"
-# output_bam="${output_dir}/BAM_FILES/${input_id}_mapped_and_unmapped.bam"
-# output_fastq1="${output_dir}/UNMAPPED_SEQ/${input_id}_1.fastq"
-# output_fastq2="${output_dir}/UNMAPPED_SEQ/${input_id}_2.fastq"
-# output_final="${output_dir}/${input_id}_1.fastq"
-# output_fastq="${output_dir}/${input_id}_%.fastq"
-
-# path_to_db="/scratch/pablo.viana/databases/bowtie2db_host_genomes/all_host_genomes_index"
-# path_to_db="/scratch/pablo.viana/databases/bowtie2db_host_genomes_v2/hosts_index"
-# bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
-bowtie2_script="bowtie2"
-# samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
+bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
+# bowtie2_script="bowtie2"
 
 # if exists output
 if [ -f $output_final ]; then
@@ -79,9 +69,6 @@ if [ ! -f $input_file2 ]; then
   exit 1
 fi
 
-# mkdir -p "$output_dir/SAM_FILES"
-# mkdir -p "$output_dir/BAM_FILES"
-# mkdir -p "$output_dir/UNMAPPED_SEQ"
 
 {
 # Start script profile
@@ -90,22 +77,6 @@ echo "Started task! Input: $2 Count: $1"
 
 
 $bowtie2_script --threads 20 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 --un-conc $output_fastq > /dev/null
-
-# echo "Executing Bowtie2 to map sample reads to the contaminats db:"
-# echo "$bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam"
-# $bowtie2_script --threads 8 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam
-
-# echo "Executing samtools to convert to bam format:"
-# echo "$samtools_script view -b $output_sam > $output_bam"
-# $samtools_script view -b $output_sam > $output_bam
-
-# echo "Executing samtools to filter aligned reads to hosts and generate cleaned FASTQ files:"
-# echo "$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_bam"
-# $samtools_script fastq -f 4 -1 $output_fastq1 -2 $output_fastq2 $output_bam
-
-# echo "Moving final outputs: mv $output_fastq1 $output_dir \ mv $output_fastq2 $output_dir"
-# mv $output_fastq1 $output_dir
-# mv $output_fastq2 $output_dir
 
 # Finish script profile
 finish=$(date +%s.%N)
