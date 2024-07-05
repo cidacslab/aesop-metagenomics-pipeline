@@ -31,12 +31,6 @@ input_dir=$4
 output_dir=$5
 path_to_db=$6
 
-# input_id=$(basename $input_id $input_suffix)
-# input_id=${input_id/_1/}
-# input_id=${input_id/_2/}
-# input_file1="${input_dir}/${input_id}_1.fastq"
-# input_file2="${input_dir}/${input_id}_2.fastq"
-
 input_id=$(basename $input_id $input_suffix)
 
 input_suffix1=$input_suffix
@@ -69,13 +63,12 @@ if [ ! -f $input_file2 ]; then
   exit 1
 fi
 
-
 {
 # Start script profile
 start=$(date +%s.%N)
 echo "Started task! Input: $2 Count: $1"
 
-
+echo "$bowtie2_script --threads 20 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 --un-conc $output_fastq > /dev/null"
 $bowtie2_script --threads 20 --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 --un-conc $output_fastq > /dev/null
 
 # Finish script profile

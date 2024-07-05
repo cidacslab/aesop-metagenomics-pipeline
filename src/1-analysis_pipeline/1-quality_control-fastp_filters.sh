@@ -25,9 +25,6 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 echo "  Started task! Input: $2 Count: $1" >&1
 echo "  Started task! Input: $2 Count: $1" >&2
 
-# parameters=$(printf " | %s" "$@")
-# echo "  Parameters: $parameters"
-
 input_id=$2
 input_suffix=$3
 input_dir=$4

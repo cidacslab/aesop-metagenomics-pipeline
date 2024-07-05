@@ -104,16 +104,20 @@ folders["3-kraken_czid_results"]="5-kraken_czid_reports"
 # folders["4-bracken_results"]="6-bracken_reports"
 folders["4-bracken_czid_results"]="6-bracken_czid_reports"
 
+folders_str=""
 # clean the output folder for the new execution
 for input_folder in "${!folders[@]}"; do
     output_folder=${folders[$input_folder]}
-    rm -rvf "${base_dataset_path}/${output_folder}"    
+    folders_str+=" $input_folder $output_folder"
+    rm -rvf "${base_dataset_path}/${output_folder}"
 done
 
+input_extension="_1.fastq"
+input_folder="1-bowtie_ercc_output"
 task_script="$repository_src/2-report_taxon_abundances/normalize_abundance_by_species.py"
 
 # Execute normalization code
-python $task_script "$base_dataset_path"
+python $task_script "$base_dataset_path" "$input_extension" "$input_folder" "$folders_str"
 
 # send output o the storage
 for input_folder in "${!folders[@]}"; do

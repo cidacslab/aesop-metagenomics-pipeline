@@ -25,12 +25,13 @@ def get_read_abundance(input_file):
 
 def count_kraken_abundance_by_species(report_file, total_reads, output_file):
     print(f"Count abundance by species, output file: {output_file}")
-    output_content = "parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,nt_rpm\n"
+    output_content = "parent_tax_id,tax_level,category,tax_id,name,"
+    output_content += "kraken_classified_reads,nt_rpm\n"
 
     _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-    unclass_count = report_by_taxid['0'].acumulated_abundance
-    class_count = report_by_taxid['1'].acumulated_abundance
-    print(f"Total reads on report tree: {unclass_count + class_count} | U = {unclass_count} | C = {class_count}")
+    u_count = report_by_taxid['0'].acumulated_abundance
+    c_count = report_by_taxid['1'].acumulated_abundance
+    print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
     
     for taxid, node in report_by_taxid.items():
         if node.level == 'S' or node.level_enum == KrakenParser.Level.G:
@@ -40,7 +41,8 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
             name = node.name.replace(",",";")
             abundance = node.acumulated_abundance
             nt_rpm = int((abundance*1000000)/total_reads)
-            output_content += f"{parent_id},{level},{parent_domain},{taxid},{name},{abundance},{nt_rpm}\n"
+            output_content += f"{parent_id},{level},{parent_domain},{taxid},"
+            output_content += f"{name},{abundance},{nt_rpm}\n"
 
     with open(output_file, 'w') as file:
         file.write(output_content)
@@ -48,12 +50,13 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
         
 def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, output_file):
     print(f"Count abundance by species, output file: {output_file}")
-    output_content = "parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,bracken_classified_reads,nt_rpm\n"
+    output_content = "parent_tax_id,tax_level,category,tax_id,name,"
+    output_content += "kraken_classified_reads,bracken_classified_reads,nt_rpm\n"
 
     _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-    unclass_count = report_by_taxid['0'].acumulated_abundance
-    class_count = report_by_taxid['1'].acumulated_abundance
-    print(f"Total reads on report tree: {unclass_count + class_count} | U = {unclass_count} | C = {class_count}")
+    u_count = report_by_taxid['0'].acumulated_abundance
+    c_count = report_by_taxid['1'].acumulated_abundance
+    print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
 
     with open(bracken_file, 'r') as csvfile:
         csvreader = csv.reader(csvfile, delimiter='\t')
@@ -64,14 +67,12 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
             parent_id = node.parent.taxid
             parent_domain = node.get_parent_by_level(KrakenParser.Level.D)
             level = KrakenParser.Level.S - node.level_enum + 1
-            # parent_id = 0
-            # parent_domain = 0
-            # level = 1
             tax_name = row[0].strip().replace(",",";")
             kraken_abundance = row[3].strip()
             bracken_abundance = int(row[5].strip())
             nt_rpm = int((bracken_abundance*1000000)/total_reads)
-            output_content += f"{parent_id},{level},{parent_domain},{tax_id},{tax_name},{kraken_abundance},{bracken_abundance},{nt_rpm}\n"
+            output_content += f"{parent_id},{level},{parent_domain},{tax_id},{tax_name},"
+            output_content += f"{kraken_abundance},{bracken_abundance},{nt_rpm}\n"
 
     with open(output_file, 'w') as file:
         file.write(output_content)
@@ -80,21 +81,26 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
 def main():
     
     base_path = sys.argv[1]
-    
+    input_extension = '_L001_R1_001.fastq.gz'
+    input_path =  f"{base_path}/0-raw_samples"
+
     folders = {
         "3-kraken_results":"5-kraken_reports", 
         "3-kraken_czid_results":"5-kraken_czid_reports", 
         "4-bracken_results":"6-bracken_reports", 
         "4-bracken_czid_results":"6-bracken_czid_reports"
     }
-    if len(sys.argv) > 3:
-        input_folder = sys.argv[2]
-        output_folder = sys.argv[3]
-        folders = { input_folder:output_folder }
+
+    if len(sys.argv) > 3:        
+        input_extension = sys.argv[2]
+        input_path = f"{base_path}/{sys.argv[3]}"
     
-    input_extension = '_L001_R1_001.fastq.gz'
-    input_raw_file =  f"{base_path}/0-raw_samples"
-    all_files = get_files_in_folder(input_raw_file, input_extension)
+    for i, o in zip(range(4, len(sys.argv), 2), range(5, len(sys.argv), 2)):
+        input_folder = sys.argv[i]
+        output_folder = sys.argv[o]
+        folders[input_folder] = output_folder
+    
+    all_files = get_files_in_folder(input_path, input_extension)
     print(all_files)
 
     for file in all_files:
@@ -108,8 +114,7 @@ def main():
                 report_file = os.path.join(f"{base_path}/{input_folder}", filename + ".kreport")
                 output_path = f"{base_path}/{folders[input_folder]}"
                 os.makedirs(output_path, exist_ok=True)
-                    
-        
+                            
                 abundance_by_species_file = os.path.join(output_path, filename + "_" + input_folder + "_species_abundance.csv")
                 count_kraken_abundance_by_species(report_file, total_reads, abundance_by_species_file)
                 
