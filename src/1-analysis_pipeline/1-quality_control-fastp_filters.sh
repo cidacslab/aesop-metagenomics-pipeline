@@ -33,12 +33,14 @@ output_dir=$5
 input_id=$(basename $input_id $input_suffix)
 
 input_suffix1=$input_suffix
-input_suffix2=${input_suffix1/_R1./_R2.}
+input_suffix2=${input_suffix1/_R1_/_R2_}
+input_suffix2=${input_suffix2/_R1./_R2.}
 input_suffix2=${input_suffix2/_1./_2.}
 
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 
+input_id=${input_id/_metadata/}
 output_file1="${output_dir}/${input_id}_1.fastq"
 output_file2="${output_dir}/${input_id}_2.fastq"
 

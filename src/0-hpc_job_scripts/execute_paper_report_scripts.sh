@@ -40,13 +40,15 @@ basespace_project_id=$3 # NOT USED
 # run_name="rs01"
 # old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
 # old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v2/dataset_${run_name}"
-base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v8/dataset_${run_name}"
+# base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v7/dataset_${run_name}"
 # base_dataset_path="/scratch/pablo.viana/mocks/read_length_review/dataset_${run_name}"
+old_dataset_path="/scratch/pablo.viana/mocks/dataset_pipeline_paper01"
+base_dataset_path="/scratch/pablo.viana/mocks/dataset_${run_name}"
 
 # Kraken2 database
 # kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
-# kraken2_database="/scratch/pablo.viana/databases/kraken2_db/k2_pluspfp_20240605"
-kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
+kraken2_database="/scratch/pablo.viana/databases/kraken2_db/k2_pluspfp_20240605"
+# kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
 
 # Location of src folder in the github directory
 # repository_src="/home/work/aesop/github/aesop-metagenomics/src"
@@ -74,7 +76,7 @@ custom_script="$repository_src/0-hpc_job_scripts/execute_custom_script.sh"
 
 declare -A kraken_folders
 # kraken_folders["3-kraken_results"]="3-kraken_results"
-kraken_folders["3-taxonomic_output"]="3-taxonomic_output"
+kraken_folders["3-kraken_bracken_results"]="3-kraken_bracken_results"
 # kraken_folders["3.1-kraken_results_2"]="4.1-bracken_results_2"
 # kraken_folders["3.1-kraken_czid_results_0"]="4.1-bracken_czid_results_0"
 # kraken_folders["3.1-kraken_czid_results_0.1"]="4.1-bracken_czid_results_0.1"
@@ -88,7 +90,7 @@ kraken_folders["3-taxonomic_output"]="3-taxonomic_output"
 # for input_suffix in "${!input_suffixes[@]}"; do
 #     threshold=${input_suffixes[$input_suffix]}
     input_suffix=".kreport"
-    threshold=130
+    threshold=150
     for input_folder in "${!kraken_folders[@]}"; do
         output_folder=${kraken_folders[$input_folder]}
         # rm -rvf "${base_dataset_path}/${output_folder}"
@@ -115,7 +117,7 @@ kraken_folders["3-taxonomic_output"]="3-taxonomic_output"
 ################################################################################
 
 declare -A folders
-folders["3-taxonomic_output"]="4-bracken_normalized"
+folders["3-kraken_bracken_results"]="4-bracken_normalized"
 # folders["4.1-bracken_results_2"]="6-bracken_reports_2"
 # folders["3-kraken_results"]="5-kraken_reports"
 # folders["4-bracken_results"]="6-bracken_reports"
@@ -136,10 +138,10 @@ for input_folder in "${!folders[@]}"; do
     rm -rvf "${base_dataset_path}/${output_folder}"
 done
 
-input_extension="_1.fastq"
-input_folder="${base_dataset_path}/1-bowtie_ercc_output"
-# input_extension="_150_reads_R1.fastq"
-# input_folder="0-raw_samples"
+# input_extension="_1.fastq"
+# input_folder="1-bowtie_ercc_output"
+input_extension="_150_reads_R1.fastq"
+input_folder="${old_dataset_path}/0-raw_samples"
 task_script="$repository_src/2-report_taxon_abundances/normalize_abundance_by_species.py"
 
 # Execute normalization code

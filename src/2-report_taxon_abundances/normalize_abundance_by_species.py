@@ -1,3 +1,4 @@
+
 import os, sys, csv, gzip
 import kraken_report_parser as KrakenParser
 
@@ -5,9 +6,10 @@ import kraken_report_parser as KrakenParser
 def get_files_in_folder(input_path, input_extension):
     print("Start process")
     files_fullpath = []
+    gz_extension = input_extension + ".gz"
     for root, dirs, files in os.walk(input_path):
         for file_name in files:
-            if file_name.endswith(input_extension):
+            if file_name.endswith(input_extension) or file_name.endswith(gz_extension):
                 file_path = os.path.join(root, file_name)
                 files_fullpath.append(file_path)
     return files_fullpath
@@ -15,11 +17,18 @@ def get_files_in_folder(input_path, input_extension):
 
 def get_read_abundance(input_file):
     line_counter = 0
-    with gzip.open(input_file, 'rt') as fastq_file:
-        for line in fastq_file:
-            line = line.strip()
-            if len(line) > 0:
-                line_counter += 1
+    if input_file.endswith(".gz"):
+        with gzip.open(input_file, 'rt') as fastq_file:
+            for line in fastq_file:
+                line = line.strip()
+                if len(line) > 0:
+                    line_counter += 1
+    else:
+        with open(input_file, 'rt') as fastq_file:
+            for line in fastq_file:
+                line = line.strip()
+                if len(line) > 0:
+                    line_counter += 1
     return int(line_counter/4)
 
 
@@ -85,47 +94,52 @@ def main():
     input_path =  f"{base_path}/0-raw_samples"
 
     folders = {
-        "3-kraken_results":"5-kraken_reports", 
-        "3-kraken_czid_results":"5-kraken_czid_reports", 
+        # "3-kraken_results":"5-kraken_reports", 
+        # "3-kraken_czid_results":"5-kraken_czid_reports", 
         "4-bracken_results":"6-bracken_reports", 
-        "4-bracken_czid_results":"6-bracken_czid_reports"
+        # "4-bracken_czid_results":"6-bracken_czid_reports"
     }
 
     if len(sys.argv) > 3:        
         input_extension = sys.argv[2]
-        input_path = f"{base_path}/{sys.argv[3]}"
+        input_path = f"{sys.argv[3]}"
     
-    for i, o in zip(range(4, len(sys.argv), 2), range(5, len(sys.argv), 2)):
-        input_folder = sys.argv[i]
-        output_folder = sys.argv[o]
-        folders[input_folder] = output_folder
+    if len(sys.argv) > 5:
+        folders = {}
+        for i, o in zip(range(4, len(sys.argv), 2), range(5, len(sys.argv), 2)):
+            input_folder = sys.argv[i]
+            output_folder = sys.argv[o]
+            folders[input_folder] = output_folder
     
+    print(f"Running normalization with input: [{input_path}] [{input_extension}]")
+    print(f"    For folders: {folders}")
     all_files = get_files_in_folder(input_path, input_extension)
     print(all_files)
 
     for file in all_files:
-        print(f"Analyzing file: {file}")
+        print(f"Analyzing input file: {file}")
         total_reads = get_read_abundance(file)
-        print(f"Total reads on raw fastq: {total_reads}")
-        filename = os.path.basename(file).split(input_extension)[0]
+        print(f"Total reads on input fastq: {total_reads}")
+        filename = os.path.basename(file).split(input_extension)[0].replace("_metadata", "")
+        
         
         for input_folder in folders:
-            if input_folder.startswith("3-kraken"):
-                report_file = os.path.join(f"{base_path}/{input_folder}", filename + ".kreport")
-                output_path = f"{base_path}/{folders[input_folder]}"
-                os.makedirs(output_path, exist_ok=True)
+            # if "kraken" in input_folder:
+            #     report_file = os.path.join(f"{base_path}/{input_folder}", filename + ".kreport")
+            #     output_path = f"{base_path}/{folders[input_folder]}"
+            #     os.makedirs(output_path, exist_ok=True)
                             
-                abundance_by_species_file = os.path.join(output_path, filename + "_" + input_folder + "_species_abundance.csv")
-                count_kraken_abundance_by_species(report_file, total_reads, abundance_by_species_file)
+            #     abundance_by_species_file = os.path.join(output_path, "kraken_reports/" + filename + "_" + input_folder + "_kraken_species_abundance.csv")
+            #     count_kraken_abundance_by_species(report_file, total_reads, abundance_by_species_file)
                 
-            elif input_folder.startswith("4-bracken"):
-                bracken_file = os.path.join(f"{base_path}/{input_folder}", filename + ".bracken")
-                output_path = f"{base_path}/{folders[input_folder]}"
-                os.makedirs(output_path, exist_ok=True)
-                
-                report_file = bracken_file.replace(".bracken", ".kreport").replace("4-bracken", "3-kraken")
-                abundance_by_species_file = os.path.join(output_path, filename + "_" + input_folder + "_species_abundance.csv")
-                count_bracken_abundance_by_species(report_file, bracken_file, total_reads, abundance_by_species_file)
+            # if "bracken" in input_folder:
+            bracken_file = os.path.join(f"{base_path}/{input_folder}", filename + ".bracken")
+            output_path = f"{base_path}/{folders[input_folder]}"
+            os.makedirs(output_path, exist_ok=True)
+            
+            report_file = bracken_file.replace(".bracken", ".kreport")#.replace("4-bracken", "3-kraken")
+            abundance_by_species_file = os.path.join(output_path, filename + "_" + input_folder + "_bracken_species_abundance.csv")
+            count_bracken_abundance_by_species(report_file, bracken_file, total_reads, abundance_by_species_file)
 
 
 if __name__ == '__main__':

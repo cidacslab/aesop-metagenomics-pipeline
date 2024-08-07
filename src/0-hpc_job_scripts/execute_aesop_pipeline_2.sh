@@ -67,7 +67,7 @@ download_script="$repository_src/0-hpc_job_scripts/execute_download_script.sh"
 
 # Basespace file suffix
 # Suffix of each sample forward sequence
-input_suffix="_R1.fastq.gz"
+input_suffix="_R1.fastq"
 
 # params=("$num_processes"
 #         "/scratch/pablo.viana/softwares/basespace_illumina/bs"

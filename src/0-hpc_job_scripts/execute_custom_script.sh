@@ -71,7 +71,7 @@ args=($@)
 args_str=$(printf '%s ' "${args[@]}")
 echo "Parameters: $args_str"
 
-rm -rf $output_dir
+# rm -rf $output_dir
 mkdir -p $output_dir
 
 find "$input_dir" -type f -name "*${input_suffix}" | \

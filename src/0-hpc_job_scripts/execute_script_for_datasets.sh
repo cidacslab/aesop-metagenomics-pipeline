@@ -46,8 +46,8 @@ done <<< "$sample_datasets"
 
 echo ""
 df
-du -hd 4 /scratch/pablo.viana
-find /scratch/pablo.viana
+du -hd 4 /scratch/pablo.viana | sort -k2
+find /scratch/pablo.viana | sort
 
 
 #  Finish pipeline profile

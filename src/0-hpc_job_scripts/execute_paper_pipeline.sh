@@ -44,9 +44,9 @@ basespace_project_id=$3
 # Name of the run folder
 # run_name="rs01"
 # old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
-old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
+old_dataset_path="/scratch/pablo.viana/mocks/dataset_pipeline_paper01"
 # base_dataset_path="/home/work/aesop/results_pipeline_v4/dataset_${run_name}"
-base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v8/dataset_${run_name}"
+base_dataset_path="/scratch/pablo.viana/mocks/dataset_${run_name}"
 
 # Bowtie2 index to remove phix reads
 # bowtie2_phix_index="/home/work/aesop/phix_viralproj14015/phix174_index"
@@ -69,7 +69,8 @@ hisat2_human_index="/scratch/pablo.viana/databases/hisat2_db/human_index_2024072
 
 # Kraken2 database
 # kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
-kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
+kraken2_database="/scratch/pablo.viana/databases/kraken2_db/k2_pluspfp_20240605"
+# kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
 
 # Location of src folder in the github directory
 # repository_src="/home/work/aesop/github/aesop-metagenomics/src"
@@ -96,7 +97,8 @@ download_script="$repository_src/0-hpc_job_scripts/execute_download_script.sh"
 
 # Basespace file suffix
 # Suffix of each sample forward sequence
-input_suffix="_L001_R1_001.fastq.gz"
+# input_suffix="_L001_R1_001.fastq.gz"
+input_suffix="_150_reads_R1.fastq"
 
 params=("$num_processes"
         "/scratch/pablo.viana/softwares/basespace_illumina/bs"
@@ -114,7 +116,6 @@ params=("$num_processes"
 
 # Suffix of each sample forward sequence
 # input_suffix="_1.fastq"
-rm -rvf "$base_dataset_path/1-bowtie_phix_output"
 
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove.sh"
@@ -124,10 +125,10 @@ params=("$num_processes"
         "$base_dataset_path/1-bowtie_phix_output"
         "$bowtie2_phix_index")
 
-$custom_script "${params[@]}"
+# $custom_script "${params[@]}"
 
-mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
-  ${dataset_name}_1-sample_decontamination-bowtie2_remove_phix_reads_logs.tar.gz
+# mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
+#   ${dataset_name}_1-sample_decontamination-bowtie2_remove_phix_reads_logs.tar.gz
 
 
 ################################################################################
@@ -135,7 +136,7 @@ mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
 ################################################################################
 
 # Suffix of each sample forward sequence
-input_suffix="_1.fastq"
+# input_suffix="_1.fastq"
 
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove.sh"
@@ -145,10 +146,10 @@ params=("$num_processes"
         "$base_dataset_path/1-bowtie_ercc_output"
         "$bowtie2_ercc_index")
 
-$custom_script "${params[@]}"
+# $custom_script "${params[@]}"
 
-mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
-  ${dataset_name}_1-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz
+# mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
+#   ${dataset_name}_1-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz
 
 
 ################################################################################
@@ -156,58 +157,64 @@ mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
 ################################################################################
 
 # Suffix of each sample forward sequence
-input_suffix="_1.fastq"
+# input_suffix="_1.fastq"
+input_suffix="_150_reads_R1.fastq"
 
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/1-quality_control-fastp_filters.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_dataset_path/1-bowtie_ercc_output"
+        "$old_dataset_path/0-raw_samples"
         "$base_dataset_path/1-fastp_output")
 
-$custom_script "${params[@]}"
+# $custom_script "${params[@]}"
 
-echo "Tar gziping report files: tar -czf ${dataset_name}_fastp_filters_reports.tar.gz *.html *.json"
-tar -czf "${dataset_name}_fastp_filters_reports.tar.gz" *.html *.json
+# echo "Tar gziping report files: tar -czf ${dataset_name}_fastp_filters_reports.tar.gz *.html *.json"
+# tar -czf "${dataset_name}_fastp_filters_reports.tar.gz" *.html *.json
 
-rm -vf *.html *.json
+# rm -vf *.html *.json
 
-################################################################################
-###################################  HISAT2  ###################################
-################################################################################
-
-params=("$num_processes"
-        "$repository_src/1-analysis_pipeline/2-sample_decontamination-hisat2_remove.sh"
-        "$dataset_name"
-        "$input_suffix"
-        "$base_dataset_path/1-fastp_output"
-        "$base_dataset_path/2-hisat_human_output"
-        "$hisat2_human_index")
-        
-$custom_script "${params[@]}"
-
-mv ${dataset_name}_2-sample_decontamination-hisat2_remove_logs.tar.gz \
-  ${dataset_name}_2-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
-  
 
 # ################################################################################
 # ##################################  BOWTIE2  ###################################
 # ################################################################################
 
+# Suffix of each sample forward sequence
+input_suffix="_1.fastq"
+
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_dataset_path/2-hisat_human_output"
+        "$base_dataset_path/1-fastp_output"
         "$base_dataset_path/2-bowtie_human_output"
         "$bowtie2_human_index")
         
-$custom_script "${params[@]}"
+# $custom_script "${params[@]}"
 
-mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
-  ${dataset_name}_2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz
+# mv ${dataset_name}_2-sample_decontamination-bowtie2_remove_logs.tar.gz \
+#   ${dataset_name}_2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz
   
   
+################################################################################
+###################################  HISAT2  ###################################
+################################################################################
+
+# Suffix of each sample forward sequence
+input_suffix="_1.fastq"
+
+params=("$num_processes"
+        "$repository_src/1-analysis_pipeline/2-sample_decontamination-hisat2_remove.sh"
+        "$dataset_name"
+        "$input_suffix"
+        "$base_dataset_path/2-bowtie_human_output"
+        "$base_dataset_path/2-hisat_human_output"
+        "$hisat2_human_index")
+        
+# $custom_script "${params[@]}"
+
+# mv ${dataset_name}_2-sample_decontamination-hisat2_remove_logs.tar.gz \
+#   ${dataset_name}_2-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
 
 # ################################################################################
 # ##################################  KRAKEN2  ###################################
@@ -217,14 +224,14 @@ confidences=("0")
 # confidences=("0" "0.1" "0.2" "0.3" "0.4" "0.5" "0.6" "0.7")
 
 for value in "${confidences[@]}"; do
-    # rm -rv "$base_dataset_path/3-kraken_results"
+    rm -rv "$base_dataset_path/3-kraken_bracken_results"
     
     params=("$num_processes"
             "$repository_src/1-analysis_pipeline/3-taxonomic_annotation-kraken2.sh"
             "$dataset_name"
             "$input_suffix"
-            "$base_dataset_path/2-bowtie_human_output"
-            "$base_dataset_path/3-taxonomic_output"
+            "$base_dataset_path/2-hisat_human_output"
+            "$base_dataset_path/3-kraken_bracken_results"
             "$kraken2_database"
             $value)
     
