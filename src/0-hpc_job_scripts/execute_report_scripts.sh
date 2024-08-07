@@ -37,24 +37,25 @@ basespace_project_id=$3 # NOT USED
 ################### FOR EACH ANALYSIS FILL THESE INFORMATION ###################
 ################################################################################
 
+# Name of the run folder
 # run_name="rs01"
 # old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
-# old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v2/dataset_${run_name}"
-base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v8/dataset_${run_name}"
-# base_dataset_path="/scratch/pablo.viana/mocks/read_length_review/dataset_${run_name}"
+# old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
+old_dataset_path="/home/work/aesop/github/aesop_metagenomics_read_length/results/pipeline_mock/mock_metagenomes"
+base_dataset_path="/home/work/aesop/results_pipeline_v8/dataset_${run_name}"
+# base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v8/dataset_${run_name}"
 
 # Kraken2 database
-# kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
-# kraken2_database="/scratch/pablo.viana/databases/kraken2_db/k2_pluspfp_20240605"
-kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
+kraken2_database="/dev/shm/databases/k2_pluspfp_20240605"
+# kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
 
 # Location of src folder in the github directory
-# repository_src="/home/work/aesop/github/aesop-metagenomics/src"
-repository_src="/home/pablo.viana/metagenomics_src"
+repository_src="/home/work/aesop/github/aesop-metagenomics/src"
+# repository_src="/home/pablo.viana/metagenomics_src"
 
 # Location to place the final output in tar.gz
-# final_output_path="$base_dataset_path"
-final_output_path="/opt/storage/raw/aesop/metagenomica/biome/pipeline_v7"
+final_output_path="$base_dataset_path"
+# final_output_path="/opt/storage/raw/aesop/metagenomica/biome/pipeline_v7"
 
 
 ################################################################################
@@ -88,7 +89,7 @@ kraken_folders["3-taxonomic_output"]="3-taxonomic_output"
 # for input_suffix in "${!input_suffixes[@]}"; do
 #     threshold=${input_suffixes[$input_suffix]}
     input_suffix=".kreport"
-    threshold=130
+    threshold=150
     for input_folder in "${!kraken_folders[@]}"; do
         output_folder=${kraken_folders[$input_folder]}
         # rm -rvf "${base_dataset_path}/${output_folder}"
@@ -102,10 +103,10 @@ kraken_folders["3-taxonomic_output"]="3-taxonomic_output"
                 "$kraken2_database"
                 "$threshold")
     
-        # $custom_script "${params[@]}"
+        $custom_script "${params[@]}"
     
-        # mv ${dataset_name}_3-taxonomic_annotation-bracken_logs.tar.gz \
-        #     ${dataset_name}_3-taxonomic_annotation-bracken_${input_folder}${input_suffix}_logs.tar.gz
+        mv ${dataset_name}_3-taxonomic_annotation-bracken_logs.tar.gz \
+            ${dataset_name}_3-taxonomic_annotation-bracken_${input_folder}${input_suffix}_logs.tar.gz
     done
 # done
 
@@ -136,8 +137,10 @@ for input_folder in "${!folders[@]}"; do
     rm -rvf "${base_dataset_path}/${output_folder}"
 done
 
-input_extension="_1.fastq"
-input_folder="${base_dataset_path}/1-bowtie_ercc_output"
+input_extension="_R1.fastq"
+input_folder="${old_dataset_path}"
+# input_extension="_1.fastq"
+# input_folder="${base_dataset_path}/1-bowtie_ercc_output"
 # input_extension="_150_reads_R1.fastq"
 # input_folder="0-raw_samples"
 task_script="$repository_src/2-report_taxon_abundances/normalize_abundance_by_species.py"

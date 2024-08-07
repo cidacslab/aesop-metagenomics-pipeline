@@ -44,8 +44,8 @@ input_id=${input_id/_metadata/}
 output_file1="${output_dir}/${input_id}_1.fastq"
 output_file2="${output_dir}/${input_id}_2.fastq"
 
-fastp_script="/scratch/pablo.viana/softwares/fastp-0.23.2"
-# fastp_script="fastp"
+# fastp_script="/scratch/pablo.viana/softwares/fastp-0.23.2"
+fastp_script="fastp"
 
 if [ ! -f $input_file1 ]; then
   echo "Input file not found: $input_file1" >&2

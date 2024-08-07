@@ -37,8 +37,8 @@ input_id=$(basename $input_id .kreport)
 input_kraken_report="${input_dir}/${input_id}.kreport"
 output_bracken="${output_dir}/${input_id}.bracken"
 
-bracken_script="/scratch/pablo.viana/softwares/Bracken-master/bracken"
-
+# bracken_script="/scratch/pablo.viana/softwares/Bracken-master/bracken"
+bracken_script="bracken"
 
 # if exists output
 if [ -f $output_bracken ]; then

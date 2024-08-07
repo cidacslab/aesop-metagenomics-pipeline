@@ -51,9 +51,10 @@ output_sam="${output_dir}/${input_id}.sam"
 output_unmapped_bam="${output_dir}/${input_id}_unmapped.bam"
 nthreads=16
 
-samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
-bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
-# bowtie2_script="bowtie2"
+# samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
+# bowtie2_script="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
+bowtie2_script="bowtie2"
+samtools_script="samtools"
 
 # if exists output
 if [ -f $output_final ]; then

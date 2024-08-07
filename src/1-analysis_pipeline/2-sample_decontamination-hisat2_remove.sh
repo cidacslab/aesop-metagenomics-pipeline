@@ -51,9 +51,10 @@ output_sam="${output_dir}/${input_id}.sam"
 output_unmapped_bam="${output_dir}/${input_id}_unmapped.bam"
 nthreads=16
 
-samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
-hisat2_script="/scratch/pablo.viana/softwares/hisat2-2.2.1/hisat2"
-# hisat2_script="hisat2"
+# samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
+# hisat2_script="/scratch/pablo.viana/softwares/hisat2-2.2.1/hisat2"
+hisat2_script="hisat2"
+samtools_script="samtools"
 
 # if exists output
 if [ -f $output_final ]; then

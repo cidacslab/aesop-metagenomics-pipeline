@@ -44,8 +44,8 @@ input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 input_file="${input_dir}/${input_id}#.fastq"
 
-# output_kraken_output="/dev/null"
-output_kraken_output="${output_dir}/${input_id}.kout"
+output_kraken_output="/dev/null"
+# output_kraken_output="${output_dir}/${input_id}.kout"
 output_kraken_report="${output_dir}/${input_id}.kreport"
 nthreads_chosen=16
 
