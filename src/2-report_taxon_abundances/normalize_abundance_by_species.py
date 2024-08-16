@@ -38,8 +38,8 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
     output_content += "kraken_classified_reads,nt_rpm\n"
 
     _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-    u_count = report_by_taxid['0'].acumulated_abundance
-    c_count = report_by_taxid['1'].acumulated_abundance
+    u_count = KrakenParser.get_abundance(report_by_taxid, "0")
+    c_count = KrakenParser.get_abundance(report_by_taxid, "1")
     print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
     
     for taxid, node in report_by_taxid.items():
@@ -63,8 +63,8 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
     output_content += "kraken_classified_reads,bracken_classified_reads,nt_rpm\n"
 
     _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-    u_count = report_by_taxid['0'].acumulated_abundance
-    c_count = report_by_taxid['1'].acumulated_abundance
+    u_count = KrakenParser.get_abundance(report_by_taxid, "0")
+    c_count = KrakenParser.get_abundance(report_by_taxid, "1")
     print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
 
     with open(bracken_file, 'r') as csvfile:
