@@ -18,5 +18,5 @@ __pycache__/
 
 # Miscellaneous
 .DS_Store
-data/**
-results/**
+# data/**
+# results/**

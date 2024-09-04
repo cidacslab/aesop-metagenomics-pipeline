@@ -1,0 +1,1120 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,bracken_classified_reads,nt_rpm
+29465,1,bacteria,29466,Veillonella parvula,4855,4912,4912
+29465,1,bacteria,2682456,Veillonella nakazawae,2534,2895,2895
+29465,1,bacteria,39777,Veillonella atypica,2508,2529,2529
+29465,1,bacteria,39778,Veillonella dispar,1075,1137,1137
+29465,1,bacteria,423477,Veillonella rogosae,9,9,9
+2630086,1,bacteria,2682455,Veillonella sp. S12025-13,7,7,7
+29465,1,bacteria,248315,Veillonella rodentium,2,2,2
+906,1,bacteria,1232428,Megasphaera massiliensis,1,1,1
+2637378,1,bacteria,712538,Selenomonas sp. oral taxon 478,4379,4601,4601
+2637378,1,bacteria,713030,Selenomonas sp. oral taxon 136,3,3,3
+2637378,1,bacteria,1884263,Selenomonas sp. oral taxon 920,2,2,2
+970,1,bacteria,69823,Selenomonas sputigena,1,1,1
+673272,1,bacteria,673273,uncultured Anaeromusa sp.,5,5,5
+2629460,1,bacteria,484770,Pelosinus sp. UFO1,1,1,1
+33024,1,bacteria,33025,Phascolarctobacterium faecium,1,1,1
+1301,1,bacteria,113107,Streptococcus australis,3422,4110,4110
+1301,1,bacteria,28037,Streptococcus mitis,2708,2869,2869
+1301,1,bacteria,1307,Streptococcus suis,1928,2077,2077
+1301,1,bacteria,1335,Streptococcus equinus,1908,2022,2022
+1301,1,bacteria,2686210,Streptococcus ruminicola,884,1066,1066
+1301,1,bacteria,102684,Streptococcus infantarius,430,490,490
+1301,1,bacteria,315405,Streptococcus gallolyticus,300,404,404
+1301,1,bacteria,150055,Streptococcus lutetiensis,199,218,218
+1301,1,bacteria,257758,Streptococcus pseudopneumoniae,135,153,153
+1301,1,bacteria,59310,Streptococcus macedonicus,67,120,120
+1301,1,bacteria,29389,Streptococcus alactolyticus,57,60,60
+2608887,1,bacteria,2598453,Streptococcus sp. 116-D4,6,6,6
+2608887,1,bacteria,1759399,Streptococcus sp. A12,4,4,4
+2608887,1,bacteria,3028082,Streptococcus sp. 29896,4,4,4
+2608887,1,bacteria,2759692,Streptococcus sp. Marseille-Q3533,4,4,4
+2608887,1,bacteria,2664091,Streptococcus sp. zg-86,4,4,4
+2608887,1,bacteria,2598457,Streptococcus sp. KS 6,4,4,4
+2608887,1,bacteria,3098075,Streptococcus sp. S1,3,3,3
+2608887,1,bacteria,3028084,Streptococcus sp. 29887,3,3,3
+2608887,1,bacteria,1839799,Streptococcus sp. FDAARGOS_192,3,4,4
+2608887,1,bacteria,2954545,Streptococcus sp. FSL W7-1342,3,7,7
+2608887,1,bacteria,712623,Streptococcus sp. oral taxon 061,2,2,2
+2608887,1,bacteria,3077584,Streptococcus sp. DTU_2020_1001019_1_SI_AUS_MUR_006,2,2,2
+2608887,1,bacteria,3028083,Streptococcus sp. 29892,2,2,2
+2608887,1,bacteria,2993430,Streptococcus sp. SP4011,2,2,2
+2608887,1,bacteria,2610896,Streptococcus sp. LPB0220,1,1,1
+2608887,1,bacteria,3098076,Streptococcus sp. S5,1,1,1
+2608887,1,bacteria,3077723,Streptococcus sp. DTU_2020_1000888_1_SI_GRL_NUU_041A,1,1,1
+2608887,1,bacteria,3038077,Streptococcus sp. D7B5,1,1,1
+2608887,1,bacteria,712633,Streptococcus sp. oral taxon 431,1,1,1
+1301,1,bacteria,197614,Streptococcus pasteurianus,35,74,74
+119603,1,bacteria,1334,Streptococcus dysgalactiae,14,20,20
+119603,1,bacteria,1336,Streptococcus equi,7,7,7
+1301,1,bacteria,1326,Streptococcus acidominimus,18,18,18
+1301,1,bacteria,1313,Streptococcus pneumoniae,18,21,21
+1301,1,bacteria,1349,Streptococcus uberis,18,18,18
+1301,1,bacteria,1303,Streptococcus oralis,17,18,18
+1301,1,bacteria,1308,Streptococcus thermophilus,17,17,17
+1301,1,bacteria,1318,Streptococcus parasanguinis,15,16,16
+1301,1,bacteria,1309,Streptococcus mutans,14,14,14
+1301,1,bacteria,1341,Streptococcus ratti,13,13,13
+1301,1,bacteria,1304,Streptococcus salivarius,11,12,12
+1301,1,bacteria,1501662,Streptococcus parasuis,11,11,11
+1301,1,bacteria,400065,Streptococcus merionis,10,10,10
+1301,1,bacteria,82348,Streptococcus pluranimalium,10,10,10
+1301,1,bacteria,102886,Streptococcus didelphis,10,10,10
+1301,1,bacteria,1305,Streptococcus sanguinis,10,10,10
+1301,1,bacteria,1302,Streptococcus gordonii,9,9,9
+1301,1,bacteria,1348,Streptococcus parauberis,9,9,9
+1301,1,bacteria,1346,Streptococcus iniae,9,9,9
+1301,1,bacteria,1329,Streptococcus canis,9,9,9
+1301,1,bacteria,1111760,Streptococcus troglodytae,8,8,8
+1301,1,bacteria,45634,Streptococcus cristatus,7,7,7
+1301,1,bacteria,1310,Streptococcus sobrinus,7,7,7
+1301,1,bacteria,68892,Streptococcus infantis,6,6,6
+1301,1,bacteria,1156431,Streptococcus ilei,6,7,7
+1301,1,bacteria,361101,Streptococcus pseudoporcinus,6,6,6
+1301,1,bacteria,2021971,Streptococcus respiraculi,5,5,5
+1301,1,bacteria,1888195,Streptococcus himalayensis,5,5,5
+671232,1,bacteria,1338,Streptococcus intermedius,4,4,4
+671232,1,bacteria,76860,Streptococcus constellatus,1,1,1
+1301,1,bacteria,254785,Streptococcus halichoeri,5,5,5
+1301,1,bacteria,1345,Streptococcus ferus,5,5,5
+1301,1,bacteria,1311,Streptococcus agalactiae,4,9,9
+1301,1,bacteria,1811193,Streptococcus pantholopis,4,4,4
+1301,1,bacteria,1814128,Streptococcus halotolerans,4,4,4
+1301,1,bacteria,2173853,Streptococcus chenjunshii,4,4,4
+1301,1,bacteria,149016,Streptococcus urinalis,4,4,4
+1301,1,bacteria,1314,Streptococcus pyogenes,3,3,3
+1301,1,bacteria,1340,Streptococcus porcinus,3,3,3
+1301,1,bacteria,684066,Streptococcus lactarius,3,3,3
+1301,1,bacteria,1343,Streptococcus vestibularis,2,2,2
+1301,1,bacteria,1433513,Streptococcus gwangjuense,2,2,2
+1301,1,bacteria,1917441,Streptococcus ruminantium,2,2,2
+1301,1,bacteria,2819619,Streptococcus toyakuensis,1,1,1
+1301,1,bacteria,33040,Streptococcus milleri,1,1,1
+1357,1,bacteria,1359,Lactococcus cremoris,1,1,1
+1357,1,bacteria,1363,Lactococcus garvieae,1,1,1
+1930830,1,bacteria,1859475,Floricoccus penangensis,1,1,1
+1578,1,bacteria,47770,Lactobacillus crispatus,2,2,2
+1578,1,bacteria,2993455,Lactobacillus isalae,1,1,1
+1578,1,bacteria,1587,Lactobacillus helveticus,1,1,1
+1578,1,bacteria,1596,Lactobacillus gasseri,1,2,2
+2767887,1,bacteria,1623,Ligilactobacillus ruminis,2,2,2
+2767887,1,bacteria,1601,Ligilactobacillus agilis,1,1,1
+2767887,1,bacteria,89059,Ligilactobacillus acidipiscis,1,1,1
+2767879,1,bacteria,2714036,Companilactobacillus pabuli,2,2,2
+2767879,1,bacteria,1612,Companilactobacillus farciminis,1,1,1
+2767879,1,bacteria,1007676,Companilactobacillus ginsenosidimutans,1,1,1
+1243,1,bacteria,1246,Leuconostoc lactis,2,3,3
+2767889,1,bacteria,1607,Loigolactobacillus bifermentans,2,2,2
+2767892,1,bacteria,176292,Secundilactobacillus malefermentans,1,1,1
+2767886,1,bacteria,380393,Levilactobacillus namurensis,1,1,1
+2767885,1,bacteria,28038,Latilactobacillus curvatus,1,1,1
+46255,1,bacteria,1249,Weissella paramesenteroides,1,1,1
+3118928,1,bacteria,2932183,Xylocopilactobacillus apis,1,1,1
+2608891,1,bacteria,1834189,Enterococcus sp. 7F3_DIV0205,2,2,2
+1350,1,bacteria,1352,Enterococcus faecium,1,1,1
+1350,1,bacteria,1354,Enterococcus hirae,1,1,1
+1350,1,bacteria,33945,Enterococcus avium,1,1,1
+1350,1,bacteria,41997,Enterococcus saccharolyticus,1,1,1
+1350,1,bacteria,2005703,Enterococcus wangshanyuanii,1,1,1
+1350,1,bacteria,53346,Enterococcus mundtii,1,1,1
+2737,1,bacteria,81947,Vagococcus lutrae,1,1,1
+2737,1,bacteria,2714947,Vagococcus hydrophili,1,1,1
+51668,1,bacteria,51669,Tetragenococcus halophilus,1,1,1
+13075,1,bacteria,13076,Globicatella sanguinis,4,4,4
+117563,1,bacteria,137732,Granulicatella elegans,2,3,3
+1470540,1,bacteria,2496265,Jeotgalibaca ciconiae,1,1,1
+1378,1,bacteria,1379,Gemella haemolysans,1208,1219,1219
+1378,1,bacteria,84135,Gemella sanguinis,2,2,2
+185978,1,bacteria,2996034,Paenibacillus sp. SYP-B4298,34,47,47
+44249,1,bacteria,1886670,Paenibacillus nuruki,9,12,12
+44249,1,bacteria,3050112,Paenibacillus polygoni,1,1,1
+44249,1,bacteria,44250,Paenibacillus alvei,1,1,1
+44249,1,bacteria,44251,Paenibacillus durus,1,1,1
+44249,1,bacteria,1763538,Paenibacillus crassostreae,1,1,1
+44249,1,bacteria,414771,Paenibacillus donghaensis,1,1,1
+44249,1,bacteria,130049,Paenibacillus dendritiformis,1,1,1
+329857,1,bacteria,2598458,Cohnella cholangitidis,1,1,1
+185979,1,bacteria,352858,Bacillus sp. Y1,2,2,2
+1386,1,bacteria,1479,Bacillus smithii,1,3,3
+86661,1,bacteria,2026191,Bacillus luti,1,5,5
+2644029,1,bacteria,2991053,Fictibacillus sp. KU28468,6,7,7
+2837510,1,bacteria,254758,Siminovitchia fortis,6,7,7
+2675232,1,bacteria,220687,Neobacillus novalis,1,1,1
+2675272,1,bacteria,3047873,Neobacillus sp. WH10,1,1,1
+2675230,1,bacteria,1637975,Cytobacillus solani,2,3,3
+2675233,1,bacteria,2567941,Metabacillus sediminilitoris,2,2,2
+2685905,1,bacteria,2743001,Salicibibacter cibi,2,2,2
+2785518,1,bacteria,2594883,Radiobacillus deserti,2,2,2
+1434042,1,bacteria,632773,Salisediminibacterium beveridgei,2,2,2
+2837508,1,bacteria,189382,Rossellomorea aquimaris,2,2,2
+200903,1,bacteria,2213194,Paraliobacillus zengyii,1,1,1
+29331,1,bacteria,1449,Amphibacillus xylanus,1,1,1
+2675229,1,bacteria,450367,Peribacillus frigoritolerans,1,1,1
+400634,1,bacteria,2086577,Lysinibacillus timonensis,1,1,1
+2614679,1,bacteria,2518176,Lentibacillus sp. CBA3610,1,1,1
+2636677,1,bacteria,2829187,Psychrobacillus sp. INOP01,1,1,1
+2837485,1,bacteria,1413,Evansella cellulosilytica,1,1,1
+1279,1,bacteria,33028,Staphylococcus saccharolyticus,2,2,2
+1279,1,bacteria,1282,Staphylococcus epidermidis,1,1,1
+1279,1,bacteria,1280,Staphylococcus aureus,1,1,1
+1279,1,bacteria,1955013,Staphylococcus edaphicus,1,1,1
+1279,1,bacteria,1294,Staphylococcus muscae,1,1,1
+1279,1,bacteria,246432,Staphylococcus equorum,1,1,1
+2803851,1,bacteria,3034233,Mammaliicoccus sp. Dog046,2,2,2
+69965,1,bacteria,2875764,Macrococcus armenti,1,1,1
+1569,1,bacteria,1571,Sporosarcina ureae,2,2,2
+2637870,1,bacteria,2921713,Solibacillus sp. FSL W8-0372,1,1,1
+1637,1,bacteria,1497681,Listeria newyorkensis,2,2,2
+1257,1,bacteria,3003601,Peptostreptococcus equinus,26,26,26
+1501226,1,bacteria,1115758,Romboutsia ilealis,6,6,6
+2626894,1,bacteria,2708053,Romboutsia sp. 13368,4,4,4
+2626894,1,bacteria,2724150,Romboutsia sp. CE17,2,2,2
+1501226,1,bacteria,1507512,Romboutsia hominis,2,2,2
+1505652,1,bacteria,1460447,Terrisporobacter petrolearius,2,7,7
+1849822,1,bacteria,1505,Paraclostridium sordellii,4,4,4
+1849822,1,bacteria,1490,Paraclostridium bifermentans,1,1,1
+1870884,1,bacteria,1496,Clostridioides difficile,5,5,5
+2743582,1,bacteria,89152,Peptacetobacter hiranonis,5,5,5
+1505657,1,bacteria,261299,Intestinibacter bartlettii,2,2,2
+2642996,1,bacteria,3114296,Emergencia sp. JLR.KK010,1,1,1
+2060094,1,bacteria,2697030,Aminipila terrae,1,1,1
+2614128,1,bacteria,755731,Clostridium sp. BNL1100,2,2,2
+2614128,1,bacteria,3070996,Clostridium sp. MB40-C1,1,1,1
+2614128,1,bacteria,3070681,Clostridium sp. OS1-26,1,1,1
+1485,1,bacteria,1491,Clostridium botulinum,2,10,10
+1485,1,bacteria,29341,Clostridium argentinense,2,2,2
+1485,1,bacteria,1519,Clostridium tyrobutyricum,2,2,2
+1485,1,bacteria,1488,Clostridium acetobutylicum,2,2,2
+1485,1,bacteria,2320868,Clostridium manihotivorum,1,1,1
+1485,1,bacteria,2068654,Clostridium fermenticellae,1,1,1
+1485,1,bacteria,704125,Clostridium gelidum,1,1,1
+1485,1,bacteria,36839,Clostridium felsineum,1,1,1
+1485,1,bacteria,360422,Clostridium tagluense,1,1,1
+1769729,1,bacteria,1498,Hathewaya histolytica,1,1,1
+216851,1,bacteria,853,Faecalibacterium prausnitzii,1,4,4
+1263,1,bacteria,1264,Ruminococcus albus,3,3,3
+1263,1,bacteria,2564099,Ruminococcus bovis,1,1,1
+2892396,1,bacteria,2714355,Vescimonas coprocola,3,3,3
+2834348,1,bacteria,3030016,Caproicibacterium argilliputei,2,2,2
+1508657,1,bacteria,2488810,Ruminiclostridium herbifermentans,2,2,2
+35829,1,bacteria,1515,Acetivibrio thermocellus,1,1,1
+2610894,1,bacteria,2610895,Flintibacter sp. KGMB00164,10,10,10
+1392389,1,bacteria,1297617,Intestinimonas butyriciproducens,1,1,1
+1730,1,bacteria,53442,Eubacterium callanderi,4,4,4
+1730,1,bacteria,39496,Eubacterium ventriosum,1,1,1
+36853,1,bacteria,142877,Desulfitobacterium metallireducens,1,1,1
+79206,1,bacteria,339862,Desulfosporosinus youngiae,1,1,1
+2620324,1,bacteria,3079302,Agathobaculum sp. NTUH-O15-33,1,1,1
+189330,1,bacteria,88431,Dorea longicatena,10,13,13
+2642604,1,bacteria,3070997,Anaerocolumna sp. MB42-C2,7,7,7
+2642604,1,bacteria,3039116,Anaerocolumna sp. AGMB13025,2,2,2
+1843210,1,bacteria,433286,Anaerocolumna cellulosilytica,1,1,1
+46205,1,bacteria,185007,Pseudobutyrivibrio xylanivorans,7,7,7
+2316020,1,bacteria,33038,Mediterraneibacter gnavus,7,9,9
+1506553,1,bacteria,89153,[Clostridium] hylemonae,5,6,6
+572511,1,bacteria,1796616,Blautia pseudococcoides,2,2,2
+572511,1,bacteria,1912897,Blautia argi,1,1,1
+830,1,bacteria,831,Butyrivibrio fibrisolvens,2,2,2
+830,1,bacteria,185008,Butyrivibrio hungatei,1,1,1
+1766253,1,bacteria,39491,Agathobacter rectalis,3,3,3
+1506577,1,bacteria,36835,[Clostridium] colinum,3,3,3
+2719231,1,bacteria,29375,Lacrimispora xylanolytica,1,2,2
+841,1,bacteria,166486,Roseburia intestinalis,1,1,1
+3076670,1,bacteria,3028070,Claveliimonas bilis,1,1,1
+2719313,1,bacteria,208479,Enterocloster bolteae,1,1,1
+2569097,1,bacteria,39488,Anaerobutyricum hallii,1,1,1
+1164882,1,bacteria,617123,Lachnoanaerobaculum umeaense,1,1,1
+207244,1,bacteria,649756,Anaerostipes hadrus,1,1,1
+1348611,1,bacteria,1185412,Vallitalea guaymasensis,2,2,2
+44260,1,bacteria,1525,Moorella thermoacetica,6,6,6
+2622527,1,bacteria,1550240,Thermoanaerobacterium sp. RBIITD,3,3,3
+2770094,1,bacteria,2316383,Biomaibacter acetigenes,3,3,3
+2039302,1,bacteria,1981510,Monoglobus pectinilyticus,3,3,3
+1930845,1,bacteria,1871025,Ndongobacter massiliensis,5,5,5
+2624170,1,bacteria,2714928,Erysipelothrix sp. HDW6A,3,3,3
+123375,1,bacteria,102148,Solobacterium moorei,1,1,1
+135858,1,bacteria,100886,Catenibacterium mitsuokai,1,1,1
+162289,1,bacteria,54005,Peptoniphilus harei,2,2,2
+2794837,1,bacteria,45497,Schnuerera ultunensis,1,1,1
+44000,1,bacteria,1222016,Caldicellulosiruptor changbaiensis,2,3,3
+338648,1,bacteria,338645,Candidatus Contubernalis alkalaceticus,1,1,1
+1654,1,bacteria,1852377,Actinomyces pacaensis,12638,12683,12683
+2609248,1,bacteria,2079536,Actinomyces sp. Z16,5,5,5
+2609248,1,bacteria,712122,Actinomyces sp. oral taxon 414,3,3,3
+2609248,1,bacteria,706438,Actinomyces sp. oral taxon 171,2,2,2
+2609248,1,bacteria,1851395,Actinomyces sp. Chiba101,2,2,2
+2609248,1,bacteria,2057798,Actinomyces sp. 432,2,2,2
+2609248,1,bacteria,712116,Actinomyces sp. oral taxon 169,1,2,2
+2609248,1,bacteria,2789425,Actinomyces sp. HMT 175,1,6,6
+1654,1,bacteria,2763540,Actinomyces trachealis,13,13,13
+1654,1,bacteria,2560010,Actinomyces procaprae,9,10,10
+1654,1,bacteria,2722820,Actinomyces faecalis,8,8,8
+1654,1,bacteria,2755559,Actinomyces capricornis,6,6,6
+1654,1,bacteria,111015,Actinomyces radicidentis,6,6,6
+1654,1,bacteria,1659,Actinomyces israelii,5,5,5
+1654,1,bacteria,103621,Actinomyces urogenitalis,5,5,5
+1654,1,bacteria,461393,Actinomyces massiliensis,4,4,4
+1654,1,bacteria,52771,Actinomyces howellii,3,3,3
+1654,1,bacteria,2744574,Actinomyces respiraculi,3,3,3
+1654,1,bacteria,675090,Actinomyces weissii,3,3,3
+1654,1,bacteria,2057743,Actinomyces wuliandei,3,3,3
+1654,1,bacteria,1960083,Actinomyces gaoshouyii,2,2,2
+1654,1,bacteria,2321394,Actinomyces lilanjuaniae,2,2,2
+1654,1,bacteria,2057800,Actinomyces qiguomingii,2,2,2
+1654,1,bacteria,1655,Actinomyces naeslundii,2,2,2
+1654,1,bacteria,52774,Actinomyces slackii,2,2,2
+1654,1,bacteria,2737173,Actinomyces marmotae,1,1,1
+1654,1,bacteria,1656,Actinomyces viscosus,1,1,1
+2529408,1,bacteria,1660,Schaalia odontolytica,2324,2385,2385
+2691889,1,bacteria,3059028,Schaalia sp. HMT-172,795,844,844
+2691889,1,bacteria,2794089,Schaalia sp. 19OD2882,8,8,8
+2691889,1,bacteria,2709403,Schaalia sp. ZJ405,5,5,5
+2529408,1,bacteria,52773,Schaalia meyeri,63,63,63
+2529408,1,bacteria,131111,Schaalia turicensis,11,11,11
+2529408,1,bacteria,181487,Schaalia cardiffensis,5,5,5
+2529408,1,bacteria,131110,Schaalia radingae,3,3,3
+2740557,1,bacteria,178339,Pauljensenia hongkongensis,11,11,11
+1069494,1,bacteria,1661,Trueperella pyogenes,2,2,2
+1069494,1,bacteria,59561,Trueperella bernardiae,2,2,2
+1069494,1,bacteria,312285,Trueperella bialowiezensis,1,1,1
+1069494,1,bacteria,2733571,Trueperella pecoris,1,1,1
+28263,1,bacteria,131112,Arcanobacterium phocae,1,2,2
+28263,1,bacteria,1503041,Arcanobacterium pinnipediorum,1,1,1
+1522056,1,bacteria,1282737,Flaviflexus salsibiostraticola,2,2,2
+1522056,1,bacteria,2758573,Flaviflexus equikiangi,1,1,1
+2692113,1,bacteria,66228,Gleimia europaea,2,2,2
+2692113,1,bacteria,595468,Gleimia hominis,1,1,1
+2767318,1,bacteria,1912795,Boudabousia tangfeifanii,3,3,3
+2609299,1,bacteria,2495645,Actinobaculum sp. 313,2,2,2
+1653174,1,bacteria,1870995,Actinotignum timonense,1,2,2
+2912996,1,bacteria,2758440,Changpingibacter yushuensis,2,2,2
+2050,1,bacteria,3036302,Mobiluncus massiliensis,1,1,1
+184869,1,bacteria,2811781,Varibaculum prostatecancerukia,1,1,1
+2692118,1,bacteria,33007,Winkia neuii,1,1,1
+32207,1,bacteria,43675,Rothia mucilaginosa,8997,9037,9037
+32207,1,bacteria,2047,Rothia dentocariosa,526,531,531
+32207,1,bacteria,172042,Rothia aeria,3,3,3
+32207,1,bacteria,169480,Rothia amarae,1,1,1
+32207,1,bacteria,396015,Rothia terrae,1,1,1
+2689056,1,bacteria,3047030,Rothia sp. SD9660Na,1,1,1
+1269,1,bacteria,1270,Micrococcus luteus,1799,2299,2299
+1269,1,bacteria,566027,Micrococcus yunnanensis,6,13,13
+2620948,1,bacteria,3142261,Micrococcus sp. 2A,3,3,3
+2620948,1,bacteria,2995171,Micrococcus sp. SL257,1,3,3
+2620948,1,bacteria,3101753,Micrococcus sp. HOU1,1,1,1
+1269,1,bacteria,2856555,Micrococcus porci,2,2,2
+235627,1,bacteria,2894192,Arthrobacter sp. zg-Y820,4,4,4
+235627,1,bacteria,2578107,Arthrobacter sp. KBS0702,3,5,5
+235627,1,bacteria,2830992,Arthrobacter sp. StoSoilB5,1,1,1
+235627,1,bacteria,2996261,Arthrobacter sp. MMS18-M83,1,1,1
+1663,1,bacteria,37921,Arthrobacter agilis,2,2,2
+1663,1,bacteria,199136,Arthrobacter koreensis,2,2,2
+1663,1,bacteria,2886935,Arthrobacter caoxuetaonis,2,2,2
+1663,1,bacteria,1670,Arthrobacter citreus,1,1,1
+1663,1,bacteria,409290,Arthrobacter oryzae,1,1,1
+1663,1,bacteria,656366,Arthrobacter alpinus,1,4,4
+1663,1,bacteria,2486855,Arthrobacter sulfonylureivorans,1,1,1
+2647000,1,bacteria,2772401,Pseudarthrobacter sp. BIM B-2242,1,1,1
+2647000,1,bacteria,2973976,Pseudarthrobacter sp. NS4,1,1,1
+2634190,1,bacteria,2782567,Paenarthrobacter sp. GOM3,2,2,2
+2634190,1,bacteria,2735317,Paenarthrobacter sp. YJN-D,1,1,1
+2078575,1,bacteria,1618207,Psychromicrobium lacuslunae,1,1,1
+2609290,1,bacteria,1714373,Microbacterium sp. No. 7,1,1,1
+2609290,1,bacteria,3135262,Microbacterium sp. LWO13-1.2,1,1,1
+2609290,1,bacteria,2925844,Microbacterium sp. H1-D42,1,1,1
+2609290,1,bacteria,3135258,Microbacterium sp. LWH11-1.2,1,2,2
+33882,1,bacteria,273677,Microbacterium oleivorans,1,1,1
+33882,1,bacteria,1526412,Microbacterium endophyticum,1,1,1
+33882,1,bacteria,82380,Microbacterium oxydans,1,2,2
+33882,1,bacteria,2851649,Microbacterium sufflavum,1,1,1
+33882,1,bacteria,2909587,Microbacterium elymi,1,1,1
+33882,1,bacteria,57043,Microbacterium esteraromaticum,1,1,1
+69578,1,bacteria,1259258,Cryobacterium breve,1,1,1
+69578,1,bacteria,2220095,Cryobacterium soli,1,2,2
+2621730,1,bacteria,2875729,Leucobacter sp. Psy1,1,1,1
+55968,1,bacteria,2932245,Leucobacter rhizosphaerae,1,1,1
+33877,1,bacteria,2781962,Agromyces archimandritae,1,1,1
+33877,1,bacteria,2929802,Agromyces larvae,1,1,1
+2615177,1,bacteria,2866588,Pseudoclavibacter sp. Marseille-Q3772,2,2,2
+2680004,1,bacteria,2592654,Protaetiibacter larvae,1,1,1
+2680006,1,bacteria,2759943,Protaetiibacter sp. SSC-01,1,1,1
+2617988,1,bacteria,2968831,Aquiluna sp. KACHI24,1,1,1
+529883,1,bacteria,232537,Rhodoluna limnophila,1,1,1
+257496,1,bacteria,2070337,Curtobacterium sp. SGAir0471,1,1,1
+447237,1,bacteria,1268041,Frondihabitans sucicola,1,1,1
+2645362,1,bacteria,2596912,Glaciihabitans sp. INWT7,1,1,1
+2632331,1,bacteria,3138237,Salinibacterium sp. TMP30,1,1,1
+120212,1,bacteria,2895559,Subtercola endophyticus,1,1,1
+1705353,1,bacteria,1987356,Aurantimicrobium photophilum,1,1,1
+2609250,1,bacteria,2609252,Rathayibacter sp. VKM Ac-2759,1,1,1
+2620175,1,bacteria,2973977,Cellulomonas sp. NS3,2,2,2
+2620175,1,bacteria,2904790,Cellulomonas sp. S1-8,1,1,1
+2620175,1,bacteria,2962632,Cellulomonas sp. NTE-D12,1,1,1
+1707,1,bacteria,2566013,Cellulomonas shaoxiangyii,1,1,1
+1707,1,bacteria,2819978,Cellulomonas fengjieae,1,1,1
+1707,1,bacteria,2968085,Cellulomonas wangsupingiae,1,1,1
+2649176,1,bacteria,2654547,Pseudactinotalea sp. HY158,1,1,1
+1696,1,bacteria,1703,Brevibacterium linens,2,2,2
+2614124,1,bacteria,2777556,Brevibacterium sp. SMBL_HHYL_HB1,2,2,2
+1696,1,bacteria,1136497,Brevibacterium siliguriense,1,1,1
+1696,1,bacteria,2697565,Brevibacterium limosum,1,1,1
+43668,1,bacteria,2942909,Brachybacterium kimchii,2,2,2
+43668,1,bacteria,2795215,Brachybacterium halotolerans,1,1,1
+36739,1,bacteria,1630135,Dermabacter vaginalis,1,1,1
+2623355,1,bacteria,3024246,Isoptericola sp. AK164,2,2,2
+186188,1,bacteria,2509459,Xylanimonas allomyrinae,1,1,1
+125287,1,bacteria,2283195,Ornithinimicrobium avium,1,1,1
+265976,1,bacteria,1078471,Serinicoccus profundi,1,1,1
+2630222,1,bacteria,3108389,Terrabacter sp. C0L_2,1,1,1
+53457,1,bacteria,53458,Janibacter limosus,1,1,1
+2643059,1,bacteria,2762331,Dermacoccus sp. PAMC28757,1,1,1
+2649857,1,bacteria,2904523,Allobranchiibius sp. GilTou73,1,1,1
+626119,1,bacteria,2779775,Ruania alkalisoli,1,1,1
+626119,1,bacteria,2897773,Ruania halotolerans,1,1,1
+84756,1,bacteria,84757,Beutenbergia cavernae,1,1,1
+57499,1,bacteria,1276,Kytococcus sedentarius,1,1,1
+2888818,1,bacteria,2819238,Pengzhenrongella sicca,1,1,1
+154116,1,bacteria,2589797,Georgenia yuyongxinii,1,1,1
+1862,1,bacteria,1863,Dermatophilus congolensis,1,1,1
+1716,1,bacteria,1719,Corynebacterium pseudotuberculosis,2,2,2
+1716,1,bacteria,234828,Corynebacterium caspium,2,2,2
+1716,1,bacteria,156978,Corynebacterium imitans,1,1,1
+1716,1,bacteria,2675219,Corynebacterium occultum,1,1,1
+1716,1,bacteria,1231000,Corynebacterium lactis,1,1,1
+1716,1,bacteria,53374,Corynebacterium coyleae,1,1,1
+1716,1,bacteria,38286,Corynebacterium afermentans,1,1,1
+1716,1,bacteria,1072256,Corynebacterium uterequi,1,1,1
+1716,1,bacteria,38304,Corynebacterium tuberculostearicum,1,1,1
+1716,1,bacteria,2719119,Corynebacterium rouxii,1,1,1
+1716,1,bacteria,43770,Corynebacterium striatum,1,1,1
+1716,1,bacteria,258224,Corynebacterium resistens,1,1,1
+1716,1,bacteria,699041,Corynebacterium hindlerae,1,1,1
+1716,1,bacteria,71254,Corynebacterium confusum,1,1,1
+1716,1,bacteria,161895,Corynebacterium phocae,1,1,1
+1716,1,bacteria,99807,Corynebacterium auriscanis,1,1,1
+1716,1,bacteria,1717,Corynebacterium diphtheriae,1,1,1
+1716,1,bacteria,2487892,Corynebacterium urogenitale,1,1,1
+2249310,1,bacteria,185642,Mycobacterium parmense,3,4,4
+2249310,1,bacteria,1784,Mycobacterium simiae,1,1,1
+2642494,1,bacteria,2675523,Mycobacterium sp. DL440,1,1,1
+1763,1,bacteria,43348,Mycobacterium branderi,1,1,1
+2636767,1,bacteria,3023370,Mycolicibacterium sp. TUM20985,1,1,1
+2636767,1,bacteria,3064286,Mycolicibacterium sp. MU0053,1,1,1
+1866885,1,bacteria,1792,Mycolicibacterium chitae,1,1,1
+1866885,1,bacteria,758802,Mycolicibacterium litorale,1,1,1
+1866885,1,bacteria,39691,Mycolicibacterium moriokaense,1,1,1
+670516,1,bacteria,1774,Mycobacteroides chelonae,2,2,2
+670516,1,bacteria,83262,Mycobacteroides immunogenum,1,1,1
+2053,1,bacteria,2665643,Gordonia mangrovi,4,5,5
+2657482,1,bacteria,2811424,Gordonia sp. PDNC005,1,2,2
+2657482,1,bacteria,2995145,Gordonia sp. SL306,1,1,1
+2053,1,bacteria,2054,Gordonia bronchialis,1,4,4
+2637762,1,bacteria,2975992,Nocardia sp. NBC_00508,1,1,1
+1817,1,bacteria,135487,Nocardia cyriacigeorgica,1,1,1
+1817,1,bacteria,455432,Nocardia terpenica,1,1,1
+192944,1,bacteria,1302308,Rhodococcus sp. P1Y,2,2,2
+2593676,1,bacteria,2903865,Streptomyces sp. NBC_01435,4,4,4
+2593676,1,bacteria,3129111,Streptomyces sp. TG1A-60,3,3,3
+2593676,1,bacteria,2903654,Streptomyces sp. NBC_00455,2,2,2
+2593676,1,bacteria,2903660,Streptomyces sp. NBC_00525,2,2,2
+2593676,1,bacteria,2742134,Streptomyces sp. NA03103,2,8,8
+2593676,1,bacteria,3118173,Streptomyces sp. Q6,2,2,2
+2593676,1,bacteria,2976015,Streptomyces sp. NBC_01477,2,2,2
+2593676,1,bacteria,2903862,Streptomyces sp. NBC_01429,2,2,2
+2593676,1,bacteria,2975917,Streptomyces sp. NBC_01716,1,1,1
+2593676,1,bacteria,2742137,Streptomyces sp. NA02950,1,1,1
+2593676,1,bacteria,1855352,Streptomyces sp. TLI_053,1,1,1
+2593676,1,bacteria,2072505,Streptomyces sp. Go-475,1,1,1
+1883,1,bacteria,47763,Streptomyces lydicus,3,8,8
+1883,1,bacteria,42684,Streptomyces collinus,2,4,4
+1883,1,bacteria,553510,Streptomyces gilvosporeus,1,1,1
+1883,1,bacteria,83656,Streptomyces tsukubensis,1,1,1
+1883,1,bacteria,452529,Streptomyces scopuliridis,1,1,1
+1883,1,bacteria,436397,Streptomyces sudanensis,1,1,1
+1883,1,bacteria,2049881,Streptomyces dengpaensis,1,1,1
+1883,1,bacteria,2662397,Streptomyces fagopyri,1,1,1
+1883,1,bacteria,1960,Streptomyces vinaceus,1,1,1
+1883,1,bacteria,1437453,Streptomyces leeuwenhoekii,1,2,2
+2633591,1,bacteria,2998080,Kitasatospora sp. YST-16,2,3,3
+2995702,1,bacteria,235986,Actinacidiphila glaucinigra,1,1,1
+2995704,1,bacteria,2126346,Peterkaempfera bronchialis,1,1,1
+1912216,1,bacteria,33011,Cutibacterium granulosum,3,3,3
+1912216,1,bacteria,3016342,Cutibacterium equinum,2,2,2
+1912216,1,bacteria,1747,Cutibacterium acnes,1,1,1
+2619695,1,bacteria,2672569,Microlunatus sp. Gsoil 973,3,3,3
+29404,1,bacteria,630515,Microlunatus soli,1,1,1
+1912215,1,bacteria,2057246,Acidipropionibacterium virtanenii,2,2,2
+1912215,1,bacteria,1748,Acidipropionibacterium acidipropionici,1,1,1
+1912215,1,bacteria,1749,Acidipropionibacterium jensenii,1,1,1
+2801844,1,bacteria,1750,Arachnia propionica,2,2,2
+2919589,1,bacteria,1871034,Vaginimicrobium propionicum,2,2,2
+1743,1,bacteria,1744,Propionibacterium freudenreichii,1,1,1
+2615069,1,bacteria,2976000,Nocardioides sp. NBC_00368,2,2,2
+2615069,1,bacteria,2917724,Nocardioides sp. TF02-7,1,1,1
+2615069,1,bacteria,2840457,Nocardioides sp. LMS-CY,1,1,1
+2615069,1,bacteria,2884264,Nocardioides sp. Kera G14,1,1,1
+1839,1,bacteria,2712223,Nocardioides anomalus,1,1,1
+182639,1,bacteria,182640,Kribbella flavida,1,1,1
+2644121,1,bacteria,2903578,Kribbella sp. NBC_01245,1,1,1
+1678,1,bacteria,1683,Bifidobacterium angulatum,12,12,12
+2608897,1,bacteria,2983230,Bifidobacterium sp. ESL0775,4,4,4
+1678,1,bacteria,216816,Bifidobacterium longum,2,2,2
+1678,1,bacteria,1680,Bifidobacterium adolescentis,2,2,2
+1678,1,bacteria,1686,Bifidobacterium catenulatum,1,1,1
+1678,1,bacteria,1603886,Bifidobacterium lemurum,1,1,1
+1678,1,bacteria,638619,Bifidobacterium actinocoloniiforme,1,1,1
+2618356,1,bacteria,715472,Amycolatopsis sp. 2-2,2,2,2
+2618356,1,bacteria,1911175,Amycolatopsis sp. BJA-103,1,1,1
+1813,1,bacteria,76021,Amycolatopsis coloradensis,1,1,1
+1813,1,bacteria,944492,Amycolatopsis thermalba,1,1,1
+2893673,1,bacteria,129921,Amycolatopsis keratiniphila,1,1,1
+65496,1,bacteria,340345,Actinoalloteichus hymeniacidonis,2,2,2
+1137960,1,bacteria,211114,Allokutzneria albata,1,1,1
+2636769,1,bacteria,2975952,Actinomycetospora sp. NBC_00405,1,1,1
+2621979,1,bacteria,2802641,Kutzneria sp. CA-103260,1,1,1
+1873,1,bacteria,1420889,Micromonospora profundi,2,2,2
+2617518,1,bacteria,3015151,Micromonospora sp. WMMD882,1,1,1
+2617518,1,bacteria,2742132,Verrucosispora sp. NA02020,1,1,1
+1873,1,bacteria,1877,Micromonospora echinospora,1,1,1
+1873,1,bacteria,1003110,Micromonospora maris,1,1,1
+83681,1,bacteria,1291556,Nonomuraea fuscirosea,2,2,2
+2614687,1,bacteria,2903583,Microbispora sp. NBC_01189,1,1,1
+1988,1,bacteria,46165,Actinomadura verrucosospora,1,1,1
+2624323,1,bacteria,2903557,Actinoallomurus sp. NBC_01490,1,1,1
+1860,1,bacteria,1861,Geodermatophilus obscurus,1,1,1
+2767353,1,bacteria,1382,Lancefieldella parvula,527,527,527
+2847312,1,bacteria,604330,Parafannyhessea umbonata,1,1,1
+1472762,1,bacteria,1871019,Enorma phocaeensis,1,1,1
+42255,1,bacteria,2051957,Rubrobacter indicoceani,2,2,2
+53634,1,bacteria,53635,Acidimicrobium ferrooxidans,1,1,1
+2619626,1,bacteria,1337936,Calothrix sp. 336/3,2,2,2
+2619626,1,bacteria,2005462,Calothrix sp. NIES-3974,2,2,2
+2593658,1,bacteria,2576904,Nostoc sp. TCL26-01,3,3,3
+2626047,1,bacteria,1353138,Synechococcus sp. CBW1006,3,4,4
+1188227,1,bacteria,1188228,Gloeomargarita lithophora,1,1,1
+1983111,1,bacteria,1763363,cyanobacterium endosymbiont of Rhopalodia gibberula,2,2,2
+2093,1,bacteria,3004105,Candidatus Mycoplasma mahonii,5,5,5
+3098986,1,bacteria,2155,Phytoplasma sp.,1,1,1
+2923352,1,bacteria,29562,Mesomycoplasma ovipneumoniae,2,2,2
+2767358,1,bacteria,2109,Mycoplasmopsis synoviae,1,1,1
+120961,1,bacteria,120962,Roseiflexus castenholzii,6,6,6
+2935559,1,bacteria,52022,Allomeiothermus silvanus,4,4,4
+1298,1,bacteria,317577,Deinococcus ficus,2,2,2
+724,1,bacteria,729,Haemophilus parainfluenzae,10584,10717,10717
+724,1,bacteria,735,Haemophilus parahaemolyticus,6699,6743,6743
+724,1,bacteria,726,Haemophilus haemolyticus,3455,3542,3542
+724,1,bacteria,727,Haemophilus influenzae,1937,2159,2159
+724,1,bacteria,730,[Haemophilus] ducreyi,1,1,1
+713,1,bacteria,51161,Actinobacillus delphinicola,5,5,5
+713,1,bacteria,230709,Actinobacillus genomosp. 2,1,1,1
+416916,1,bacteria,732,Aggregatibacter aphrophilus,5,5,5
+476528,1,bacteria,47735,Bibersteinia trehalosi,1,1,1
+354276,1,bacteria,61645,Enterobacter asburiae,3,10,10
+354276,1,bacteria,550,Enterobacter cloacae,1,1,1
+570,1,bacteria,1463165,Klebsiella quasipneumoniae,4,15,15
+36866,1,bacteria,2675797,Enterobacteriaceae endosymbiont of Plateumaris sericea,4,4,4
+36866,1,bacteria,2675776,Enterobacteriaceae endosymbiont of Donacia crassipes,1,1,1
+158483,1,bacteria,158822,Cedecea neteri,2,2,2
+1330547,1,bacteria,208223,Kosakonia cowanii,1,1,1
+2632876,1,bacteria,2725560,Kosakonia sp. SMBL-WEM22,1,1,1
+579,1,bacteria,61648,Kluyvera intermedia,2,2,2
+702,1,bacteria,703,Plesiomonas shigelloides,1,1,1
+83654,1,bacteria,83655,Leclercia adecarboxylata,1,1,1
+561,1,bacteria,1499973,Escherichia marmotae,1,1,1
+204037,1,bacteria,204039,Dickeya dianthicola,9,9,9
+32199,1,bacteria,9,Buchnera aphidicola,6,6,6
+53335,1,bacteria,59814,Pantoea dispersa,1,1,1
+626,1,bacteria,628,Xenorhabdus nematophila,3,3,3
+1649845,1,bacteria,367190,Yersinia similis,1,1,1
+629,1,bacteria,263819,Yersinia aleksiciae,1,1,1
+635,1,bacteria,636,Edwardsiella tarda,1,1,1
+196821,1,bacteria,2678259,Pseudomonas sp. Seg1,10,12,12
+196821,1,bacteria,3104265,Pseudomonas sp. B33.4,1,1,1
+196821,1,bacteria,2893890,Pseudomonas sp. KNUC1026,1,1,1
+286,1,bacteria,244566,Pseudomonas lurida,9,10,10
+286,1,bacteria,2518644,Pseudomonas tructae,4,4,4
+286,1,bacteria,47886,Pseudomonas luteola,1,1,1
+136845,1,bacteria,47885,Pseudomonas oryzihabitans,1,1,1
+136842,1,bacteria,587753,Pseudomonas chlororaphis,1,7,7
+136843,1,bacteria,76758,Pseudomonas orientalis,1,1,1
+2901190,1,bacteria,3041098,Halopseudomonas sp. SMJS2,7,7,7
+578833,1,bacteria,316,Stutzerimonas stutzeri,1,2,2
+2742,1,bacteria,1305740,Marinobacter nanhaiticus,1,1,1
+53246,1,bacteria,314281,Pseudoalteromonas tunicata,10,13,13
+53246,1,bacteria,339617,Pseudoalteromonas viridis,2,3,3
+1751872,1,bacteria,1526571,Lacimicrobium alkaliphilum,2,2,2
+2685791,1,bacteria,2686358,Paraglaciecola sp. L3A3,1,1,1
+226,1,bacteria,715451,Alteromonas naphthalenivorans,1,1,1
+196834,1,bacteria,1816218,Colwellia sp. PAMC 20917,1,1,1
+1518149,1,bacteria,2054316,Thalassotalea atypica,1,1,1
+196818,1,bacteria,2589987,Shewanella sp. Scap07,1,2,2
+2800384,1,bacteria,1940690,Pseudidiomarina andamanensis,1,1,1
+404432,1,bacteria,1949085,Salinicola lusitanus,5,5,5
+504090,1,bacteria,657387,Kushneria phosphatilytica,5,5,5
+3137761,1,bacteria,2497861,Billgrantia tianxiuensis,5,5,5
+2609666,1,bacteria,2855441,Halomonas sp. 18071143,3,3,3
+2745,1,bacteria,2562282,Halomonas binhaiensis,1,1,1
+28253,1,bacteria,2773454,Marinomonas algicola,3,3,3
+3020832,1,bacteria,1094342,Alloalcanivorax xenomutans,1,1,1
+2624107,1,bacteria,3015983,Hahella sp. HNIBRBA332,1,1,1
+662,1,bacteria,1918946,Vibrio palustris,9,10,10
+662,1,bacteria,28171,Vibrio aestuarianus,2,3,3
+662,1,bacteria,92172,Vibrio aerogenes,1,1,1
+642,1,bacteria,652,Aeromonas schubertii,1,1,1
+642,1,bacteria,654,Aeromonas veronii,1,3,3
+642,1,bacteria,70856,Aeromonas popoffii,1,1,1
+642,1,bacteria,73010,Aeromonas encheleia,1,1,1
+2636315,1,bacteria,2977120,Oceanimonas sp. AH20CE76,3,4,4
+83770,1,bacteria,83771,Succinivibrio dextrinosolvens,3,3,3
+469,1,bacteria,202950,Acinetobacter baylyi,3,4,4
+196816,1,bacteria,1808001,Acinetobacter sp. LoGeW2-3,2,2,2
+196816,1,bacteria,3020716,Acinetobacter sp. GSS19,1,1,1
+497,1,bacteria,256326,Psychrobacter arenosus,1,1,1
+2643099,1,bacteria,3035472,Thiomicrospira sp. R3,1,1,1
+40222,1,bacteria,2881052,Methylophaga pinxianii,1,1,1
+68,1,bacteria,2992573,Lysobacter auxotrophicus,1,1,1
+2635362,1,bacteria,2820808,Lysobacter sp. K5869,1,2,2
+106633,1,bacteria,1033854,Thioalkalivibrio sulfidiphilus,2,2,2
+156885,1,bacteria,80679,Thioflavicoccus mobilis,1,1,1
+2780488,1,bacteria,1973002,Thiosocius teredinicola,1,1,1
+445,1,bacteria,45067,Legionella lansingensis,3,3,3
+445,1,bacteria,96230,Legionella fallonii,1,1,1
+447467,1,bacteria,447471,Simiduia agarivorans,1,1,1
+630749,1,bacteria,1748242,Spongiibacter taiwanensis,1,1,1
+482,1,bacteria,488,Neisseria mucosa,6967,7997,7997
+482,1,bacteria,28449,Neisseria subflava,1806,2011,2011
+2623750,1,bacteria,2972775,Neisseria sp. Marseille-Q5346,9,10,10
+2623750,1,bacteria,3077590,Neisseria sp. DTU_2021_1001991_1_SI_NGA_ILE_055,8,10,10
+2623750,1,bacteria,1871109,Neisseria sp. RH3002v2g,7,9,9
+2623750,1,bacteria,2912675,Neisseria sp. Dent CA1/247,5,5,5
+2623750,1,bacteria,641148,Neisseria sp. oral taxon 014,2,2,2
+2623750,1,bacteria,655307,Neisseria sp. KEM232,1,1,1
+482,1,bacteria,487,Neisseria meningitidis,5,5,5
+482,1,bacteria,33053,Neisseria perflava,3,8,8
+482,1,bacteria,490,Neisseria sicca,3,3,3
+482,1,bacteria,492,Neisseria animalis,3,3,3
+482,1,bacteria,484,Neisseria flavescens,2,2,2
+482,1,bacteria,495,Neisseria elongata,2,2,2
+482,1,bacteria,486,Neisseria lactamica,2,2,2
+482,1,bacteria,1853278,Neisseria chenwenguii,1,1,1
+482,1,bacteria,1853276,Neisseria weixii,1,1,1
+482,1,bacteria,2709396,Neisseria yangbaofengii,1,1,1
+482,1,bacteria,267212,Neisseria bacilliformis,1,1,1
+482,1,bacteria,1470200,Neisseria arctica,1,1,1
+482,1,bacteria,640030,Neisseria zalophi,1,1,1
+482,1,bacteria,607711,Neisseria wadsworthii,1,1,1
+482,1,bacteria,194197,Neisseria dentiae,1,1,1
+482,1,bacteria,28091,Neisseria weaveri,1,1,1
+482,1,bacteria,485,Neisseria gonorrhoeae,1,1,1
+535,1,bacteria,1108595,Chromobacterium vaccinii,1,1,1
+240411,1,bacteria,2594795,Chitinimonas arctica,1,1,1
+400947,1,bacteria,2739061,Deefgea piscis,1,1,1
+47670,1,bacteria,47671,Lautropia mirabilis,7222,7345,7345
+87882,1,bacteria,292,Burkholderia cepacia,4,4,4
+87882,1,bacteria,488729,Burkholderia metallica,1,1,1
+44013,1,bacteria,2527775,Polynucleobacter paneuropaeus,3,3,3
+44013,1,bacteria,1855895,Polynucleobacter paludilacus,1,1,1
+2615204,1,bacteria,2735434,Paraburkholderia sp. PGU19,1,1,1
+1822464,1,bacteria,169427,Paraburkholderia terricola,1,1,1
+93217,1,bacteria,656179,Pandoraea faecigallinarum,1,1,1
+106589,1,bacteria,164546,Cupriavidus taiwanensis,1,1,1
+283,1,bacteria,225991,Comamonas aquatica,3,5,5
+2490452,1,bacteria,1458425,Serpentinimonas raichei,2,2,2
+2649760,1,bacteria,2714925,Diaphorobacter sp. HDW4B,1,1,1
+3051138,1,bacteria,1926868,Paenacidovorax monticola,1,1,1
+1436289,1,bacteria,1436290,Candidatus Symbiobacter mobilis,1,1,1
+352450,1,bacteria,2109915,Simplicispira suum,1,1,1
+174951,1,bacteria,94132,Ramlibacter tataouinensis,1,1,1
+34072,1,bacteria,34073,Variovorax paradoxus,1,1,1
+1522432,1,bacteria,2072590,Pseudoduganella armeniaca,1,3,3
+846,1,bacteria,2946593,Oxalobacter aliiformigenes,1,1,1
+2624150,1,bacteria,2025949,Herbaspirillum sp. meg3,1,1,1
+2644401,1,bacteria,2807626,Glaciimonas sp. PAMC28666,1,1,1
+507,1,bacteria,511,Alcaligenes faecalis,1,4,4
+517,1,bacteria,1416806,Bordetella genomosp. 8,1,1,1
+359336,1,bacteria,75697,Castellaniella defragrans,1,1,1
+2640088,1,bacteria,2753607,Rhizobacter sp. AJA081-3,1,1,1
+1778653,1,bacteria,171865,Sulfuriferula plumbiphila,6,6,6
+2637784,1,bacteria,1985873,Sulfuriferula sp. AH1,1,1,1
+404,1,bacteria,405,Methylobacillus flagellatus,1,1,1
+146937,1,bacteria,2785627,Azospira inquinata,3,3,3
+2633351,1,bacteria,2231055,Dechloromonas sp. HYN0024,1,1,1
+2613769,1,bacteria,2917727,Rhizobium sp. C104,1,5,5
+379,1,bacteria,398,Rhizobium tropici,2,2,2
+379,1,bacteria,29449,Rhizobium etli,2,2,2
+379,1,bacteria,359,Rhizobium rhizogenes,1,1,1
+379,1,bacteria,2041385,Rhizobium tumorigenes,1,1,1
+379,1,bacteria,2081791,Rhizobium ruizarguesonis,1,1,1
+1903858,1,bacteria,1335061,Pseudorhizobium flavum,6,7,7
+357,1,bacteria,648995,Agrobacterium pusense,1,2,2
+106591,1,bacteria,555315,Ensifer canadensis,1,1,1
+68287,1,bacteria,2725666,Mesorhizobium terrae,4,4,4
+68287,1,bacteria,536018,Mesorhizobium australicum,2,2,2
+325217,1,bacteria,2589974,Mesorhizobium sp. B2-1-1,1,1,1
+2643807,1,bacteria,3028735,Chelativorans sp. AA-79,6,6,6
+2638441,1,bacteria,2978392,Phyllobacterium sp. A18/5-2,1,1,1
+31988,1,bacteria,83265,Aminobacter niigataensis,1,1,1
+374,1,bacteria,1404367,Bradyrhizobium symbiodeficiens,2,2,2
+374,1,bacteria,1274631,Bradyrhizobium icense,1,1,1
+2631580,1,bacteria,3039155,Bradyrhizobium sp. CB2312,1,1,1
+1073,1,bacteria,1076,Rhodopseudomonas palustris,1,1,1
+81,1,bacteria,53399,Hyphomicrobium denitrificans,3,3,3
+2653178,1,bacteria,2599640,Bosea sp. F3-2,2,2,2
+2615210,1,bacteria,2603276,Methylobacterium sp. WL1,1,1,1
+2615210,1,bacteria,2984843,Methylobacterium sp. FF17,1,1,1
+773,1,bacteria,33047,Bartonella vinsonii,1,1,1
+773,1,bacteria,2133959,Bartonella kosoyi,1,1,1
+1002545,1,bacteria,1002546,uncultured Cohaesibacter sp.,2,2,2
+1156568,1,bacteria,569860,Methylovirgula ligni,1,1,1
+13687,1,bacteria,1813879,Sphingomonas panacisoli,7,7,7
+13687,1,bacteria,2764186,Sphingomonas sabuli,1,1,1
+13687,1,bacteria,2899123,Sphingomonas cannabina,1,1,1
+196159,1,bacteria,3014784,Sphingomonas sp. NIBR02145,1,1,1
+165695,1,bacteria,76947,Sphingobium herbicidovorans,1,2,2
+2630544,1,bacteria,1634516,Citromicrobium sp. JL477,1,1,1
+2614945,1,bacteria,2067415,Altererythrobacter sp. TH136,2,3,3
+2211638,1,bacteria,1492771,Limimaricola variabilis,2,2,2
+265,1,bacteria,3017781,Paracoccus aerodenitrificans,2,2,2
+2944826,1,bacteria,2758038,Pontibrevibacter nitratireducens,2,2,2
+1653176,1,bacteria,1063,Cereibacter sphaeroides,2,2,2
+2778525,1,bacteria,2171755,Profundibacter amoris,1,1,1
+2623558,1,bacteria,2867010,Aliiroseovarius sp. M344,1,1,1
+2614913,1,bacteria,2587846,Roseovarius sp. THAF8,1,1,1
+2614913,1,bacteria,2823043,Roseovarius sp. SCSIO 43702,1,1,1
+1434019,1,bacteria,561184,Mameliella alba,1,1,1
+434,1,bacteria,2592655,Acetobacter vaccinii,1,1,1
+1434011,1,bacteria,65958,Komagataeibacter oboediens,1,1,1
+2603324,1,bacteria,1969806,Acidibrevibacterium fodinaquatile,1,1,1
+91914,1,bacteria,91915,Asaia bogorensis,1,1,1
+2617492,1,bacteria,2897332,Roseomonas sp. OT10,1,1,1
+41275,1,bacteria,293,Brevundimonas diminuta,1,3,3
+2622653,1,bacteria,2579977,Brevundimonas sp. SGAir0440,1,2,2
+1795639,1,bacteria,1526572,Aquisalinus flavus,4,4,4
+2813804,1,bacteria,2043170,Paremcibacter congregatus,4,4,4
+171436,1,bacteria,171437,Tistrella mobilis,1,1,1
+2638931,1,bacteria,2749086,Hyphobacterium sp. CCMP332,1,1,1
+1016,1,bacteria,1017,Capnocytophaga gingivalis,11526,11602,11602
+1016,1,bacteria,1019,Capnocytophaga sputigena,3397,3454,3454
+1016,1,bacteria,327575,Capnocytophaga leadbetteri,1565,1615,1615
+2640652,1,bacteria,1316596,Capnocytophaga sp. oral taxon 878,6,6,6
+2640652,1,bacteria,2545799,Capnocytophaga sp. FDAARGOS_737,3,3,3
+2640652,1,bacteria,2748316,Capnocytophaga sp. oral taxon 902,1,1,1
+1016,1,bacteria,28188,Capnocytophaga canimorsus,2,6,6
+1016,1,bacteria,2708117,Capnocytophaga endodontalis,2,2,2
+1016,1,bacteria,1018,Capnocytophaga ochracea,1,1,1
+237,1,bacteria,1617283,Flavobacterium nitrogenifigens,10,10,10
+237,1,bacteria,3003260,Flavobacterium gelatinilyticum,8,8,8
+196869,1,bacteria,3097547,Flavobacterium sp. NG2,4,4,4
+196869,1,bacteria,2885633,Flavobacterium sp. N1719,1,1,1
+196869,1,bacteria,2775246,Flavobacterium sp. CS20,1,1,1
+196869,1,bacteria,2986838,Flavobacterium sp. N502540,1,1,1
+237,1,bacteria,2172098,Flavobacterium pallidum,2,2,2
+237,1,bacteria,3016339,Flavobacterium lacustre,1,1,1
+237,1,bacteria,986,Flavobacterium johnsoniae,1,1,1
+237,1,bacteria,96345,Flavobacterium psychrophilum,1,1,1
+237,1,bacteria,1678728,Flavobacterium kingsejongi,1,1,1
+237,1,bacteria,3003257,Flavobacterium aestivum,1,1,1
+237,1,bacteria,2906077,Flavobacterium davisii,1,1,1
+252356,1,bacteria,2976127,Maribacter litopenaei,13,13,13
+2615021,1,bacteria,754409,Winogradskyella sp. PG-2,11,11,11
+2615021,1,bacteria,2929510,Winogradskyella sp. MH6,1,1,1
+2648764,1,bacteria,3075823,Hwangdonia sp. SCSIO 19198,9,9,9
+2646735,1,bacteria,3070659,Aestuariibaculum sp. YM273,7,7,7
+104264,1,bacteria,59600,Cellulophaga algicola,4,4,4
+104264,1,bacteria,979,Cellulophaga lytica,1,1,1
+2634405,1,bacteria,2686362,Cellulophaga sp. L1A9,1,1,1
+292691,1,bacteria,2920386,Christiangramia oceanisediminis,5,5,5
+292691,1,bacteria,1913577,Christiangramia salexigens,1,1,1
+444459,1,bacteria,1383885,Flagellimonas maritima,3,3,3
+2644544,1,bacteria,2905121,Flagellimonas sp. HMM57,1,1,1
+343334,1,bacteria,343403,Costertonia aggregata,4,4,4
+2642485,1,bacteria,3119977,Myroides sp. JBRI-B21084,3,3,3
+363408,1,bacteria,328515,Nonlabens dokdonensis,1,1,1
+363408,1,bacteria,331648,Nonlabens spongiae,1,1,1
+2615035,1,bacteria,2608253,Nonlabens sp. Ci31,1,1,1
+2631190,1,bacteria,2908210,Antarcticibacterium sp. 1MA-6-2,3,3,3
+2615049,1,bacteria,2908842,Muricauda sp. SCSIO 64092,1,1,1
+2615049,1,bacteria,2908843,Muricauda sp. SCSIO 65647,1,1,1
+1287916,1,bacteria,1761453,Euzebyella marina,2,2,2
+2615033,1,bacteria,2173169,Dokdonia sp. Dokd-P16,2,2,2
+2987594,1,bacteria,2744027,Rasiella rasia,1,1,1
+561367,1,bacteria,2809707,Salinimicrobium tongyeongense,1,1,1
+449810,1,bacteria,3060215,Lutimonas zeaxanthinifaciens,1,1,1
+2632265,1,bacteria,2779360,Marixanthomonas sp. SCSIO 43207,1,1,1
+104267,1,bacteria,584609,Tenacibaculum jejuense,1,1,1
+196858,1,bacteria,754397,Polaribacter sp. SA4-10,1,1,1
+2644710,1,bacteria,1336794,Formosa sp. Hel1_33_131,1,1,1
+2615031,1,bacteria,2494375,Aequorivita sp. H23M31,1,1,1
+2893197,1,bacteria,2893202,Aegicerativicinus sediminis,1,2,2
+2593645,1,bacteria,2039166,Chryseobacterium sp. 6424,3,4,4
+2593645,1,bacteria,2713414,Chryseobacterium sp. POL2,2,2,2
+2593645,1,bacteria,2920939,Chryseobacterium sp. Y16C,1,3,3
+2593645,1,bacteria,2966625,Chryseobacterium sp. MA9,1,4,4
+59732,1,bacteria,1685010,Chryseobacterium glaciei,6,8,8
+59732,1,bacteria,2983606,Chryseobacterium fluminis,2,2,2
+59732,1,bacteria,536441,Chryseobacterium taklimakanense,2,2,2
+59732,1,bacteria,2759528,Chryseobacterium capnotolerans,1,1,1
+59732,1,bacteria,192389,Chryseobacterium daecheongense,1,1,1
+59732,1,bacteria,2754694,Chryseobacterium manosquense,1,1,1
+59732,1,bacteria,2929800,Chryseobacterium suipulveris,1,1,1
+59732,1,bacteria,1493872,Chryseobacterium shandongense,1,2,2
+2782231,1,bacteria,266749,Kaistella jeonii,1,1,1
+2782231,1,bacteria,2878534,Kaistella polysaccharea,1,1,1
+34084,1,bacteria,34085,Riemerella anatipestifer,2,2,2
+34084,1,bacteria,103810,Riemerella columbina,1,1,1
+59734,1,bacteria,343874,Empedobacter falsenii,3,3,3
+1013,1,bacteria,1014,Weeksella virosa,2,2,2
+2766735,1,bacteria,3103144,Faecalibacter sp. LW9,1,1,1
+34098,1,bacteria,1653831,Blattabacterium cuenoti,6,6,6
+2828338,1,bacteria,2761580,Croceimicrobium hydrocarbonivorans,1,1,1
+838,1,bacteria,1177574,Prevotella jejuni,3988,4240,4240
+838,1,bacteria,589437,Prevotella scopos,3437,3664,3664
+838,1,bacteria,28132,Prevotella melaninogenica,1659,1746,1746
+838,1,bacteria,28131,Prevotella intermedia,932,1029,1029
+2638335,1,bacteria,712471,Prevotella sp. oral taxon 475,65,66,66
+2638335,1,bacteria,2937774,Prevotella sp. E15-22,63,70,70
+2638335,1,bacteria,2913621,Prevotella sp. E9-3,55,62,62
+2638335,1,bacteria,2913616,Prevotella sp. E13-17,46,51,51
+2638335,1,bacteria,652716,Prevotella sp. oral taxon 299,30,30,30
+2638335,1,bacteria,2691580,Prevotella sp. Rep29,27,28,28
+2638335,1,bacteria,2913620,Prevotella sp. E2-28,9,9,9
+838,1,bacteria,28133,Prevotella nigrescens,67,74,74
+838,1,bacteria,2913614,Prevotella communis,67,67,67
+838,1,bacteria,28128,Prevotella corporis,65,70,70
+838,1,bacteria,28129,Prevotella denticola,51,54,54
+838,1,bacteria,52227,Prevotella dentalis,47,49,49
+838,1,bacteria,2801997,Prevotella herbatica,38,38,38
+838,1,bacteria,470565,Prevotella histicola,36,37,37
+838,1,bacteria,589436,Prevotella fusca,20,20,20
+838,1,bacteria,28137,Prevotella veroralis,15,15,15
+838,1,bacteria,28125,Prevotella bivia,13,13,13
+838,1,bacteria,282402,Prevotella multiformis,10,10,10
+2884814,1,bacteria,2133944,Pseudoprevotella muciniphila,1793,1803,1803
+2974251,1,bacteria,165179,Segatella copri,111,115,115
+2974251,1,bacteria,28135,Segatella oris,29,31,31
+2974251,1,bacteria,2518605,Segatella hominis,27,29,29
+2974251,1,bacteria,305719,Segatella baroniae,14,51,51
+2974257,1,bacteria,28127,Hoylesella buccalis,33,38,38
+2974257,1,bacteria,76123,Hoylesella enoeca,21,24,24
+577309,1,bacteria,454154,Paraprevotella clara,23,25,25
+577309,1,bacteria,454155,Paraprevotella xylaniphila,17,20,20
+558436,1,bacteria,839,Xylanibacter ruminicola,28,28,28
+816,1,bacteria,371601,Bacteroides xylanisolvens,94,186,186
+139043,1,bacteria,162156,uncultured Bacteroides sp.,80,80,80
+816,1,bacteria,817,Bacteroides fragilis,65,91,91
+816,1,bacteria,818,Bacteroides thetaiotaomicron,38,45,45
+816,1,bacteria,477666,Bacteroides graminisolvens,37,37,37
+816,1,bacteria,46506,Bacteroides stercoris,36,44,44
+2646097,1,bacteria,2763022,Bacteroides sp. M10,17,24,24
+2646097,1,bacteria,2755405,Bacteroides sp. CACC 737,11,43,43
+2646097,1,bacteria,3117552,Bacteroides sp. MSB163,6,6,6
+816,1,bacteria,291644,Bacteroides salyersiae,31,35,35
+816,1,bacteria,291645,Bacteroides nordii,21,22,22
+816,1,bacteria,28113,Bacteroides heparinolyticus,21,23,23
+816,1,bacteria,28119,Bacteroides zoogleoformans,17,20,20
+816,1,bacteria,329854,Bacteroides intestinalis,15,15,15
+816,1,bacteria,820,Bacteroides uniformis,15,26,26
+816,1,bacteria,674529,Bacteroides faecis,15,19,19
+816,1,bacteria,246787,Bacteroides cellulosilyticus,11,15,15
+816,1,bacteria,47678,Bacteroides caccae,11,11,11
+816,1,bacteria,290053,Bacteroides helcogenes,9,9,9
+816,1,bacteria,2715212,Bacteroides faecium,7,7,7
+816,1,bacteria,1796613,Bacteroides caecimuris,7,8,8
+816,1,bacteria,28111,Bacteroides eggerthii,6,8,8
+816,1,bacteria,2650158,Bacteroides luhongzhouii,4,4,4
+816,1,bacteria,338188,Bacteroides finegoldii,2,2,2
+816,1,bacteria,2650157,Bacteroides zhangwenhongii,2,2,2
+816,1,bacteria,28116,Bacteroides ovatus,2,4,4
+909656,1,bacteria,821,Phocaeicola vulgatus,40,53,53
+909656,1,bacteria,376805,Phocaeicola salanitronis,36,38,38
+909656,1,bacteria,387090,Phocaeicola coprophilus,20,25,25
+909656,1,bacteria,357276,Phocaeicola dorei,7,10,10
+836,1,bacteria,837,Porphyromonas gingivalis,523,564,564
+836,1,bacteria,28123,Porphyromonas asaccharolytica,45,46,46
+836,1,bacteria,322095,Porphyromonas somerae,28,31,31
+836,1,bacteria,36874,Porphyromonas cangingivalis,19,20,20
+836,1,bacteria,393921,Porphyromonas crevioricanis,15,15,15
+2645799,1,bacteria,712435,Porphyromonas sp. oral taxon 275,15,15,15
+836,1,bacteria,867595,Porphyromonas pogonae,11,12,12
+836,1,bacteria,28124,Porphyromonas endodontalis,6,6,6
+1243006,1,bacteria,1243007,uncultured Macellibacteroides sp.,5,5,5
+375288,1,bacteria,823,Parabacteroides distasonis,149,236,236
+375288,1,bacteria,46503,Parabacteroides merdae,17,21,21
+375288,1,bacteria,387661,Parabacteroides johnsonii,8,9,9
+375288,1,bacteria,1217282,Parabacteroides faecis,7,7,7
+375288,1,bacteria,328812,Parabacteroides goldsteinii,4,4,4
+375288,1,bacteria,2685834,Parabacteroides chongii,4,4,4
+2649774,1,bacteria,2951805,Parabacteroides sp. AD58,2,2,2
+195950,1,bacteria,28112,Tannerella forsythia,35,37,37
+195950,1,bacteria,712710,Tannerella serpentiformis,12,12,12
+239759,1,bacteria,1470347,Alistipes ihumii,18,18,18
+239759,1,bacteria,2364787,Alistipes megaguti,18,21,21
+239759,1,bacteria,1288121,Alistipes senegalensis,16,27,27
+538948,1,bacteria,538949,uncultured Alistipes sp.,11,12,12
+239759,1,bacteria,2585118,Alistipes communis,5,6,6
+2608932,1,bacteria,2662363,Alistipes sp. dk3624,5,5,5
+239759,1,bacteria,214856,Alistipes finegoldii,3,7,7
+239759,1,bacteria,626932,Alistipes indistinctus,3,3,3
+239759,1,bacteria,328813,Alistipes onderdonkii,1,1,1
+239759,1,bacteria,328814,Alistipes shahii,1,2,2
+239759,1,bacteria,2585119,Alistipes dispar,1,1,1
+1760810,1,bacteria,1760811,uncultured Acetobacteroides sp.,3,3,3
+1918540,1,bacteria,1796646,Muribaculum intestinale,21,22,22
+1918540,1,bacteria,2530390,Muribaculum gordoncarteri,3,3,3
+2518495,1,bacteria,2518971,Duncaniella dubosii,12,13,13
+2518497,1,bacteria,2094151,Paramuribaculum intestinale,4,4,4
+307628,1,bacteria,1642646,Petrimonas mucosa,24,37,37
+2646834,1,bacteria,2023866,Petrimonas sp.,6,6,6
+156973,1,bacteria,45254,Dysgonomonas capnocytophagoides,1,1,1
+294702,1,bacteria,1642647,Proteiniphilum saccharofermentans,3,3,3
+1348911,1,bacteria,1099853,Coprobacter fastidiosus,13,13,13
+1348911,1,bacteria,1501392,Coprobacter secundus,5,5,5
+397864,1,bacteria,397865,Barnesiella viscericola,5,6,6
+2645177,1,bacteria,1965590,Barnesiella sp. An22,1,1,1
+574697,1,bacteria,2093856,Butyricimonas faecalis,2,2,2
+574697,1,bacteria,544645,Butyricimonas virosa,1,1,1
+283168,1,bacteria,28118,Odoribacter splanchnicus,1,1,1
+2760873,1,bacteria,2590900,Tenuifilum thalassicum,3,3,3
+1628155,1,bacteria,1628156,uncultured Carboxylicivirga sp.,9,9,9
+1193324,1,bacteria,889453,Alkalitalea saponilacus,1,1,1
+2639503,1,bacteria,2060723,Labilibaculum sp.,6,6,6
+2060722,1,bacteria,1717717,Labilibaculum antarcticum,1,1,1
+1573808,1,bacteria,1639118,Mangrovibacterium marinum,4,4,4
+1573822,1,bacteria,1573823,uncultured Draconibacterium sp.,1,2,2
+89966,1,bacteria,748197,Hymenobacter yonginensis,16,23,23
+89966,1,bacteria,2932249,Hymenobacter cellulosivorans,7,7,7
+89966,1,bacteria,2932248,Hymenobacter cellulosilyticus,2,2,2
+2615202,1,bacteria,2584940,Hymenobacter sp. DG01,1,1,1
+2615202,1,bacteria,2932250,Hymenobacter sp. 5317J-9,1,1,1
+89966,1,bacteria,2999067,Hymenobacter canadensis,1,1,1
+89966,1,bacteria,2932254,Hymenobacter volaticus,1,1,1
+89966,1,bacteria,2932251,Hymenobacter aerilatus,1,1,1
+89966,1,bacteria,2615203,Hymenobacter baengnokdamensis,1,1,1
+89966,1,bacteria,1850093,Hymenobacter nivis,1,1,1
+2648980,1,bacteria,3074898,Pontibacter sp. G13,2,2,2
+323449,1,bacteria,323450,Pontibacter actiniarum,1,1,1
+323449,1,bacteria,2592049,Pontibacter kalidii,1,1,1
+1379908,1,bacteria,1379910,Rufibacter radiotolerans,3,3,3
+396811,1,bacteria,2904247,Fulvivirga maritima,6,7,7
+396811,1,bacteria,2810512,Fulvivirga lutea,2,3,3
+396811,1,bacteria,2904246,Fulvivirga ligni,1,1,1
+2641185,1,bacteria,650378,Cardinium endosymbiont of Sogatella furcifera,7,7,7
+2975149,1,bacteria,2975157,Marinilongibacter aquaticus,3,3,3
+319458,1,bacteria,316068,Leadbetterella byssophila,2,2,2
+107,1,bacteria,564064,Spirosoma rigui,2,2,2
+107,1,bacteria,1178516,Spirosoma montaniterrae,1,1,1
+246875,1,bacteria,1727163,Algoriphagus sanaruensis,1,1,1
+280472,1,bacteria,280473,Aquiflexum balticum,1,1,1
+1077254,1,bacteria,931531,Tunicatimonas pelagia,1,1,1
+1522128,1,bacteria,1397264,Catalinimonas niigatensis,1,1,1
+1434007,1,bacteria,1182444,Fulvitalea axinellae,2,2,2
+156993,1,bacteria,2979869,Reichenbachiella carrageenanivorans,2,2,2
+2676247,1,bacteria,2696560,Aquirufa lenticrescens,1,1,1
+332157,1,bacteria,332158,Larkinella insperata,1,1,1
+2619133,1,bacteria,3051176,Chitinophaga sp. LS1,6,8,8
+2619133,1,bacteria,3133966,Chitinophaga sp. GPA1,2,2,2
+2619133,1,bacteria,2952571,Chitinophaga sp. HK235,1,1,1
+79328,1,bacteria,2725414,Chitinophaga oryzae,8,8,8
+79328,1,bacteria,2703787,Chitinophaga agri,6,6,6
+79328,1,bacteria,2203219,Chitinophaga alhagiae,4,4,4
+79328,1,bacteria,536979,Chitinophaga niabensis,3,3,3
+79328,1,bacteria,2920382,Chitinophaga horti,1,1,1
+1860196,1,bacteria,661488,Pseudobacter ginsenosidimutans,7,7,7
+354354,1,bacteria,354356,Niastella koreensis,3,3,3
+1004301,1,bacteria,2838156,Flavihumibacter rivuli,3,3,3
+3114547,1,bacteria,2545455,Rhizosphaericola mali,2,2,2
+2836216,1,bacteria,2676868,Phnomibacter ginsenosidimutans,1,1,1
+423349,1,bacteria,862126,Mucilaginibacter ginsenosidivorax,4,13,13
+423349,1,bacteria,1550579,Mucilaginibacter gotjawali,3,4,4
+423349,1,bacteria,2728022,Mucilaginibacter robiniae,1,8,8
+28453,1,bacteria,3025669,Sphingobacterium oryzagri,6,6,6
+2609468,1,bacteria,341027,Sphingobacterium sp.,2,4,4
+2609468,1,bacteria,1538644,Sphingobacterium sp. ML3W,1,1,1
+2609468,1,bacteria,3058432,Sphingobacterium sp. BN32,1,1,1
+28453,1,bacteria,649196,Sphingobacterium hotanense,2,2,2
+1773450,1,bacteria,496056,Anseongella ginsenosidimutans,3,3,3
+1649482,1,bacteria,151895,Pseudopedobacter saltans,2,3,3
+84567,1,bacteria,984,Pedobacter heparinus,1,1,1
+2923290,1,bacteria,2875962,Candidatus Sulfidibacterium hydrothermale,7,7,7
+2349,1,bacteria,2350,Haliscomenobacter hydrossis,5,5,5
+2649989,1,bacteria,3051121,Aureispira sp. CCB-E,1,1,1
+1091,1,bacteria,1094,Chlorobium phaeovibrioides,9,9,9
+2632826,1,bacteria,1974213,Prosthecochloris sp. HL-130-GSB,3,3,3
+256319,1,bacteria,274537,Chlorobaculum limnaeum,2,2,2
+29548,1,bacteria,29549,Rhodothermus marinus,1,1,1
+1706036,1,bacteria,861299,Gemmatirosa kalamazoonensis,1,1,1
+194,1,bacteria,824,Campylobacter gracilis,10001,10024,10024
+194,1,bacteria,204,Campylobacter showae,4495,4543,4543
+194,1,bacteria,199,Campylobacter concisus,1047,1054,1054
+194,1,bacteria,203,Campylobacter rectus,503,507,507
+194,1,bacteria,200,Campylobacter curvus,16,16,16
+2593542,1,bacteria,1032243,Campylobacter sp. RM6914,2,2,2
+2593542,1,bacteria,1660063,Campylobacter sp. RM16187,2,2,2
+2593542,1,bacteria,2984142,Campylobacter sp. CS_NA3,1,1,1
+194,1,bacteria,1965231,Campylobacter pinnipediorum,2,2,2
+194,1,bacteria,201,Campylobacter lari,1,1,1
+194,1,bacteria,1244531,Campylobacter iguaniorum,1,1,1
+2321111,1,bacteria,28198,Aliarcobacter cryaerophilus,540,541,541
+2321111,1,bacteria,28200,Aliarcobacter skirrowii,1,1,1
+2321111,1,bacteria,544718,Aliarcobacter thereius,1,1,1
+2321114,1,bacteria,505249,Malaciobacter marinus,8,8,8
+28196,1,bacteria,1054033,Arcobacter venerupis,4,4,4
+202746,1,bacteria,2590551,Sulfurimonas marina,10,10,10
+202746,1,bacteria,2740404,Candidatus Sulfurimonas baltica,7,7,7
+202746,1,bacteria,2590021,Sulfurimonas xiamenensis,4,4,4
+57665,1,bacteria,1854492,Sulfurospirillum diekertiae,2,2,2
+57665,1,bacteria,44674,Sulfurospirillum barnesii,1,1,1
+209,1,bacteria,222136,Helicobacter enhydrae,1,1,1
+209,1,bacteria,104628,Helicobacter suis,1,1,1
+223785,1,bacteria,2993563,Hydrogenimonas cancrithermarum,2,2,2
+2646778,1,bacteria,387093,Sulfurovum sp. NBC37-1,1,1,1
+2795692,1,bacteria,2714855,Nitrosophilus alvini,1,1,1
+848,1,bacteria,2663009,Fusobacterium pseudoperiodonticum,2670,2739,2739
+848,1,bacteria,850,Fusobacterium mortiferum,859,859,859
+848,1,bacteria,851,Fusobacterium nucleatum,312,335,335
+848,1,bacteria,76859,Fusobacterium animalis,11,13,13
+848,1,bacteria,76857,Fusobacterium polymorphum,10,10,10
+848,1,bacteria,155615,Fusobacterium vincentii,5,6,6
+848,1,bacteria,285729,Fusobacterium canifelinum,4,4,4
+848,1,bacteria,1583098,Fusobacterium hwasookii,4,4,4
+848,1,bacteria,860,Fusobacterium periodonticum,2,2,2
+180162,1,bacteria,188913,Cetobacterium somerae,2,2,2
+32067,1,bacteria,157687,Leptotrichia wadei,2168,2203,2203
+2633022,1,bacteria,1785996,Leptotrichia sp. oral taxon 847,6,6,6
+2633022,1,bacteria,712361,Leptotrichia sp. oral taxon 218,2,2,2
+2633022,1,bacteria,712362,Leptotrichia sp. oral taxon 221,2,2,2
+2633022,1,bacteria,712368,Leptotrichia sp. oral taxon 498,2,2,2
+2633022,1,bacteria,3058373,Leptotrichia sp. HMT-225,2,2,2
+2633022,1,bacteria,712357,Leptotrichia sp. oral taxon 212,1,1,1
+32067,1,bacteria,157691,Leptotrichia shahii,6,6,6
+32067,1,bacteria,157688,Leptotrichia hofstadii,5,5,5
+32067,1,bacteria,40542,Leptotrichia buccalis,3,3,3
+32067,1,bacteria,109328,Leptotrichia trevisanii,2,2,2
+32067,1,bacteria,554406,Leptotrichia hongkongensis,2,2,2
+157,1,bacteria,2787628,Treponema peruense,2199,2201,2201
+157,1,bacteria,167,Treponema succinifaciens,23,23,23
+2638727,1,bacteria,2563664,Treponema sp. OMZ 788,7,14,14
+157,1,bacteria,744515,Treponema ruminis,5,5,5
+157,1,bacteria,138851,Treponema parvum,1,1,1
+886477,1,bacteria,886478,uncultured Sphaerochaeta sp.,3,3,3
+399320,1,bacteria,1129264,Sphaerochaeta associata,2,2,2
+138,1,bacteria,2756107,Borrelia puertoricensis,1,2,2
+1911565,1,bacteria,1963862,Marispirochaeta aestuarii,1,1,1
+2795774,1,bacteria,2528007,Polystyrenella longa,8,8,8
+1649453,1,bacteria,2527973,Gimesia alba,1,1,1
+2795777,1,bacteria,2528026,Maioricimonas rarisocia,1,1,1
+127,1,bacteria,128,Isosphaera pallida,4,4,4
+2807415,1,bacteria,2528023,Urbifossiella limnaea,2,2,2
+2608915,1,bacteria,3115151,Akkermansia sp. AE01SA01,9,11,11
+2911469,1,bacteria,2707525,Sulfuriroseicoccus oceanibius,2,2,2
+2883512,1,bacteria,60035,Citrifermentans bremense,9,9,9
+2651583,1,bacteria,2847992,Geomonas oryzisoli,3,3,3
+890,1,bacteria,57664,Desulfuromonas thiophila,2,2,2
+890,1,bacteria,1603606,Desulfuromonas soudanensis,1,1,1
+2035857,1,bacteria,2035858,uncultured Pseudodesulfovibrio sp.,4,4,4
+2035811,1,bacteria,182210,Pseudodesulfovibrio aespoeensis,1,1,1
+2794999,1,bacteria,2795000,Maridesulfovibrio sp.,3,3,3
+2909705,1,bacteria,58180,Oleidesulfovibrio alaskensis,1,1,1
+111746,1,bacteria,239745,uncultured Desulfobulbus sp.,1,1,1
+453229,1,bacteria,453230,Desulfarculus baarsii,1,1,1
+32,1,bacteria,83455,Myxococcus stipitatus,1,1,1
+224458,1,bacteria,2813578,Pyxidicoccus parkwaysis,1,1,1
+47,1,bacteria,48,Archangium gephyra,2,2,2
+2620896,1,bacteria,447217,Anaeromyxobacter sp. K,1,1,1
+75905,1,bacteria,136094,Thermocrinis albus,6,6,6
+89282,1,bacteria,188475,uncultured Holophaga sp.,3,3,3
+2637509,1,bacteria,2703788,Edaphobacter sp. 12200R-103,1,1,1
+2621151,1,bacteria,2602070,Granulicella sp. WH15,1,1,1
+1769732,1,bacteria,1750598,Dissulfurimicrobium hydrothermale,1,1,1
+3913,1,eukaryota,3917,Vigna unguiculata,15,23,23
+3820,1,eukaryota,3821,Cajanus cajan,5,5,5
+3883,1,eukaryota,3885,Phaseolus vulgaris,3,3,3
+3887,1,eukaryota,3888,Pisum sativum,6,6,6
+3904,1,eukaryota,3911,Vicia villosa,4,4,4
+3877,1,eukaryota,3880,Medicago truncatula,3,3,3
+3898,1,eukaryota,57577,Trifolium pratense,2,4,4
+3867,1,eukaryota,34305,Lotus japonicus,1,1,1
+3817,1,eukaryota,130453,Arachis duranensis,1,6,6
+3817,1,eukaryota,217475,Arachis stenosperma,1,2,2
+3869,1,eukaryota,3871,Lupinus angustifolius,2,2,2
+102210,1,eukaryota,102211,Benincasa hispida,14,14,14
+3655,1,eukaryota,3659,Cucumis sativus,2,2,2
+3655,1,eukaryota,3656,Cucumis melo,1,7,7
+3749,1,eukaryota,3750,Malus domestica,5,6,6
+3764,1,eukaryota,74645,Rosa rugosa,2,2,2
+3764,1,eukaryota,74649,Rosa chinensis,1,1,1
+23204,1,eukaryota,57926,Argentina anserina,2,2,2
+3482,1,eukaryota,3483,Cannabis sativa,3,4,4
+3484,1,eukaryota,3486,Humulus lupulus,1,1,1
+3980,1,eukaryota,3981,Hevea brasiliensis,5,5,5
+3982,1,eukaryota,3983,Manihot esculenta,4,5,5
+3987,1,eukaryota,3988,Ricinus communis,1,1,1
+16718,1,eukaryota,51240,Juglans regia,2,3,3
+13402,1,eukaryota,32201,Carya illinoinensis,1,1,1
+123484,1,eukaryota,458696,Tripterygium wilfordii,1,1,1
+3705,1,eukaryota,3708,Brassica napus,6,16,16
+3725,1,eukaryota,3726,Raphanus sativus,2,3,3
+3701,1,eukaryota,3702,Arabidopsis thaliana,3,3,3
+3932,1,eukaryota,71139,Eucalyptus grandis,12,12,12
+3633,1,eukaryota,3635,Gossypium hirsutum,4,4,4
+3633,1,eukaryota,29729,Gossypium arboreum,1,1,1
+23461,1,eukaryota,29780,Mangifera indica,4,4,4
+3603,1,eukaryota,96939,Vitis riparia,1,3,3
+4071,1,eukaryota,4072,Capsicum annuum,26,28,28
+49274,1,eukaryota,4081,Solanum lycopersicum,4,6,6
+49274,1,eukaryota,28526,Solanum pennellii,1,1,1
+4107,1,eukaryota,172797,Solanum stenotomum,2,2,2
+4107,1,eukaryota,45834,Solanum dulcamara,1,1,1
+24646,1,eukaryota,112874,Lycium ferocissimum,1,5,5
+4085,1,eukaryota,49451,Nicotiana attenuata,8,9,9
+4119,1,eukaryota,35885,Ipomoea triloba,1,1,1
+4145,1,eukaryota,4146,Olea europaea,5,5,5
+2291027,1,eukaryota,49212,Salvia hispanica,1,1,1
+2291027,1,eukaryota,226208,Salvia miltiorrhiza,1,1,1
+2026556,1,eukaryota,180675,Salvia splendens,1,1,1
+13442,1,eukaryota,13443,Coffea arabica,2,2,2
+13492,1,eukaryota,55363,Diospyros lotus,10,10,10
+35939,1,eukaryota,253017,Impatiens glandulifera,7,7,7
+3624,1,eukaryota,165200,Actinidia eriantha,1,1,1
+4264,1,eukaryota,4265,Cynara cardunculus,7,7,7
+4231,1,eukaryota,4232,Helianthus annuus,3,3,3
+41574,1,eukaryota,72917,Erigeron canadensis,2,2,2
+4235,1,eukaryota,4236,Lactuca sativa,3,3,3
+3554,1,eukaryota,161934,Beta vulgaris,4,4,4
+3564,1,eukaryota,29722,Amaranthus tricolor,1,1,1
+397391,1,eukaryota,397392,Malania oleifera,5,5,5
+4564,1,eukaryota,4565,Triticum aestivum,7,21,21
+4564,1,eukaryota,4572,Triticum urartu,1,1,1
+4564,1,eukaryota,85692,Triticum dicoccoides,1,2,2
+4512,1,eukaryota,4513,Hordeum vulgare,3,4,4
+4520,1,eukaryota,89674,Lolium rigidum,3,5,5
+4527,1,eukaryota,4533,Oryza brachyantha,2,3,3
+4554,1,eukaryota,4555,Setaria italica,2,2,2
+2100771,1,eukaryota,38727,Panicum virgatum,1,1,1
+2100772,1,eukaryota,206008,Panicum hallii,1,1,1
+15745,1,eukaryota,29695,Phragmites australis,1,1,1
+4614,1,eukaryota,4615,Ananas comosus,1,1,1
+4650,1,eukaryota,94328,Zingiber officinale,10,10,10
+4719,1,eukaryota,42345,Phoenix dactylifera,3,3,3
+51952,1,eukaryota,51953,Elaeis guineensis,1,1,1
+4672,1,eukaryota,29710,Dioscorea cayenensis,1,1,1
+4685,1,eukaryota,4686,Asparagus officinalis,1,1,1
+4329,1,eukaryota,60698,Macadamia integrifolia,24,27,27
+54954,1,eukaryota,54955,Telopea speciosissima,3,3,3
+3402,1,eukaryota,86752,Magnolia sinica,9,9,9
+3468,1,eukaryota,3469,Papaver somniferum,4,4,4
+4418,1,eukaryota,210225,Nymphaea colorata,1,1,1
+3368,1,eukaryota,3369,Cryptomeria japonica,25,27,27
+37414,1,eukaryota,3218,Physcomitrium patens,2,2,2
+9605,1,eukaryota,9606,Homo sapiens,18,20,20
+5475,1,eukaryota,5476,Candida albicans,4,4,4
+243023,1,eukaryota,280754,Pochonia chlamydosporia,2,2,2
+55193,1,eukaryota,223818,Malassezia japonica,2,2,2
+71950,1,eukaryota,181762,Psilocybe cubensis,1,1,1
+5864,1,eukaryota,5868,Babesia microti,1,1,1
+5810,1,eukaryota,5811,Toxoplasma gondii,1,1,1
+101191,1,archaea,101192,Methanomethylovorans hollandica,3,3,3
+3076685,1,archaea,2961994,Natronosalvus amylolyticus,1,1,1
+2993618,1,archaea,2931975,Halosolutus gelatinilyticus,1,1,1
+12914,1,archaea,282676,Acidianus manzaensis,1,1,1
+2843466,1,viruses,2845481,Teubervirus Q1,1,1,1

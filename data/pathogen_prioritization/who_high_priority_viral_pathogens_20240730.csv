@@ -1,0 +1,32 @@
+family,priority_pathogen,family_tax_id,priority_species_tax_id
+Arenaviridae,Mammarenavirus lassaense,11617,3052310
+Arenaviridae,Mammarenavirus juninense,11617,2169991
+Arenaviridae,Mammarenavirus lujoense,11617,3052314
+Coronaviridae,Subgenus Merbecovirus,11118,1335626
+Coronaviridae,Subgenus Sarbecovirus,11118,694009
+Filoviridae,Orthoebolavirus zairense,11266,3052462
+Filoviridae,Orthomarburgvirus marburgense,11266,3052505
+Filoviridae,Orthoebolavirus sudanense,11266,3052460
+Flaviviridae,Orthoflavivirus zikaense,11050,3048459
+Flaviviridae,Orthoflavivirus denguei,11050,3052464
+Flaviviridae,Orthoflavivirus flavi,11050,3046277
+Flaviviridae,Orthoflavivirus encephalitidis,11050,3052465
+Flaviviridae,Orthoflavivirus nilense,11050,3048448
+Hantaviridae,Orthohantavirus sinnombreense,1980413,3052499
+Hantaviridae,Orthohantavirus hantanense,1980413,3052480
+Nairoviridae,Orthonairovirus haemorrhagiae,1980415,3052518
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H1,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H2,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H3,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H5,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H6,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H7,11308,2955291
+Orthomyxoviridae,Alphainfluenzavirus Influenzae H10,11308,2955291
+Paramyxoviridae,Henipavirus nipahense,11158,3052225
+Phenuiviridae,Bandavirus dabieense,1980418,2748958
+Phenuiviridae,Phlebovirus riftense,1980418,3052676
+Poxviridae,Orthopoxvirus variola,10240,10255
+Poxviridae,Orthopoxvirus vaccinia,10240,10245
+Poxviridae,Orthopoxvirus monkeypox,10240,10244
+Togaviridae,Alphavirus chikungunya,11018,37124
+Togaviridae,Alphavirus venezuelan,11018,11036

@@ -1,0 +1,28 @@
+Pathogen,Priority Level,Source Links,Cited Papers
+Acinetobacter baumannii (Carbapenem-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Muthu et al., 2024: https://link.springer.com/article/10.1007/s00248-024-00543-3"
+Enterobacterales (Carbapenem-resistant and third-generation cephalosporin-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Gruszecka & Filip, 2024: https://www.mdpi.com/2076-2607/12/5/1008"
+"Mycobacterium tuberculosis (Rifampicin-resistant, including multidrug-resistant strains)",Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Maraolo, 2024: https://www.mdpi.com/journal/microorganisms/special_issues/AMR_emerging_pathogens"
+Pseudomonas aeruginosa (Carbapenem-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Muthu et al., 2024: https://link.springer.com/article/10.1007/s00248-024-00543-3"
+Enterococcus faecium (Vancomycin-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Gruszecka & Filip, 2024: https://www.mdpi.com/2076-2607/12/5/1008"
+"Staphylococcus aureus (Methicillin-resistant, MRSA)",Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Maraolo, 2024: https://www.mdpi.com/journal/microorganisms/special_issues/AMR_emerging_pathogens"
+Neisseria gonorrhoeae (Cephalosporin- and fluoroquinolone-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Nature, 2024: https://www.nature.com/articles/d41586-024-02513-3"
+Salmonella Typhi (Fluoroquinolone-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Muthu et al., 2024: https://link.springer.com/article/10.1007/s00248-024-00543-3"
+Shigella species (Fluoroquinolone-resistant),Critical,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"McCarthy, 2024: https://link.springer.com/article/10.1007/s00248-024-00543-3"
+Clostridioides difficile (Toxin-producing strains causing severe diarrhea),Critical,https://www.cdc.gov/hai/organisms/cdiff/cdiff_infect.html,CDC: https://www.cdc.gov/hai/organisms/cdiff/cdiff_infect.html
+Helicobacter pylori (Clarithromycin-resistant),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"PLOS Pathogens, 2024: https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.1009824"
+Campylobacter jejuni (Fluoroquinolone-resistant),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"PLOS Pathogens, 2024: https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.1009824"
+Escherichia coli (Extended-spectrum beta-lactamase producing strains),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Gruszecka & Filip, 2024: https://www.mdpi.com/2076-2607/12/5/1008"
+Klebsiella pneumoniae (Carbapenem-resistant),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"Gruszecka & Filip, 2024: https://www.mdpi.com/2076-2607/12/5/1008"
+Vibrio cholerae (Toxin-producing strains),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"PLOS Pathogens, 2024: https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.1009824"
+Haemophilus influenzae (Ampicillin-resistant),High,https://www.who.int/publications/i/item/WHO-priority-pathogens-list,"McCarthy, 2024: https://link.springer.com/article/10.1007/s00248-024-00543-3"
+Yersinia pestis (Plague-causing bacterium),High,https://www.cdc.gov/plague/index.html,CDC: https://www.cdc.gov/plague/index.html
+Legionella pneumophila (Legionnaires' disease),High,https://www.cdc.gov/legionella/index.html,CDC: https://www.cdc.gov/legionella/index.html
+Bacillus anthracis (Anthrax-causing bacterium),High,https://www.cdc.gov/anthrax/index.html,CDC: https://www.cdc.gov/anthrax/index.html
+Corynebacterium diphtheriae (Diphtheria-causing bacterium),High,https://www.cdc.gov/diphtheria/index.html,CDC: https://www.cdc.gov/diphtheria/index.html
+
+WHO pathogen list:
+Vibrio cholerae serogroup O139,641,666
+Yersinia pestis,1903411,632
+Shigella dysenteriae serotype 1,543,622
+Salmonella enterica non-typhoidal serovars,543,28901
+Klebsiella pneumoniae,543,573

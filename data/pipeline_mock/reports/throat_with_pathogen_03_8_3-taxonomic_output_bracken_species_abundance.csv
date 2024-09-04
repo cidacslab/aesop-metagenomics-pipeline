@@ -1,0 +1,265 @@
+parent_tax_id,tax_level,category,tax_id,name,kraken_classified_reads,bracken_classified_reads,nt_rpm
+671232,1,bacteria,1328,Streptococcus anginosus,2681,3234,3234
+671232,1,bacteria,1338,Streptococcus intermedius,2487,2670,2670
+671232,1,bacteria,76860,Streptococcus constellatus,10,15,15
+2608887,1,bacteria,712633,Streptococcus sp. oral taxon 431,2920,3064,3064
+2608887,1,bacteria,2610896,Streptococcus sp. LPB0220,1012,1193,1193
+2608887,1,bacteria,1839799,Streptococcus sp. FDAARGOS_192,369,573,573
+2608887,1,bacteria,2598453,Streptococcus sp. 116-D4,361,378,378
+2608887,1,bacteria,2598457,Streptococcus sp. KS 6,18,22,22
+2608887,1,bacteria,2763068,Streptococcus sp. NSJ-72,10,20,20
+2608887,1,bacteria,3077723,Streptococcus sp. DTU_2020_1000888_1_SI_GRL_NUU_041A,6,7,7
+2608887,1,bacteria,3077584,Streptococcus sp. DTU_2020_1001019_1_SI_AUS_MUR_006,4,4,4
+2608887,1,bacteria,3098075,Streptococcus sp. S1,3,3,3
+2608887,1,bacteria,2972784,Streptococcus sp. Marseille-Q6470,2,2,2
+2608887,1,bacteria,2759692,Streptococcus sp. Marseille-Q3533,2,2,2
+2608887,1,bacteria,3098076,Streptococcus sp. S5,1,1,1
+2608887,1,bacteria,2975324,Streptococcus sp. FSL R7-0248,1,1,1
+2608887,1,bacteria,2954545,Streptococcus sp. FSL W7-1342,1,2,2
+2608887,1,bacteria,2954513,Streptococcus sp. FSL K6-1323,1,2,2
+2608887,1,bacteria,2576376,Streptococcus sp. 1643,1,1,1
+2608887,1,bacteria,712623,Streptococcus sp. oral taxon 061,1,1,1
+2608887,1,bacteria,712624,Streptococcus sp. oral taxon 064,1,1,1
+2608887,1,bacteria,1902136,Streptococcus sp. NPS 308,1,1,1
+1301,1,bacteria,1313,Streptococcus pneumoniae,2684,3000,3000
+1301,1,bacteria,45634,Streptococcus cristatus,981,1002,1002
+1301,1,bacteria,1302,Streptococcus gordonii,961,977,977
+1301,1,bacteria,1304,Streptococcus salivarius,898,1139,1139
+1301,1,bacteria,1305,Streptococcus sanguinis,871,913,913
+1301,1,bacteria,1308,Streptococcus thermophilus,638,670,670
+1301,1,bacteria,1335,Streptococcus equinus,423,459,459
+1301,1,bacteria,1433513,Streptococcus gwangjuense,373,416,416
+1301,1,bacteria,1303,Streptococcus oralis,371,415,415
+1301,1,bacteria,28037,Streptococcus mitis,328,357,357
+1301,1,bacteria,1307,Streptococcus suis,281,299,299
+1301,1,bacteria,2382163,Streptococcus koreensis,119,164,164
+1301,1,bacteria,33040,Streptococcus milleri,10,17,17
+1301,1,bacteria,2490633,Streptococcus periodonticum,7,10,10
+1301,1,bacteria,1318,Streptococcus parasanguinis,6,6,6
+119603,1,bacteria,1336,Streptococcus equi,6,6,6
+1301,1,bacteria,1343,Streptococcus vestibularis,5,5,5
+1301,1,bacteria,82348,Streptococcus pluranimalium,4,4,4
+1301,1,bacteria,2819619,Streptococcus toyakuensis,4,4,4
+1301,1,bacteria,1314,Streptococcus pyogenes,4,4,4
+1301,1,bacteria,113107,Streptococcus australis,3,3,3
+1301,1,bacteria,1501662,Streptococcus parasuis,2,2,2
+1301,1,bacteria,1234680,Streptococcus rubneri,2,2,2
+1301,1,bacteria,257758,Streptococcus pseudopneumoniae,2,2,2
+1301,1,bacteria,68892,Streptococcus infantis,2,2,2
+1301,1,bacteria,1309,Streptococcus mutans,2,2,2
+1301,1,bacteria,1341,Streptococcus ratti,1,1,1
+1301,1,bacteria,1311,Streptococcus agalactiae,1,3,3
+1301,1,bacteria,1345,Streptococcus ferus,1,1,1
+1301,1,bacteria,1340,Streptococcus porcinus,1,1,1
+1301,1,bacteria,1346,Streptococcus iniae,1,1,1
+1301,1,bacteria,150055,Streptococcus lutetiensis,1,1,1
+1301,1,bacteria,1156431,Streptococcus ilei,1,1,1
+1301,1,bacteria,29389,Streptococcus alactolyticus,1,1,1
+1301,1,bacteria,1814128,Streptococcus halotolerans,1,1,1
+1301,1,bacteria,361101,Streptococcus pseudoporcinus,1,1,1
+1357,1,bacteria,1358,Lactococcus lactis,1,1,1
+1357,1,bacteria,1359,Lactococcus cremoris,1,1,1
+2742598,1,bacteria,1613,Limosilactobacillus fermentum,856,875,875
+46255,1,bacteria,137591,Weissella cibaria,1,1,1
+2767874,1,bacteria,1720083,Acetilactobacillus jinshanensis,1,1,1
+1350,1,bacteria,1352,Enterococcus faecium,5,6,6
+1350,1,bacteria,1351,Enterococcus faecalis,3,3,3
+1350,1,bacteria,1354,Enterococcus hirae,1,1,1
+1350,1,bacteria,44009,Enterococcus dispar,1,1,1
+29393,1,bacteria,29394,Dolosigranulum pigrum,3,3,3
+117563,1,bacteria,46124,Granulicatella adiacens,1,1,1
+46123,1,bacteria,46125,Abiotrophia defectiva,2,2,2
+1378,1,bacteria,84135,Gemella sanguinis,723,730,730
+1378,1,bacteria,29391,Gemella morbillorum,638,651,651
+1378,1,bacteria,1379,Gemella haemolysans,282,284,284
+2624949,1,bacteria,1785995,Gemella sp. oral taxon 928,3,3,3
+543311,1,bacteria,33033,Parvimonas micra,8885,9047,9047
+31983,1,bacteria,72026,Helcococcus ovis,1,1,1
+162289,1,bacteria,54005,Peptoniphilus harei,1,1,1
+1582879,1,bacteria,46507,Ezakiella coagulans,1,1,1
+2637378,1,bacteria,713030,Selenomonas sp. oral taxon 136,1379,1438,1438
+2637378,1,bacteria,712538,Selenomonas sp. oral taxon 478,1,1,1
+29465,1,bacteria,29466,Veillonella parvula,784,787,787
+29465,1,bacteria,39777,Veillonella atypica,265,266,266
+1164882,1,bacteria,617123,Lachnoanaerobaculum umeaense,948,954,954
+1164882,1,bacteria,2490855,Lachnoanaerobaculum gingivalis,1,1,1
+2719313,1,bacteria,208479,Enterocloster bolteae,1,1,1
+86331,1,bacteria,114527,Mogibacterium diversum,356,358,358
+1257,1,bacteria,3003601,Peptostreptococcus equinus,1,1,1
+1870884,1,bacteria,1496,Clostridioides difficile,1,1,1
+1481960,1,bacteria,1731,Peptoclostridium acidaminophilum,1,1,1
+2646395,1,bacteria,2929491,Faecalibacterium sp. HTF-F,1,2,2
+3079925,1,bacteria,3029274,Amygdalobacter nucleatus,1,1,1
+123375,1,bacteria,102148,Solobacterium moorei,1,1,1
+32207,1,bacteria,2047,Rothia dentocariosa,5485,5522,5522
+32207,1,bacteria,43675,Rothia mucilaginosa,4679,4690,4690
+1912216,1,bacteria,1747,Cutibacterium acnes,1350,1359,1359
+2529408,1,bacteria,52773,Schaalia meyeri,377,377,377
+2529408,1,bacteria,1660,Schaalia odontolytica,333,333,333
+656088,1,bacteria,2102,Mycoplasma mycoides,1,1,1
+2895509,1,bacteria,2098,Metamycoplasma hominis,1,1,1
+482,1,bacteria,487,Neisseria meningitidis,5465,5852,5852
+482,1,bacteria,484,Neisseria flavescens,2238,2352,2352
+482,1,bacteria,483,Neisseria cinerea,1777,1830,1830
+482,1,bacteria,28449,Neisseria subflava,1604,1709,1709
+482,1,bacteria,488,Neisseria mucosa,1325,1446,1446
+482,1,bacteria,485,Neisseria gonorrhoeae,563,612,612
+482,1,bacteria,486,Neisseria lactamica,450,476,476
+2623750,1,bacteria,2972775,Neisseria sp. Marseille-Q5346,90,98,98
+2623750,1,bacteria,3077590,Neisseria sp. DTU_2021_1001991_1_SI_NGA_ILE_055,64,73,73
+2623750,1,bacteria,1871109,Neisseria sp. RH3002v2g,48,56,56
+2623750,1,bacteria,2937985,Neisseria sp. Marseille-Q6792,6,6,6
+2623750,1,bacteria,641148,Neisseria sp. oral taxon 014,2,2,2
+2623750,1,bacteria,655307,Neisseria sp. KEM232,2,2,2
+2623750,1,bacteria,2912675,Neisseria sp. Dent CA1/247,2,2,2
+482,1,bacteria,495,Neisseria elongata,127,128,128
+482,1,bacteria,33053,Neisseria perflava,32,66,66
+482,1,bacteria,490,Neisseria sicca,21,43,43
+482,1,bacteria,496,Neisseria macacae,11,11,11
+482,1,bacteria,2912188,Neisseria lisongii,6,6,6
+482,1,bacteria,267212,Neisseria bacilliformis,6,6,6
+482,1,bacteria,1853278,Neisseria chenwenguii,3,3,3
+482,1,bacteria,2666100,Neisseria brasiliensis,2,2,2
+482,1,bacteria,2709396,Neisseria yangbaofengii,2,2,2
+482,1,bacteria,28091,Neisseria weaveri,1,1,1
+482,1,bacteria,326522,Neisseria animaloris,1,1,1
+482,1,bacteria,607712,Neisseria shayeganii,1,1,1
+482,1,bacteria,1470200,Neisseria arctica,1,1,1
+482,1,bacteria,1815583,Neisseria musculi,1,1,1
+482,1,bacteria,1853276,Neisseria weixii,1,1,1
+482,1,bacteria,1931275,Neisseria dumasiana,1,1,1
+32257,1,bacteria,504,Kingella kingae,1222,1249,1249
+32257,1,bacteria,502,Kingella denitrificans,1,1,1
+32257,1,bacteria,265175,Kingella potus,1,1,1
+538,1,bacteria,539,Eikenella corrodens,1105,1107,1107
+212742,1,bacteria,1056807,Morococcus cerebrosus,2,2,2
+299568,1,bacteria,1282863,Uruburuella testudinis,1,1,1
+87882,1,bacteria,95486,Burkholderia cenocepacia,1635,2491,2491
+87882,1,bacteria,2978683,Burkholderia orbicola,13,34,34
+87882,1,bacteria,60550,Burkholderia pyrrocinia,11,13,13
+87882,1,bacteria,488447,Burkholderia contaminans,10,12,12
+87882,1,bacteria,292,Burkholderia cepacia,10,11,11
+87882,1,bacteria,179879,Burkholderia anthina,8,8,8
+87882,1,bacteria,482957,Burkholderia lata,7,9,9
+87882,1,bacteria,152480,Burkholderia ambifaria,6,6,6
+87882,1,bacteria,488731,Burkholderia seminalis,6,6,6
+87882,1,bacteria,488730,Burkholderia arboris,5,5,5
+87882,1,bacteria,1503055,Burkholderia territorii,3,3,3
+87882,1,bacteria,488446,Burkholderia latens,3,3,3
+87882,1,bacteria,87883,Burkholderia multivorans,3,3,3
+87882,1,bacteria,95485,Burkholderia stabilis,2,2,2
+87882,1,bacteria,488729,Burkholderia metallica,1,1,1
+87882,1,bacteria,1503054,Burkholderia stagnalis,1,1,1
+87882,1,bacteria,60552,Burkholderia vietnamiensis,1,1,1
+87882,1,bacteria,152500,Burkholderia dolosa,1,1,1
+87882,1,bacteria,101571,Burkholderia ubonensis,1,1,1
+2613784,1,bacteria,1637853,Burkholderia sp. NRF60-BP8,1,1,1
+724,1,bacteria,727,Haemophilus influenzae,2341,2582,2582
+724,1,bacteria,729,Haemophilus parainfluenzae,1127,1137,1137
+2609962,1,bacteria,712310,Haemophilus sp. oral taxon 036,1043,1111,1111
+724,1,bacteria,735,Haemophilus parahaemolyticus,886,890,890
+724,1,bacteria,726,Haemophilus haemolyticus,274,285,285
+724,1,bacteria,197575,Haemophilus aegyptius,113,427,427
+416916,1,bacteria,732,Aggregatibacter aphrophilus,360,362,362
+75984,1,bacteria,75985,Mannheimia haemolytica,1,1,1
+1960084,1,bacteria,2778911,Rodentibacter haemolyticus,1,1,1
+713,1,bacteria,51161,Actinobacillus delphinicola,1,1,1
+745,1,bacteria,747,Pasteurella multocida,1,1,1
+354276,1,bacteria,550,Enterobacter cloacae,2157,2298,2298
+354276,1,bacteria,158836,Enterobacter hormaechei,4,6,6
+354276,1,bacteria,69218,Enterobacter cancerogenus,1,1,1
+354276,1,bacteria,2497875,Enterobacter chuandaensis,1,1,1
+547,1,bacteria,539813,Enterobacter mori,1,1,1
+2608935,1,bacteria,399742,Enterobacter sp. 638,1,1,1
+570,1,bacteria,244366,Klebsiella variicola,514,1072,1072
+570,1,bacteria,573,Klebsiella pneumoniae,331,1139,1139
+570,1,bacteria,1463165,Klebsiella quasipneumoniae,10,14,14
+570,1,bacteria,2489010,Klebsiella africana,8,8,8
+570,1,bacteria,548,Klebsiella aerogenes,2,2,2
+570,1,bacteria,571,Klebsiella oxytoca,2,2,2
+570,1,bacteria,1134687,Klebsiella michiganensis,1,1,1
+570,1,bacteria,2058152,Klebsiella grimontii,1,2,2
+570,1,bacteria,2153354,Klebsiella huaxiensis,1,1,1
+160674,1,bacteria,575,Raoultella planticola,1,1,1
+561,1,bacteria,562,Escherichia coli,115,473,473
+561,1,bacteria,564,Escherichia fergusonii,1,1,1
+561,1,bacteria,208962,Escherichia albertii,1,1,1
+1344959,1,bacteria,1639133,Citrobacter portucalensis,1,1,1
+2644389,1,bacteria,1573676,Citrobacter sp. R56,1,1,1
+620,1,bacteria,621,Shigella boydii,1,4,4
+83654,1,bacteria,2815358,Leclercia pneumoniae,1,1,1
+581,1,bacteria,582,Morganella morganii,1,1,1
+226,1,bacteria,589873,Alteromonas australica,865,1070,1070
+2614992,1,bacteria,2785913,Alteromonas sp. B31-7,4,5,5
+2614992,1,bacteria,2358187,Alteromonas sp. 76-1,1,1,1
+226,1,bacteria,1479524,Alteromonas gracilis,2,2,2
+541,1,bacteria,542,Zymomonas mobilis,461,461,461
+2640652,1,bacteria,1316593,Capnocytophaga sp. oral taxon 864,6587,8010,8010
+2640652,1,bacteria,1705617,Capnocytophaga sp. oral taxon 323,1443,1783,1783
+2640652,1,bacteria,2748316,Capnocytophaga sp. oral taxon 902,21,30,30
+2640652,1,bacteria,1316596,Capnocytophaga sp. oral taxon 878,5,5,5
+1016,1,bacteria,1018,Capnocytophaga ochracea,169,495,495
+1016,1,bacteria,1019,Capnocytophaga sputigena,12,12,12
+1016,1,bacteria,2708117,Capnocytophaga endodontalis,5,5,5
+1016,1,bacteria,1017,Capnocytophaga gingivalis,1,1,1
+1016,1,bacteria,28188,Capnocytophaga canimorsus,1,1,1
+1016,1,bacteria,45243,Capnocytophaga haemolytica,1,1,1
+1016,1,bacteria,327575,Capnocytophaga leadbetteri,1,1,1
+838,1,bacteria,28129,Prevotella denticola,2734,2829,2829
+838,1,bacteria,28131,Prevotella intermedia,607,633,633
+838,1,bacteria,28125,Prevotella bivia,1,1,1
+838,1,bacteria,282402,Prevotella multiformis,1,1,1
+838,1,bacteria,589436,Prevotella fusca,1,1,1
+838,1,bacteria,589437,Prevotella scopos,1,1,1
+2974257,1,bacteria,76123,Hoylesella enoeca,498,527,527
+2974257,1,bacteria,28127,Hoylesella buccalis,1,1,1
+836,1,bacteria,837,Porphyromonas gingivalis,2604,2641,2641
+375288,1,bacteria,823,Parabacteroides distasonis,1,1,1
+848,1,bacteria,851,Fusobacterium nucleatum,4252,4748,4748
+848,1,bacteria,2663009,Fusobacterium pseudoperiodonticum,1905,1940,1940
+848,1,bacteria,1583098,Fusobacterium hwasookii,984,1072,1072
+848,1,bacteria,76857,Fusobacterium polymorphum,127,130,130
+848,1,bacteria,76859,Fusobacterium animalis,90,104,104
+848,1,bacteria,285729,Fusobacterium canifelinum,30,30,30
+848,1,bacteria,155615,Fusobacterium vincentii,22,27,27
+848,1,bacteria,860,Fusobacterium periodonticum,12,13,13
+2648384,1,bacteria,671211,Fusobacterium sp. oral taxon 203,1,1,1
+848,1,bacteria,2764326,Fusobacterium hominis,1,1,1
+2633022,1,bacteria,712357,Leptotrichia sp. oral taxon 212,887,890,890
+2633022,1,bacteria,712362,Leptotrichia sp. oral taxon 221,1,1,1
+2633022,1,bacteria,712368,Leptotrichia sp. oral taxon 498,1,1,1
+2633022,1,bacteria,3058373,Leptotrichia sp. HMT-225,1,1,1
+32067,1,bacteria,157687,Leptotrichia wadei,309,315,315
+32067,1,bacteria,40542,Leptotrichia buccalis,3,3,3
+32067,1,bacteria,109328,Leptotrichia trevisanii,2,2,2
+32067,1,bacteria,157688,Leptotrichia hofstadii,2,2,2
+194,1,bacteria,199,Campylobacter concisus,1582,1584,1584
+194,1,bacteria,204,Campylobacter showae,1132,1135,1135
+2638727,1,bacteria,1539298,Treponema sp. OMZ 838,261,505,505
+2638727,1,bacteria,1643512,Treponema sp. OMZ 855,5,9,9
+2638727,1,bacteria,1643513,Treponema sp. OMZ 857,1,1,1
+2638727,1,bacteria,1659192,Treponema sp. OMZ 305,1,1,1
+157,1,bacteria,69710,Treponema vincentii,178,226,226
+157,1,bacteria,58231,Treponema medium,3,3,3
+3904,1,eukaryota,3911,Vicia villosa,5,5,5
+3877,1,eukaryota,3880,Medicago truncatula,1,1,1
+3982,1,eukaryota,3983,Manihot esculenta,1,1,1
+71323,1,eukaryota,90675,Camelina sativa,5,5,5
+23461,1,eukaryota,29780,Mangifera indica,1,1,1
+22662,1,eukaryota,22663,Punica granatum,1,1,1
+1873447,1,eukaryota,4039,Daucus carota,1,1,1
+4071,1,eukaryota,4072,Capsicum annuum,1,1,1
+4520,1,eukaryota,89674,Lolium rigidum,2,2,2
+4685,1,eukaryota,4686,Asparagus officinalis,1,1,1
+9605,1,eukaryota,9606,Homo sapiens,3,3,3
+145260,1,archaea,145261,Methanothermobacter wolfeii,7,12,12
+2631116,1,archaea,2606911,Methanothermobacter sp. THM-1,2,3,3
+10663,1,viruses,10665,Tequatrovirus T4,260,396,396
+10663,1,viruses,2844199,Tequatrovirus gee4507,1,2,2
+10663,1,viruses,2956502,Tequatrovirus slur02,1,1,1
+10663,1,viruses,2846203,Tequatrovirus shfml11,1,2,2
+10663,1,viruses,2846204,Tequatrovirus shfml26,1,2,2
+10663,1,viruses,2844191,Tequatrovirus ecnp1,1,1,1
+10663,1,viruses,2844181,Tequatrovirus ufvareg1,1,1,1
+2788471,1,viruses,173824,Methanothermobacter phage psiM100,7,334,334
+2788787,1,viruses,1701828,Streptococcus phage phiARI0468-2,1,30,30
