@@ -44,37 +44,37 @@ basespace_project_id=$3
 # Name of the run folder
 # run_name="rs01"
 # old_dataset_path="/scratch/pablo.viana/aesop/dataset_manaus01"
-# old_dataset_path="/scratch/pablo.viana/aesop/pipeline_v4/dataset_${run_name}"
-old_dataset_path="/home/work/aesop/github/aesop_metagenomics_read_length/results/pipeline_mock/mock_metagenomes"
-base_dataset_path="/home/work/aesop/results_pipeline_v8/dataset_${run_name}"
-# base_dataset_path="/scratch/pablo.viana/aesop/pipeline_v8/dataset_${run_name}"
+old_dataset_path="/scratch/pablo.viana/mocks/dataset_pipeline_paper01"
+# base_dataset_path="/home/work/aesop/results_pipeline_v4/dataset_${run_name}"
+base_dataset_path="/scratch/pablo.viana/mocks/dataset_${run_name}"
 
 # Bowtie2 index to remove phix reads
-bowtie2_phix_index="/dev/shm/databases/bowtie2_db/phix_viralproj14015/phix174_index"
+# bowtie2_phix_index="/home/work/aesop/phix_viralproj14015/phix174_index"
 # bowtie2_phix_index="/scratch/pablo.viana/databases/bowtie2_db/phix_viralproj14015/phix174_index"
-# bowtie2_phix_index="/scratch/pablo.viana/databases/bowtie2_db/phix_viralproj14015/phix174_index"
+bowtie2_phix_index="/scratch/pablo.viana/databases/bowtie2_db/phix_viralproj14015/phix174_index"
 
 # Bowtie2 index to remove ercc reads
-bowtie2_ercc_index="/dev/shm/databases/bowtie2_db/ercc92/ercc_index"
+# bowtie2_ercc_index="/home/work/aesop/czid_bowtie2db_20240626/ercc/ercc"
 # bowtie2_ercc_index="/scratch/pablo.viana/databases/bowtie2_db/czid_20240626/ercc/ercc"
-# bowtie2_ercc_index="/scratch/pablo.viana/databases/bowtie2_db/ercc92/ercc_index"
+bowtie2_ercc_index="/scratch/pablo.viana/databases/bowtie2_db/ercc92/ercc_index"
 
 # Bowtie2 index to remove human reads
-bowtie2_human_index="/dev/shm/databases/bowtie2_db/human_index_20240725/human_full"
+# bowtie2_human_index="/home/work/aesop/czid_bowtie2db_20240626/human_telomere/human_telomere"
 # bowtie2_human_index="/scratch/pablo.viana/databases/bowtie2_db/czid_20240626/human_telomere/human_telomere"
-# bowtie2_human_index="/scratch/pablo.viana/databases/bowtie2_db/human_index_20240725/human_full"
+bowtie2_human_index="/scratch/pablo.viana/databases/bowtie2_db/human_index_20240725/human_full"
 
 # Bowtie2 index to remove human reads
-hisat2_human_index="/dev/shm/databases/hisat2_db/human_index_20240725/human_full_hisat2"
-# hisat2_human_index="/scratch/pablo.viana/databases/hisat2_db/human_index_20240725/human_full_hisat2"
+# bowtie2_human_index="/home/work/aesop/czid_bowtie2db_20240626/human_telomere/human_telomere"
+hisat2_human_index="/scratch/pablo.viana/databases/hisat2_db/human_index_20240725/human_full_hisat2"
 
 # Kraken2 database
-kraken2_database="/dev/shm/databases/k2_pluspfp_20240605"
+# kraken2_database="/home/work/aesop/aesop_kraken2db_20240619"
+kraken2_database="/scratch/pablo.viana/databases/kraken2_db/k2_pluspfp_20240605"
 # kraken2_database="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
 
 # Location of src folder in the github directory
-repository_src="/home/work/aesop/github/aesop-metagenomics/src"
-# repository_src="/home/pablo.viana/metagenomics_src"
+# repository_src="/home/work/aesop/github/aesop-metagenomics/src"
+repository_src="/home/pablo.viana/metagenomics_src"
 
 
 ################################################################################
@@ -97,7 +97,8 @@ download_script="$repository_src/0-hpc_job_scripts/execute_download_script.sh"
 
 # Basespace file suffix
 # Suffix of each sample forward sequence
-input_suffix="_L001_R1_001.fastq.gz"
+# input_suffix="_L001_R1_001.fastq.gz"
+input_suffix="_150_reads_R1.fastq"
 
 params=("$num_processes"
         "/scratch/pablo.viana/softwares/basespace_illumina/bs"
@@ -114,14 +115,13 @@ params=("$num_processes"
 ################################################################################
 
 # Suffix of each sample forward sequence
-input_suffix="_R1.fastq"
-# rm -rvf "$base_dataset_path/1-bowtie_phix_output"
+# input_suffix="_1.fastq"
 
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove.sh"
         "$dataset_name"
         "$input_suffix"
-        "$old_dataset_path"
+        "$old_dataset_path/0-raw_samples"
         "$base_dataset_path/1-bowtie_phix_output"
         "$bowtie2_phix_index")
 
@@ -158,13 +158,13 @@ params=("$num_processes"
 
 # Suffix of each sample forward sequence
 # input_suffix="_1.fastq"
-input_suffix="_R1.fastq"
+input_suffix="_150_reads_R1.fastq"
 
 params=("$num_processes"
         "$repository_src/1-analysis_pipeline/1-quality_control-fastp_filters.sh"
         "$dataset_name"
         "$input_suffix"
-        "$old_dataset_path"
+        "$old_dataset_path/0-raw_samples"
         "$base_dataset_path/1-fastp_output")
 
 # $custom_script "${params[@]}"
@@ -174,26 +174,6 @@ params=("$num_processes"
 
 # rm -vf *.html *.json
 
-################################################################################
-###################################  HISAT2  ###################################
-################################################################################
-
-# Suffix of each sample forward sequence
-input_suffix="_1.fastq"
-
-params=("$num_processes"
-        "$repository_src/1-analysis_pipeline/2-sample_decontamination-hisat2_remove.sh"
-        "$dataset_name"
-        "$input_suffix"
-        "$base_dataset_path/1-fastp_output"
-        "$base_dataset_path/2-hisat_human_output"
-        "$hisat2_human_index")
-        
-# $custom_script "${params[@]}"
-
-# mv ${dataset_name}_2-sample_decontamination-hisat2_remove_logs.tar.gz \
-#   ${dataset_name}_2-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
-  
 
 # ################################################################################
 # ##################################  BOWTIE2  ###################################
@@ -206,7 +186,7 @@ params=("$num_processes"
         "$repository_src/1-analysis_pipeline/2-sample_decontamination-bowtie2_remove.sh"
         "$dataset_name"
         "$input_suffix"
-        "$base_dataset_path/2-hisat_human_output"
+        "$base_dataset_path/1-fastp_output"
         "$base_dataset_path/2-bowtie_human_output"
         "$bowtie2_human_index")
         
@@ -216,23 +196,42 @@ params=("$num_processes"
 #   ${dataset_name}_2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz
   
   
+################################################################################
+###################################  HISAT2  ###################################
+################################################################################
+
+# Suffix of each sample forward sequence
+input_suffix="_1.fastq"
+
+params=("$num_processes"
+        "$repository_src/1-analysis_pipeline/2-sample_decontamination-hisat2_remove.sh"
+        "$dataset_name"
+        "$input_suffix"
+        "$base_dataset_path/2-bowtie_human_output"
+        "$base_dataset_path/2-hisat_human_output"
+        "$hisat2_human_index")
+        
+# $custom_script "${params[@]}"
+
+# mv ${dataset_name}_2-sample_decontamination-hisat2_remove_logs.tar.gz \
+#   ${dataset_name}_2-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
 
 # ################################################################################
 # ##################################  KRAKEN2  ###################################
 # ################################################################################
-num_processes=1
+
 confidences=("0")
 # confidences=("0" "0.1" "0.2" "0.3" "0.4" "0.5" "0.6" "0.7")
 
 for value in "${confidences[@]}"; do
-    # rm -rv "$base_dataset_path/3-kraken_results"
+    rm -rv "$base_dataset_path/3-kraken_bracken_results"
     
     params=("$num_processes"
             "$repository_src/1-analysis_pipeline/3-taxonomic_annotation-kraken2.sh"
             "$dataset_name"
             "$input_suffix"
-            "$base_dataset_path/2-bowtie_human_output"
-            "$base_dataset_path/3-taxonomic_output"
+            "$base_dataset_path/2-hisat_human_output"
+            "$base_dataset_path/3-kraken_bracken_results"
             "$kraken2_database"
             $value)
     
@@ -242,6 +241,100 @@ for value in "${confidences[@]}"; do
     #   ${dataset_name}_3-taxonomic_annotation-kraken2_conf_${value}_logs.tar.gz
 done
 
+
+################################################################################
+##################################  BRACKEN  ###################################
+################################################################################
+
+# declare -A input_suffixes=( ["_75_reads.kreport"]="75" ["_150_reads.kreport"]="150" ["_300_reads.kreport"]="300" )
+
+declare -A kraken_folders
+# kraken_folders["3-kraken_results"]="3-kraken_results"
+kraken_folders["3-kraken_bracken_results"]="3-kraken_bracken_results"
+# kraken_folders["3.1-kraken_results_2"]="4.1-bracken_results_2"
+# kraken_folders["3.1-kraken_czid_results_0"]="4.1-bracken_czid_results_0"
+# kraken_folders["3.1-kraken_czid_results_0.1"]="4.1-bracken_czid_results_0.1"
+# kraken_folders["3.1-kraken_czid_results_0.2"]="4.1-bracken_czid_results_0.2"
+# kraken_folders["3.1-kraken_czid_results_0.3"]="4.1-bracken_czid_results_0.3"
+# kraken_folders["3.1-kraken_czid_results_0.4"]="4.1-bracken_czid_results_0.4"
+# kraken_folders["3.1-kraken_czid_results_0.5"]="4.1-bracken_czid_results_0.5"
+# kraken_folders["3.1-kraken_czid_results_0.6"]="4.1-bracken_czid_results_0.6"
+# kraken_folders["3.1-kraken_czid_results_0.7"]="4.1-bracken_czid_results_0.7"
+
+# for input_suffix in "${!input_suffixes[@]}"; do
+#     threshold=${input_suffixes[$input_suffix]}
+    input_suffix=".kreport"
+    threshold=150
+    for input_folder in "${!kraken_folders[@]}"; do
+        output_folder=${kraken_folders[$input_folder]}
+        # rm -rvf "${base_dataset_path}/${output_folder}"
+    
+        params=("$num_processes"
+                "$repository_src/1-analysis_pipeline/3-taxonomic_annotation-bracken.sh"
+                "$dataset_name"
+                "$input_suffix"
+                "$base_dataset_path/$input_folder"
+                "$base_dataset_path/$output_folder"
+                "$kraken2_database"
+                "$threshold")
+    
+        # $custom_script "${params[@]}"
+    
+        # mv ${dataset_name}_3-taxonomic_annotation-bracken_logs.tar.gz \
+        #     ${dataset_name}_3-taxonomic_annotation-bracken_${input_folder}${input_suffix}_logs.tar.gz
+    done
+# done
+
+
+################################################################################
+###############################  NORMALIZATION  ################################
+################################################################################
+
+declare -A folders
+folders["3-kraken_bracken_results"]="4-bracken_normalized"
+# folders["4.1-bracken_results_2"]="6-bracken_reports_2"
+# folders["3-kraken_results"]="5-kraken_reports"
+# folders["4-bracken_results"]="6-bracken_reports"
+# folders["4.1-bracken_czid_results_0"]="6.1-bracken_czid_reports_0"
+# folders["4.1-bracken_czid_results_0.1"]="6.1-bracken_czid_reports_0.1"
+# folders["4.1-bracken_czid_results_0.2"]="6.1-bracken_czid_reports_0.2"
+# folders["4.1-bracken_czid_results_0.3"]="6.1-bracken_czid_reports_0.3"
+# folders["4.1-bracken_czid_results_0.4"]="6.1-bracken_czid_reports_0.4"
+# folders["4.1-bracken_czid_results_0.5"]="6.1-bracken_czid_reports_0.5"
+# folders["4.1-bracken_czid_results_0.6"]="6.1-bracken_czid_reports_0.6"
+# folders["4.1-bracken_czid_results_0.7"]="6.1-bracken_czid_reports_0.7"
+
+folders_str=""
+# clean the output folder for the new execution
+for input_folder in "${!folders[@]}"; do
+    output_folder=${folders[$input_folder]}
+    folders_str+=" $input_folder $output_folder"
+    rm -rvf "${base_dataset_path}/${output_folder}"
+done
+
+# input_extension="_1.fastq"
+# input_folder="1-bowtie_ercc_output"
+input_extension="_150_reads_R1.fastq"
+input_folder="${old_dataset_path}/0-raw_samples"
+task_script="$repository_src/2-report_taxon_abundances/normalize_abundance_by_species.py"
+
+# Execute normalization code
+python $task_script "$base_dataset_path" $input_extension $input_folder $folders_str
+
+# send output o the storage
+for input_folder in "${!folders[@]}"; do
+    output_folder=${folders[$input_folder]}
+    
+    mkdir -p "${final_output_path}/${input_folder}"
+    mkdir -p "${final_output_path}/${output_folder}"
+
+    cd "${base_dataset_path}/${input_folder}" && \
+      find . \( -name '*.kreport' -or -name '*.bracken' \) -print0 | \
+      xargs -0 tar -czvf "${final_output_path}/${input_folder}/dataset_${run_name}.tar.gz"
+    cd "${base_dataset_path}/${output_folder}" && \
+      find . -name '*.csv' -print0 | \
+      xargs -0 tar -czvf "${final_output_path}/${output_folder}/dataset_${run_name}.tar.gz"
+done
 
 ################################################################################
 ################################################################################

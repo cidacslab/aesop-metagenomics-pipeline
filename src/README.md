@@ -77,8 +77,9 @@ To start the pipeline edit the parameters for the file locations, like explained
 
 ```bash
 ./src/start_pipeline_job.sh
-
 ```
+
+
 
 ## Citation
 

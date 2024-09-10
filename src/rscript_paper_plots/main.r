@@ -2,7 +2,7 @@
 ################################# COMMON SETUP #################################
 
 # Load libraries
-source("src/3-paper-figures/setup/load_libraries.r")
+source("src/rscript_paper_plots/setup/load_libraries.r")
 
 # Load data wrangling functions
 source("src/3-paper-figures/data_wrangling/data_wrangling_load_sample.r")

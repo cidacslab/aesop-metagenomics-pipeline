@@ -1,39 +1,36 @@
-# AESOP-Metagenomics pipeline
+# AESOP-Metagenomics pipeline steps
 
-The following document describes the process used for taxonomic annotation of metagenome sample pools. 
+# AESOP-Metagenomics Pipeline
 
-This proccess starts downloading fastq files from basespace. From that, we performed adapter removal, quality filter and trimming with fastp. Then, we removed dna contamination from sequences using bowtie, using a pre-created common host contaminant index, with genomes from host models, as mouse, cow and human. And finally we used Kraken2 to annotate each read.
+This document describes the taxonomic annotation process of metagenome samples, starting from raw paired-end fastq files and proceeding through quality filtering, human DNA removal, and taxonomic annotation.
 
-## 1) Samples QC
+## Pipeline Overview
 
-### 1.1) [FASTP (v0.23.2)](https://github.com/OpenGene/fastp): adapter removal and quality control.
+The process assumes you have access to raw paired-end fastq files. We first perform adapter removal, quality filtering, and trimming using **Fastp**. Next, we remove human host DNA contamination using **HISAT2** and **Bowtie2** with a pre-built human index. Finally, we classify reads with **Kraken2** and estimate species-level abundance with **Bracken**.
 
-Using FASTP to remove sequence adapters from samples.
+## 1. Quality Control (QC)
 
-* Input: raw .fastq files downloaded from Illumina Basespace
-* Output: quality filtered without adapters fastq files.
+### 1.1 [FASTP (v0.23.2)](https://github.com/OpenGene/fastp): Adapter Removal & Quality Control
 
-Parameters:
+**Fastp** is used for removing sequencing adapters and filtering low-quality reads.
 
-* --length_required: reads shorter than 50 bp will be discarded
-* --average_qual: if one read's average quality score < 20, then this read/pair is discarded
-* --cut_front: move a sliding window from front (5') to tail, drop the bases in the window if its mean quality < threshold, stop otherwise.
-* --cut_front_window_size: the window size option of cut_front = 1
-* --cut_front_mean_quality: the mean quality requirement option for cut_front = 20
-* --cut_tail:  move a sliding window from tail (3') to front, drop the bases in the window if its mean quality < threshold, stop otherwise.
-* --cut_tail_window_size: the window size option of cut_tail = 1
-* --cut_tail_mean_quality: the mean quality requirement option for cut_tail = 20
-* --n_base_limit: if one read's number of N base is >n_base_limit, then this read/pair is discarded. = 2
+- **Input:** Raw .fastq files (paired-end)
+- **Output:** Quality-filtered fastq files without adapters
 
-Command line:
+#### Key Parameters:
+- `--length_required`: Discards reads shorter than 50 bp
+- `--average_qual`: Discards reads with an average quality score < 20
+- `--cut_front`: Removes low-quality bases from the front
+- `--cut_tail`: Removes low-quality bases from the tail
+- `--n_base_limit`: Discards reads with more than 2 N bases
+
+**Command:**
 ```bash
-  fastp -i sample_id_1.fastq -I sample_id_2.fastq
-  -o sample_id_1_filt_and_trim.fastq -O sample_id_2_filt_and_trim.fastq
-  -merge --merged_out sample_id_merged.fastq
-  --length_required 50
-  --average_qual 20
-  --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20
-  --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20
+fastp -i sample_1.fastq -I sample_2.fastq \
+  -o sample_1_filtered.fastq -O sample_2_filtered.fastq \
+  --length_required 50 --average_qual 20 \
+  --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20 \
+  --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20 \
   --n_base_limit 2
 ```
 
@@ -44,8 +41,8 @@ Sources:
 
 ### 1.2) [Bowtie2](https://github.com/BenLangmead/bowtie2): removal of Host associated DNA
 
-* Inputs: quality filtered .fastq files
-* Outputs: fasta file without host sequences
+- **Inputs:** quality filtered .fastq files
+- **Outputs:** fasta file without host sequences
 
 First, download genomes that we want to remove. The reference genomes can be found [here](https://docs.google.com/spreadsheets/d/15wnnGk5jHeaSDbm7RFrzBNPADKqS1bUhCPO5eKs7W6o/edit?usp=sharing). Once downloaded the reference genome, generate a Bowtie2 index database:
 
