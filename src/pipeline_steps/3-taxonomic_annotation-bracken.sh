@@ -30,15 +30,16 @@ input_id=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
-path_to_db=$6
-read_length=$7
+nthreads=$6 # NOT USED
+path_to_db=$7
+read_length=$8
+threshold=$9
 
 input_id=$(basename $input_id .kreport)
 input_kraken_report="${input_dir}/${input_id}.kreport"
 output_bracken="${output_dir}/${input_id}.bracken"
 
-# bracken_script="/scratch/pablo.viana/softwares/Bracken-master/bracken"
-bracken_script="bracken"
+bracken_script=$BRACKEN_EXECUTABLE
 
 # if exists output
 if [ -f $output_bracken ]; then
@@ -59,9 +60,9 @@ start=$(date +%s.%N)
 echo "Started task Input: $2 Count: $1"
 
 echo "Running bracken command: "
-echo "$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t 1"
+echo "$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold"
 
-$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t 1
+$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold
 
 # Finish script profile
 finish=$(date +%s.%N)

@@ -27,23 +27,22 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_id=$2
-input_dir=$3
-output_dir=$4
-nthreads=$5
+input_suffix=$3
+input_dir=$4
+output_dir=$5
+nthreads=$6 
+path_to_db=$7
 
 input_id=$(basename $input_id .fasta)
 input_file="${input_dir}/${input_id}.fasta"
 output_file="${output_dir}/${input_id}.out"
-blastn_script="/scratch/pablo.viana/softwares/ncbi-blast-2.14.0+/bin/blastn"
-#path_to_db="/home/pablo.viana/jobs/scripts/nt"
-path_to_db="/scratch/pablo.viana/databases/ncbi_ntdb/nt_reference"
-#nthreads=64
+
+blastn_script=$BLASTN_EXECUTABLE
 
 if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
   exit 1
 fi
-
 
 {
 # Start script profile

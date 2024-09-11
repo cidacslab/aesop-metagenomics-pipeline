@@ -29,6 +29,9 @@ input_id=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
+nthreads=$6
+minimum_length=$7
+max_n_count=$8
 
 input_id=$(basename $input_id $input_suffix)
 
@@ -44,8 +47,7 @@ input_id=${input_id/_metadata/}
 output_file1="${output_dir}/${input_id}_1.fastq"
 output_file2="${output_dir}/${input_id}_2.fastq"
 
-# fastp_script="/scratch/pablo.viana/softwares/fastp-0.23.2"
-fastp_script="fastp"
+fastp_script=$FASTP_EXECUTABLE
 
 if [ ! -f $input_file1 ]; then
   echo "Input file not found: $input_file1" >&2
@@ -64,19 +66,19 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Executing FASTP using command:"
 echo "$fastp_script -i $input_file1 -I $input_file2" \
-     " -o $output_file1 -O $output_file2 --thread 8" \
+     " -o $output_file1 -O $output_file2 --thread $nthreads" \
      " -j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html" \
-     " --length_required 50 --average_qual 20" \
+     " --length_required $minimum_length --average_qual 20" \
      " --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20" \
      " --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20" \
-     " --n_base_limit 2"
+     " --n_base_limit $max_n_count"
 $fastp_script -i $input_file1 -I $input_file2 \
-  -o $output_file1 -O $output_file2 --thread 8 \
+  -o $output_file1 -O $output_file2 --thread $nthreads \
   -j "${input_id}_fastp_report.json" -h "${input_id}_fastp_report.html" \
-  --length_required 50 --average_qual 20 \
+  --length_required $minimum_length --average_qual 20 \
   --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20 \
   --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20 \
-  --n_base_limit 2
+  --n_base_limit $max_n_count
 
 # Finish script profile
 finish=$(date +%s.%N)

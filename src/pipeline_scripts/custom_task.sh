@@ -32,11 +32,8 @@ if [ "$#" -lt 6 ]; then
     exit 1
 fi
 
-# Extract the number of proccesses to be run in parallel (first argument)
-num_processes="$1"
-
 # Extract the script file path (second argument)
-task_script="$2"
+task_script="$1"
 
 # Check if the script file exists
 if [ ! -f "$task_script" ]; then
@@ -47,17 +44,27 @@ script_name=$(basename "$task_script")
 script_name=${script_name%.*}
 
 # Dataset name
-dataset_name="$3"
+dataset_name="$2"
+# Extract the number of proccesses to be run in parallel
+num_processes="$3"
+# Delete preexisting output directory
+delete_output_dir="$4"
+# Tar Log file name
+tar_log_file="$5"
 # Suffix of the input files
-input_suffix="$4"
+input_suffix="$6"
 # Path containing the input files
-input_dir="$5"
+input_dir="$7"
 # Destination folder for the output files
-output_dir="$6"
+output_dir="$8"
+# Number of parallel threads to be run in each process
+nthreads="$9"
 
 shift # Remove the first argument from the list
 shift # Remove the second argument from the list
 shift # Remove the third argument from the list
+shift # Remove the fourth argument from the list
+shift # Remove the fifth argument from the list
 
 ###############################################################################
 ############################## SCRIPT EXECUTION ###############################
@@ -71,15 +78,20 @@ args=($@)
 args_str=$(printf '%s ' "${args[@]}")
 echo "Parameters: $args_str"
 
-# rm -rf $output_dir
+if [ $delete_output_dir -eq 1 ]; then
+  echo "rm -rf $output_dir"
+  rm -rf $output_dir
+if
+
+echo "mkdir -p $output_dir"
 mkdir -p $output_dir
 
 find "$input_dir" -type f -name "*${input_suffix}" | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 
-echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${dataset_name}_${script_name}_logs.tar.gz"
-find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${dataset_name}_${script_name}_logs.tar.gz"
+echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${tar_log_file}"
+find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${tar_log_file}"
 
 echo "Removing log files: rm -rf [0-9]*.log"
 rm -rf [0-9]*.log

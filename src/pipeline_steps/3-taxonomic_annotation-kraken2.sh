@@ -30,9 +30,9 @@ input_id=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
-path_to_db=$6
-confidence=$7
-confidence=${confidence:-0}
+nthreads=$6 
+path_to_db=$7
+confidence=$8
 
 input_id=$(basename $input_id $input_suffix)
 
@@ -44,12 +44,11 @@ input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 input_file="${input_dir}/${input_id}#.fastq"
 
-output_kraken_output="/dev/null"
-# output_kraken_output="${output_dir}/${input_id}.kout"
+# output_kraken_output="/dev/null"
+output_kraken_output="${output_dir}/${input_id}.kout"
 output_kraken_report="${output_dir}/${input_id}.kreport"
-nthreads_chosen=16
 
-kraken2_script="kraken2"
+kraken2_script=$KRAKEN2_EXECUTABLE
 
 # if exists output
 if [ -f $output_kraken_report ]; then

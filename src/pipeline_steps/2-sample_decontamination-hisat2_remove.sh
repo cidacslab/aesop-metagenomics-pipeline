@@ -29,7 +29,8 @@ input_id=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
-path_to_db=$6
+nthreads=$6
+path_to_db=$7
 
 input_id=$(basename $input_id $input_suffix)
 
@@ -49,12 +50,9 @@ output_fastq2="${output_dir}/${input_id}_2.fastq"
 output_sam="${output_dir}/${input_id}.sam"
 # output_bam="${output_dir}/${input_id}.bam"
 output_unmapped_bam="${output_dir}/${input_id}_unmapped.bam"
-nthreads=16
 
-# samtools_script="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
-# hisat2_script="/scratch/pablo.viana/softwares/hisat2-2.2.1/hisat2"
-hisat2_script="hisat2"
-samtools_script="samtools"
+hisat2_script=$HISAT2_EXECUTABLE
+samtools_script=$SAMTOOLS_EXECUTABLE
 
 # if exists output
 if [ -f $output_final ]; then
@@ -82,13 +80,7 @@ echo "$hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $inpu
 $hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam > /dev/null
 
 # # Step 2: Convert SAM to BAM
-# echo "$samtools_script view -Sb $output_sam > $output_bam"
-# $samtools_script view -Sb $output_sam > $output_bam
-
 # # Step 3: Filter BAM File with -f 13 Flag
-# echo "$samtools_script view -b -f 13 $output_bam > $output_unmapped_bam"
-# $samtools_script view -b -f 13 $output_bam > $output_unmapped_bam
-
 echo "$samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam"
 $samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam
 
