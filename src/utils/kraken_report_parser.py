@@ -76,11 +76,11 @@ class TreeNode:
         return False
     
     def get_parent_by_level(self, level: Level):
-        parent_in_level = 'none'
+        parent_in_level = None
         parent_node = self.parent
         while parent_node is not None:
             if parent_node.level_enum == level:
-                parent_in_level = parent_node.name.lower()
+                parent_in_level = parent_node
             parent_node = parent_node.parent
         return parent_in_level
 

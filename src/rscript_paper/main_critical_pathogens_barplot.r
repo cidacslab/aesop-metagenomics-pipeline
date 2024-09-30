@@ -9,7 +9,7 @@ sample_data <- combined_df %>%
   filter(tax_id %in% critical_species_pathogen_df$tax_id) %>%
   filter(true_reads > 0 & predicted_reads > 0)
 
-source("src/3-paper-figures/plots/barplot_samples_side_by_side.r")
+source("src/rscript_paper/plots/barplot_samples_side_by_side.r")
 crit_bacteria_plot <- p  +
   xlim(0, 4) +
   labs(title = "Bacteria")
@@ -22,7 +22,7 @@ sample_data <- combined_df %>%
   filter(tax_id %in% critical_family_pathogen_df$tax_id) %>%
   filter(true_reads > 0 & predicted_reads > 0)
 
-source("src/3-paper-figures/plots/barplot_samples_side_by_side.r")
+source("src/rscript_paper/plots/barplot_samples_side_by_side.r")
 crit_virus_plot <- p +
   xlim(0, 4) +
   labs(title = "Viruses") +

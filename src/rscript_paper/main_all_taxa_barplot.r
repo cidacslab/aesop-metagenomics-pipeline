@@ -8,7 +8,7 @@ sample_data <- combined_df %>%
   filter(true_reads > 0 | predicted_reads > 0)
 
 # Plot
-source("src/3-paper-figures/plots/barplot_samples_side_by_side.r")
+source("src/rscript_paper/plots/barplot_samples_side_by_side.r")
 bacteria_plot <- p  +
   xlim(0, 32) +
   labs(title = "Bacteria")
@@ -29,7 +29,7 @@ sample_data <- combined_df %>%
   filter(true_reads > 0 | predicted_reads > 0)
 
 # Plot
-source("src/3-paper-figures/plots/barplot_samples_side_by_side.r")
+source("src/rscript_paper/plots/barplot_samples_side_by_side.r")
 virus_plot <- p +
   xlim(0, 4) +
   labs(title = "Viruses")

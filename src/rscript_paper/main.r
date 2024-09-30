@@ -2,11 +2,11 @@
 ################################# COMMON SETUP #################################
 
 # Load libraries
-source("src/rscript_paper_plots/setup/load_libraries.r")
+source("src/rscript_paper/setup/load_libraries.r")
 
 # Load data wrangling functions
-source("src/3-paper-figures/data_wrangling/data_wrangling_load_sample.r")
-source("src/3-paper-figures/data_wrangling/data_wrangling_load_all_samples.r")
+source("src/rscript_paper/data_wrangling/data_wrangling_load_sample.r")
+source("src/rscript_paper/data_wrangling/data_wrangling_load_all_samples.r")
 
 # Load kraken inspect
 kraken_df <- read_tsv(
@@ -26,10 +26,6 @@ bracken_extension <- "_3-taxonomic_output_bracken_species_abundance.csv"
 # List of bracken files
 bracken_files <- list.files(bracken_path, pattern = "\\.csv$")
 
-# Loading all samples
-combined_df <- data_wrangling_load_all_samples(composition_path,
-  metadata_path, bracken_path, bracken_files, bracken_extension)
-
 # Load the list of important human pathogens
 pathogen_file_path <- "results/pathogen_prioritization_20240814.csv"
 pathogen_df <- read.csv(pathogen_file_path)
@@ -47,8 +43,11 @@ results_folder_root <- "results/paper_figures/"
 results_folder <- results_folder_root
 dir.create(results_folder, recursive = TRUE)
 
-print("SETUP COMPLETE!")
+# Loading all samples
+combined_df <- data_wrangling_load_all_samples(composition_path,
+  metadata_path, bracken_path, bracken_files, bracken_extension)
 
+print("SETUP COMPLETE!")
 
 ################################### FIGURE 1 ###################################
 # Flowchart pipeline
@@ -56,23 +55,29 @@ print("SETUP COMPLETE!")
 ################################### FIGURE 2 ###################################
 
 output_file <- paste0(results_folder, "Figure2.jpg")
-source("src/3-paper-figures/main_critical_pathogens_barplot.r")
+source("src/rscript_paper/main_critical_pathogens_barplot.r")
 
 ################################# FIGURE S1/S2 #################################
 
 output_bacteria <- paste0(results_folder, "FigureS1.jpg")
 output_viruses <- paste0(results_folder, "FigureS2.jpg")
-source("src/3-paper-figures/main_all_taxa_barplot.r")
+source("src/rscript_paper/main_all_taxa_barplot.r")
 
 ################################## FIGURE S3 ###################################
 
 bland_altman_output <- paste0(results_folder, "FigureS3.jpg")
-source("src/3-paper-figures/plots/plot_bland_altman.r")
+source("src/rscript_paper/plots/plot_bland_altman.r")
 
 ################################## FIGURE S4 ###################################
 
 linear_regression_output <- paste0(results_folder, "FigureS4.jpg")
-source("src/3-paper-figures/plots/plot_linear_regression.r")
+source("src/rscript_paper/plots/plot_linear_regression.r")
+
+################################# FIGURE S5/S6 ##################################
+
+output_viruses <- paste0(results_folder, "FigureS5.jpg")
+output_bacteria <- paste0(results_folder, "FigureS6.jpg")
+source("src/rscript_paper/main_review.r")
 
 ################################################################################
 

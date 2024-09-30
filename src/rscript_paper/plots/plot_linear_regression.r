@@ -2,7 +2,8 @@
 
 # Load all taxa data
 data <- combined_df %>%
-  filter(true_reads > 0 | predicted_reads > 0)
+  filter(true_reads > 0 | predicted_reads > 0) #%>%
+  # filter(category %in% c("bacteria"))
 
 # Perform linear regression
 lm_model <- lm(true_reads ~ predicted_reads, data = data)
@@ -11,8 +12,8 @@ lm_model <- lm(true_reads ~ predicted_reads, data = data)
 summary(lm_model)
 
 # Perform Pearson correlation
-cor_model <- cor.test(data$true_reads, data$predicted_reads, method = "pearson")
-cor_model
+# cor_model <- cor.test(data$true_reads, data$predicted_reads, method = "spearman")
+# cor_model
 
 # Plot the true reads vs predicted reads with the regression line
 p <- ggplot(data, aes(x = predicted_reads, y = true_reads)) +
