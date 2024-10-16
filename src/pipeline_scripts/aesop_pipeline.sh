@@ -51,38 +51,20 @@ base_dataset_path=${args_dict["base_dataset_path"]}/dataset_${dataset}
 # Script to execute the tasks
 custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 
-# Export global variables with software locations
-if [[ -v args_dict["download_basespace_access_token"] ]]; then
-  export BASESPACE_API_SERVER="https://api.basespace.illumina.com"
-  export BASESPACE_ACCESS_TOKEN=$args_dict["download_basespace_access_token"]
-fi
-if [[ -v args_dict["BASESPACE_CLI_EXECUTABLE"] ]]; then
-  export BASESPACE_CLI_EXECUTABLE=$args_dict["BASESPACE_CLI_EXECUTABLE"]
-fi
-if [[ -v args_dict["FASTP_EXECUTABLE"] ]]; then
-  export FASTP_EXECUTABLE=$args_dict["FASTP_EXECUTABLE"]
-fi
-if [[ -v args_dict["HISAT2_EXECUTABLE"] ]]; then
-  export HISAT2_EXECUTABLE=$args_dict["HISAT2_EXECUTABLE"]
-fi
-if [[ -v args_dict["BOWTIE2_EXECUTABLE"] ]]; then
-  export BOWTIE2_EXECUTABLE=$args_dict["BOWTIE2_EXECUTABLE"]
-fi
-if [[ -v args_dict["SAMTOOLS_EXECUTABLE"] ]]; then
-  export SAMTOOLS_EXECUTABLE=$args_dict["SAMTOOLS_EXECUTABLE"]
-fi
-if [[ -v args_dict["KRAKEN2_EXECUTABLE"] ]]; then
-  export KRAKEN2_EXECUTABLE=$args_dict["KRAKEN2_EXECUTABLE"]
-fi
-if [[ -v args_dict["BRACKEN_EXECUTABLE"] ]]; then
-  export BRACKEN_EXECUTABLE=$args_dict["BRACKEN_EXECUTABLE"]
-fi
-if [[ -v args_dict["BLASTN_EXECUTABLE"] ]]; then
-  export BLASTN_EXECUTABLE=$args_dict["BLASTN_EXECUTABLE"]
-fi
-if [[ -v args_dict["DIAMOND_EXECUTABLE"] ]]; then
-  export DIAMOND_EXECUTABLE=$args_dict["DIAMOND_EXECUTABLE"]
-fi
+################################################################################
+#############################  EXPORT EXECUTABLES  #############################
+################################################################################
+
+# Array of executable names
+executables=("FASTP_EXECUTABLE" "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
+  "SAMTOOLS_EXECUTABLE" "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE")
+
+# Loop through each executable exporting to child scripts
+for executable in "${executables[@]}"; do
+  if [[ -v args_dict["$executable"] ]]; then
+    export $executable=${args_dict["$executable"]}
+  fi
+done
 
 ################################################################################
 ################################### DOWNLOAD ###################################
@@ -95,7 +77,8 @@ if [ ${args_dict["execute_download"]} -eq 1 ]; then
           ${args_dict["download_input_suffix"]}
           $base_dataset_path/${args_dict["download_input_folder"]}
           $base_dataset_path/${args_dict["download_output_folder"]}
-          $basespace_project_id)
+          $basespace_project_id
+          ${args_dict["download_basespace_access_token"]})
 
   $download_script="$repository_src/pipeline_steps/0-raw_sample_basepace_download.sh"
   $download_script "${params[@]}"
