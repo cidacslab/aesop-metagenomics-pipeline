@@ -7,9 +7,10 @@ Script used to run kraken2 taxonomic classification.
 
 params $1 - Line number
 params $2 - Input id
-params $3 - Input directory
-params $4 - Output directory
-params $5 - Kraken DB directory
+params $3 - Input suffix
+params $4 - Input directory
+params $5 - Output directory
+params $6 - Number of parallel threads
 DOC
 
 # create alias to echo command to log time at each call
@@ -33,20 +34,25 @@ output_dir=$5
 nthreads=$6 
 path_to_db=$7
 confidence=$8
+keep_output=$9
 
 input_id=$(basename $input_id $input_suffix)
 
 input_suffix1=$input_suffix
-input_suffix2=${input_suffix1/_R1./_R2.}
+input_suffix2=${input_suffix1/_R1_/_R2_}
+input_suffix2=${input_suffix2/_R1./_R2.}
 input_suffix2=${input_suffix2/_1./_2.}
 
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 input_file="${input_dir}/${input_id}#.fastq"
 
-# output_kraken_output="/dev/null"
-output_kraken_output="${output_dir}/${input_id}.kout"
 output_kraken_report="${output_dir}/${input_id}.kreport"
+output_kraken_output="/dev/null"
+
+if [ $keep_output -eq 1 ]; then
+  output_kraken_output="${output_dir}/${input_id}.kout"
+fi
 
 kraken2_script=$KRAKEN2_EXECUTABLE
 
@@ -74,10 +80,10 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running kraken command: "
 echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
-  "--report $output_kraken_report --threads $nthreads_chosen --confidence $confidence"
+  "--report $output_kraken_report --threads $nthreads --confidence $confidence"
 
 $kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
-  --report $output_kraken_report --threads $nthreads_chosen --confidence $confidence
+  --report $output_kraken_report --threads $nthreads --confidence $confidence
   
 
 # Finish script profile

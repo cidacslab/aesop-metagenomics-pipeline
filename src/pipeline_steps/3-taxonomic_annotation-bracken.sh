@@ -3,13 +3,14 @@
 Author: Pablo Viana
 Created: 2023/04/19
 
-Script used to run kraken2 taxonomic classification.
+Script used to run bracken taxonomic classification.
 
 params $1 - Line number
 params $2 - Input id
-params $3 - Input directory
-params $4 - Output directory
-params $5 - Kraken DB directory
+params $3 - Input suffix
+params $4 - Input directory
+params $5 - Output directory
+params $6 - Number of parallel threads
 DOC
 
 # create alias to echo command to log time at each call

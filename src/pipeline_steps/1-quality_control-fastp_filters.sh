@@ -44,8 +44,8 @@ input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 
 input_id=${input_id/_metadata/}
-output_file1="${output_dir}/${input_id}_1.fastq"
-output_file2="${output_dir}/${input_id}_2.fastq"
+output_file1="${output_dir}/${input_id}_1.fastq.gz"
+output_file2="${output_dir}/${input_id}_2.fastq.gz"
 
 fastp_script=$FASTP_EXECUTABLE
 

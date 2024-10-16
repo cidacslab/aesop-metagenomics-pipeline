@@ -3,12 +3,14 @@
 Author: Pablo Viana
 Created: 2023/04/19
 
-Script used to create the bowtie database.
+Script used to remove mapped reads from original fastq using HISAT2.
 
 params $1 - Line number
-params $2 - Input file
-params $3 - Input directory
-params $4 - Output directory
+params $2 - Input id
+params $3 - Input suffix
+params $4 - Input directory
+params $5 - Output directory
+params $6 - Number of parallel threads
 DOC
 
 # create alias to echo command to log time at each call
@@ -43,10 +45,10 @@ input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 
 input_id=${input_id/_metadata/}
-output_final="${output_dir}/${input_id}_1.fastq"
+output_final="${output_dir}/${input_id}_1.fastq.gz"
 # output_fastq="${output_dir}/${input_id}_%.fastq"
-output_fastq1="${output_dir}/${input_id}_1.fastq"
-output_fastq2="${output_dir}/${input_id}_2.fastq"
+output_fastq1="${output_dir}/${input_id}_1.fastq.gz"
+output_fastq2="${output_dir}/${input_id}_2.fastq.gz"
 output_sam="${output_dir}/${input_id}.sam"
 # output_bam="${output_dir}/${input_id}.bam"
 output_unmapped_bam="${output_dir}/${input_id}_unmapped.bam"

@@ -60,11 +60,7 @@ output_dir="$8"
 # Number of parallel threads to be run in each process
 nthreads="$9"
 
-shift # Remove the first argument from the list
-shift # Remove the second argument from the list
-shift # Remove the third argument from the list
-shift # Remove the fourth argument from the list
-shift # Remove the fifth argument from the list
+shift 5 # Remove the first 5 arguments from the list
 
 ###############################################################################
 ############################## SCRIPT EXECUTION ###############################
@@ -81,7 +77,7 @@ echo "Parameters: $args_str"
 if [ $delete_output_dir -eq 1 ]; then
   echo "rm -rf $output_dir"
   rm -rf $output_dir
-if
+fi
 
 echo "mkdir -p $output_dir"
 mkdir -p $output_dir

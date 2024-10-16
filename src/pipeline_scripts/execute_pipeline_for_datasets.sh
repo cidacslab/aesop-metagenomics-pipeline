@@ -37,17 +37,19 @@ while IFS= read -r dataset_line; do
     IFS=":" read -r dataset project_id <<< "$dataset_line"
     echo "######################################################"
     echo "######################################################"
-    echo "Executing script: $script_to_execute"
+    echo "Executing script: $pipeline_script"
     echo "     For dataset: $dataset : $project_id"
     echo "######################################################"
-    $script_to_execute $num_processes $dataset $project_id
+    $pipeline_script "$dataset" "$args_str" "$project_id"
 done <<< "$sample_datasets"
 
 
 echo ""
 df
-du -hd 4 /scratch/pablo.viana | sort -k2
-find /scratch/pablo.viana | sort
+# du -hd 4 /scratch/pablo.viana | sort -k2
+# find /scratch/pablo.viana | sort
+# du -hd 4 /home/pedro/aesop/pipeline | sort -k2
+# find /home/pedro/aesop/pipeline | sort
 
 
 #  Finish pipeline profile
