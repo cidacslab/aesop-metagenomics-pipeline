@@ -87,7 +87,7 @@ To start the pipeline edit the parameters for the file locations, like explained
 If you use this pipeline in your research, please cite the following paper:
 
 
-> Viana, P. A. B.; Tschoeke, D. A.; de Moraes, L.; Santos, L. A.; Barral-Netto, M.; Khouri, R.; Ramos, P. I. P.; Meirelles, P. M.; (2024). Design and Implementation of a Metagenomic Analytical Pipeline for Respiratory Pathogen Detection.
+> Viana, P. A. B.; Tschoeke, D. A.; de Moraes, L.; Santos, L. A.; Barral-Netto, M.; Khouri, R.; Ramos, P. I. P.; Meirelles, P. M.; (2024). Design and Implementation of a Metagenomic Analytical Pipeline for Respiratory Pathogen Detection. BMC Res Notes 17, 291 (2024). https://doi.org/10.1186/s13104-024-06964-9
 
 * Corresponding Author: Pedro M Meirelles (pmeirelles@ufba.br)
 * On any code issues, correspond to: Pablo Viana (pablo.alessandro@gmail.com)
