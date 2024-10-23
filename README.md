@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/852272699.svg)](https://doi.org/10.5281/zenodo.13983370)
+
 # Design and Implementation of a Metagenomic Analytical Pipeline for Respiratory Pathogen Detection
 
 ## Abstract
