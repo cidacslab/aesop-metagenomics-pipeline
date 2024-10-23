@@ -86,15 +86,17 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
     file.write(output_content)
 
 
-def main():    
+def main():
+  print(f"Normalization args: {sys.argv}")
+  
   base_path = sys.argv[1]
   input_extension = '_L001_R1_001.fastq.gz'
   input_path =  f"{base_path}/0-raw_samples"
 
-  folders = {
-    # "3-kraken_results":"5-kraken_reports", 
-    "4-bracken_results":"5-bracken_reports"
-  }
+  # folders = {
+  #   # "3-kraken_results":"5-kraken_reports", 
+  #   "4-bracken_results":"5-bracken_reports"
+  # }
 
   if len(sys.argv) > 3:        
       input_extension = sys.argv[2]

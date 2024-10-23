@@ -40,14 +40,14 @@ while IFS= read -r dataset_line; do
     echo "Executing script: $pipeline_script"
     echo "     For dataset: $dataset : $project_id"
     echo "######################################################"
-    $pipeline_script "$dataset" "$args_str" "$project_id"
+    $pipeline_script "$args_str" "$dataset" "$project_id"
 done <<< "$sample_datasets"
 
 
 echo ""
 df
-# du -hd 4 /scratch/pablo.viana | sort -k2
-# find /scratch/pablo.viana | sort
+du -hd 4 /scratch/pablo.viana | sort -k2
+find /scratch/pablo.viana | sort
 # du -hd 4 /home/pedro/aesop/pipeline | sort -k2
 # find /home/pedro/aesop/pipeline | sort
 

@@ -28,12 +28,13 @@ echo "Started running job!"
 ################################## INPUT ARGS ##################################
 ################################################################################
 
-# Dataset to be run
-dataset=$1
-# Basespace project ID
-basespace_project_id=$2
 # Arguments string received
-args_str=$3
+args_str=$1
+# Dataset to be run
+dataset=$2
+# Basespace project ID
+basespace_project_id=$3
+
 # Convert the argument string back to a dictionary
 declare -A args_dict
 for pair in $args_str; do
@@ -51,24 +52,20 @@ base_dataset_path=${args_dict["base_dataset_path"]}/dataset_${dataset}
 # Script to execute the tasks
 custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 
-if [[ -v args_dict["FASTP_EXECUTABLE"] ]]; then
-  export FASTP_EXECUTABLE=$args_dict["FASTP_EXECUTABLE"]
-fi
-if [[ -v args_dict["HISAT2_EXECUTABLE"] ]]; then
-  export HISAT2_EXECUTABLE=$args_dict["HISAT2_EXECUTABLE"]
-fi
-if [[ -v args_dict["BOWTIE2_EXECUTABLE"] ]]; then
-  export BOWTIE2_EXECUTABLE=$args_dict["BOWTIE2_EXECUTABLE"]
-fi
-if [[ -v args_dict["SAMTOOLS_EXECUTABLE"] ]]; then
-  export SAMTOOLS_EXECUTABLE=$args_dict["SAMTOOLS_EXECUTABLE"]
-fi
-if [[ -v args_dict["KRAKEN2_EXECUTABLE"] ]]; then
-  export KRAKEN2_EXECUTABLE=$args_dict["KRAKEN2_EXECUTABLE"]
-fi
-if [[ -v args_dict["BRACKEN_EXECUTABLE"] ]]; then
-  export BRACKEN_EXECUTABLE=$args_dict["BRACKEN_EXECUTABLE"]
-fi
+################################################################################
+#############################  EXPORT EXECUTABLES  #############################
+################################################################################
+
+# Array of executable names
+executables=("FASTP_EXECUTABLE" "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
+   "SAMTOOLS_EXECUTABLE" "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE")
+
+# Loop through each executable exporting to child scripts
+for executable in "${executables[@]}"; do
+  if [[ -v args_dict["$executable"] ]]; then
+    export $executable=${args_dict["$executable"]}
+  fi
+done
 
 ################################################################################
 ###################################  FASTP  ####################################
@@ -77,9 +74,9 @@ fi
 if [ ${args_dict["execute_fastp"]} -eq 1 ]; then
   params=("$repository_src/pipeline_steps/1-quality_control-fastp_filters.sh"
           $dataset_name
-          ${args_dict["fastp_nprocess"]}
+          ${args_dict["fastp_nprocesses"]}
           ${args_dict["fastp_delete_preexisting_output_folder"]}
-          ${dataset_name}_1-quality_control-fastp_filters_logs.tar.gz
+          ${dataset_name}_1.3-quality_control-fastp_filters_logs.tar.gz
           ${args_dict["fastp_input_suffix"]}
           $base_dataset_path/${args_dict["fastp_input_folder"]}
           $base_dataset_path/${args_dict["fastp_output_folder"]}
@@ -100,9 +97,9 @@ fi
 ################################################################################
 
 if [ ${args_dict["execute_hisat2_human"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove_host_reads.sh"
+  params=("$repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh"
           $dataset_name
-          ${args_dict["hisat2_human_nprocess"]}
+          ${args_dict["hisat2_human_nprocesses"]}
           ${args_dict["hisat2_human_delete_preexisting_output_folder"]}
           ${dataset_name}_2.1-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
           ${args_dict["hisat2_human_input_suffix"]}
@@ -119,9 +116,9 @@ fi
 ################################################################################
 
 if [ ${args_dict["execute_bowtie2_human"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove_host_reads.sh"
+  params=("$repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh"
           $dataset_name
-          ${args_dict["bowtie2_human_nprocess"]}
+          ${args_dict["bowtie2_human_nprocesses"]}
           ${args_dict["bowtie2_human_delete_preexisting_output_folder"]}
           ${dataset_name}_2.2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz
           ${args_dict["bowtie2_human_input_suffix"]}
@@ -140,15 +137,16 @@ fi
 if [ ${args_dict["execute_kraken2"]} -eq 1 ]; then
   params=("$repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh"
           $dataset_name
-          ${args_dict["kraken2_nprocess"]}
+          ${args_dict["kraken2_nprocesses"]}
           ${args_dict["kraken2_delete_preexisting_output_folder"]}
-          ${dataset_name}_3.1-taxonomic_annotation-kraken_logs.tar.gz
+          ${dataset_name}_3-taxonomic_annotation-kraken_logs.tar.gz
           ${args_dict["kraken2_input_suffix"]}
           $base_dataset_path/${args_dict["kraken2_input_folder"]}
           $base_dataset_path/${args_dict["kraken2_output_folder"]}
           ${args_dict["kraken2_process_nthreads"]}
           ${args_dict["kraken2_database"]}
-          ${args_dict["kraken2_confidence"]})
+          ${args_dict["kraken2_confidence"]}
+          ${args_dict["kraken2_keep_output"]})
 
   $custom_script "${params[@]}"
 fi
@@ -160,14 +158,14 @@ fi
 if [ ${args_dict["execute_bracken"]} -eq 1 ]; then
   params=("$repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh"
           $dataset_name
-          ${args_dict["bracken_nprocess"]}
+          ${args_dict["bracken_nprocesses"]}
           ${args_dict["bracken_delete_preexisting_output_folder"]}
-          ${dataset_name}_3.2-taxonomic_annotation-bracken_logs.tar.gz
+          ${dataset_name}_3-taxonomic_annotation-bracken_logs.tar.gz
           ${args_dict["bracken_input_suffix"]}
           $base_dataset_path/${args_dict["bracken_input_folder"]}
           $base_dataset_path/${args_dict["bracken_output_folder"]}
           1
-          ${args_dict["kraken2_database"]}
+          ${args_dict["bracken_database"]}
           ${args_dict["bracken_read_length"]}
           ${args_dict["bracken_threshold"]})
 
