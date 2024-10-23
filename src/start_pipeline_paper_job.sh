@@ -34,8 +34,8 @@ command="singularity exec /opt/images/cidacs/biome.sif"
 # If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
 # You can execute mutiple datasets at once, commented lines will not be executed
 sample_datasets="
-                test01
-                "
+                #  test01:123456789
+                mock01:123456789"
 
 ################################################################################
 ############################### ATTENTION !!!!! ################################
@@ -107,7 +107,6 @@ case $server in
     params["kraken2_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
     params["bracken_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
     params["final_output_path"]="${params[base_dataset_path]}"
-    params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
     params["HISAT2_EXECUTABLE"]="hisat2"
     params["BOWTIE2_EXECUTABLE"]="bowtie2"
@@ -125,32 +124,12 @@ esac
 ################################################################################
 ###################### DEFINE STAGES SPECIFIC PARAMETERS #######################
 ################################################################################
-## Download parameters
-params["download_input_suffix"]="_L001_R1_001.fastq.gz"
-params["download_input_folder"]="0-download"
-params["download_output_folder"]="0-raw_samples"
-params["download_delete_preexisting_output_folder"]=1
-params["download_basespace_access_token"]="$(cat ${params[repository_src]}/../data/basespace_access_token.txt)"
-## Bowtie2 remove PHIX parameters
-params["bowtie2_phix_nprocesses"]=4
-params["bowtie2_phix_process_nthreads"]=15
-params["bowtie2_phix_input_suffix"]="_L001_R1_001.fastq.gz"
-params["bowtie2_phix_input_folder"]="0-raw_samples"
-params["bowtie2_phix_output_folder"]="1.1-bowtie_phix_output"
-params["bowtie2_phix_delete_preexisting_output_folder"]=1
-## Bowtie2 remove ERCC parameters
-params["bowtie2_ercc_nprocesses"]=4
-params["bowtie2_ercc_process_nthreads"]=15
-params["bowtie2_ercc_input_suffix"]="_1.fastq.gz"
-params["bowtie2_ercc_input_folder"]="1.1-bowtie_phix_output"
-params["bowtie2_ercc_output_folder"]="1.2-bowtie_ercc_output"
-params["bowtie2_ercc_delete_preexisting_output_folder"]=1
 ## Fastp quality control parameters
 params["fastp_nprocesses"]="4"
 params["fastp_process_nthreads"]="8"
 params["fastp_input_suffix"]="_1.fastq.gz"
-params["fastp_input_folder"]="1.2-bowtie_ercc_output"
-params["fastp_output_folder"]="1.3-fastp_output"
+params["fastp_input_folder"]="0-raw_samples"
+params["fastp_output_folder"]="1-fastp_output"
 params["fastp_delete_preexisting_output_folder"]=1
 params["fastp_minimum_length"]=50
 params["fastp_max_n_count"]=2
@@ -158,7 +137,7 @@ params["fastp_max_n_count"]=2
 params["hisat2_human_nprocesses"]="4"
 params["hisat2_human_process_nthreads"]="15"
 params["hisat2_human_input_suffix"]="_1.fastq.gz"
-params["hisat2_human_input_folder"]="1.3-fastp_output"
+params["hisat2_human_input_folder"]="1-fastp_output"
 params["hisat2_human_output_folder"]="2.1-hisat_human_output"
 params["hisat2_human_delete_preexisting_output_folder"]=1
 ## Bowtie2 remove HUMAN parameters
@@ -183,20 +162,15 @@ params["bracken_input_suffix"]=".kreport"
 params["bracken_input_folder"]="3-taxonomic_output"
 params["bracken_output_folder"]="3-taxonomic_output"
 params["bracken_delete_preexisting_output_folder"]=0
-params["bracken_read_length"]=130
+params["bracken_read_length"]=150
 params["bracken_threshold"]=1
-## Normalization parameters
-params["normalization_input_suffix"]="_1.fastq.gz"
-params["normalization_input_folder"]="0-raw_samples"
-params["normalization_folders"]="3-taxonomic_output:4-bracken_normalized"
-params["normalization_delete_preexisting_output_folder"]=1
 
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################
 ################################################################################
 
 # Pipeline script to be executed
-pipeline_script=${params["repository_src"]}/pipeline_scripts/aesop_pipeline.sh
+pipeline_script=${params["repository_src"]}/pipeline_scripts/pipeline_paper.sh
 
 # Script that call the pipeline for each dataset
 script_for_datasets=${params["repository_src"]}/pipeline_scripts/execute_pipeline_for_datasets.sh
