@@ -45,7 +45,6 @@ input_suffix2=${input_suffix2/_1./_2.}
 
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
-input_file="${input_dir}/${input_id}#.fastq"
 
 output_kraken_report="${output_dir}/${input_id}.kreport"
 output_kraken_output="/dev/null"
@@ -80,10 +79,10 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running kraken command: "
 echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
-  "--report $output_kraken_report --threads $nthreads --confidence $confidence"
+  "--report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping "
 
 $kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
-  --report $output_kraken_report --threads $nthreads --confidence $confidence
+  --report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping 
   
 
 # Finish script profile

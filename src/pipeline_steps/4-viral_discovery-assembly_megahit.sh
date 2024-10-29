@@ -62,10 +62,14 @@ start=$(date +%s.%N)
 
 echo "Started task Input: $2 Count: $1"
 
-echo "Running kraken command: "
+echo "Running megahit command: "
 echo "$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads" \
-  "-1 $input_file1 -2 $input_file2 --out_dir $output_dir --out_prefix $input_id"
+  "-1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id"
 
+$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads \
+  -1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id
+  
+rm -rf $output_dir/$input_id/intermediate_contigs
 
 # Finish script profile
 finish=$(date +%s.%N)

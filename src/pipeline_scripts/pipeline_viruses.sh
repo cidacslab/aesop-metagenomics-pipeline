@@ -84,9 +84,10 @@ run_pipeline_step() {
 
   # Global variable to track if the step was executed successfully
   step_executed=0  # Default is 0 (Step was not executed)
+  echo "Got in step $step_name: ${args_dict[execute_${step_name}]}"
 
   # Check if the step should be executed
-  if [[ -v ${args_dict["execute_${step_name}"]} && ${args_dict["execute_${step_name}"]} -eq 1 ]]; then
+  if [[ -v args_dict["execute_${step_name}"] && ${args_dict["execute_${step_name}"]} -eq 1 ]]; then
     # Create default argument list
     params=($dataset_name
             ${args_dict["${step_name}_nprocesses"]}
@@ -97,7 +98,8 @@ run_pipeline_step() {
             ${base_dataset_path}/${args_dict["${step_name}_output_folder"]}
             ${args_dict["${step_name}_process_nthreads"]}
             $@) # Add any extra arguments passed to the function
-
+    
+    echo "Executing step $step_name"
     $script_path "${params[@]}"
     step_executed=1  # Step executed successfully
   fi

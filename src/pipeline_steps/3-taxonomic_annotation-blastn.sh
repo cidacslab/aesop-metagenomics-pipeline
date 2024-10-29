@@ -27,16 +27,16 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
-input_id=$2
+input_file=$2
 input_suffix=$3
-input_dir=$4
+# input_dir=$4 # NOT USED
 output_dir=$5
 nthreads=$6 
 path_to_db=$7
 
-input_id=$(basename $input_id $input_suffix)
+input_id=$(basename $input_file $input_suffix)
 
-input_file="${input_dir}/${input_id}${input_suffix}"
+# input_file="${input_dir}/${input_id}${input_suffix}"
 output_file="${output_dir}/${input_id}.txt"
 
 blastn_script=$BLASTN_EXECUTABLE
