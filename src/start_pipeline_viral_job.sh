@@ -21,10 +21,10 @@ DOC
 
 # Set execution command in singularity docker or local
 # Template: singularity exec [SINGULARITY_OPTIONS] <sif> [COMMAND_OPTIONS]
-command="singularity exec /opt/images/cidacs/biome.sif"
+# command="singularity exec /opt/images/cidacs/biome.sif"
 # command="singularity exec /opt/images/cidacs/cidacs-jupyter-datascience-v1-r2.sif"
 # Local execution
-# command=""
+command=""
 
 ################################################################################
 ################# DEFINE THE DATASETS TO EXECUTE THE PIPELINE ##################
@@ -72,8 +72,8 @@ declare -A params
 # params["execute_bracken"]=1
 # params["execute_normalization"]=1
 # params["execute_extract_reads"]=1
-params["execute_assembly_megahit"]=1
-# params["execute_blastn"]=1
+# params["execute_assembly_megahit"]=1
+params["execute_blastn"]=1
 # params["execute_normalization"]=0
 # params["execute_map_reads_to_assembly"]=0
 # params["execute_assembly_alignment"]=0
@@ -84,8 +84,8 @@ params["execute_assembly_megahit"]=1
 ######################### DEFINE THE SERVER LOCATIONS ##########################
 ################################################################################
 # Location where to execute the pipeline
-server="hpc"
-# server="prometheus"
+# server="hpc"
+server="prometheus"
 
 # Set the server locations, paths MUST NOT have spaces
 # ADD NEW SERVER HERE IF NEEDED
@@ -126,16 +126,17 @@ case $server in
     params["MEGAHIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit"
     ;;
   "prometheus")
-    params["repository_src"]="/home/work/aesop/github/aesop-metagenomics-pipeline/src"
-    params["initial_dataset_path"]="/home/work/aesop/pipeline/results/viral_discovery_v1"
-    params["base_dataset_path"]="/home/work/aesop/pipeline/results/viral_discovery_v1"
-    params["bowtie2_ercc_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index"
-    params["bowtie2_phix_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
-    params["hisat2_human_index"]="/home/work/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
-    params["bowtie2_human_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
-    params["kraken2_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
-    params["bracken_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
-    params["blastn_viral_index"]="/home/work/aesop/pipeline/databases/blastn_db/viruses_blast_db"
+    params["repository_src"]="/home/pedro/aesop/github/aesop-metagenomics-pipeline/src"
+    params["initial_dataset_path"]="/home/pedro/aesop/pipeline/results/viral_discovery_v1"
+    params["base_dataset_path"]="/home/pedro/aesop/pipeline/results/viral_discovery_v1"
+    params["bowtie2_ercc_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index"
+    params["bowtie2_phix_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
+    params["hisat2_human_index"]="/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
+    params["bowtie2_human_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
+    params["kraken2_database"]="/dev/shm/viruses_complete"
+    # params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
+    params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
+    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_blast_db"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
@@ -143,7 +144,7 @@ case $server in
     params["BOWTIE2_EXECUTABLE"]="bowtie2"
     params["SAMTOOLS_EXECUTABLE"]="samtools"
     params["KRAKEN2_EXECUTABLE"]="kraken2"
-    params["EXTRACT_READS_EXECUTABLE"]="/home/work/aesop/github/KrakenTools-1.2/extract_kraken_reads.py"
+    params["EXTRACT_READS_EXECUTABLE"]="/home/pedro/aesop/github/KrakenTools-1.2/extract_kraken_reads.py"
     params["BRACKEN_EXECUTABLE"]="bracken"
     params["BLASTN_EXECUTABLE"]="blastn"
     params["DIAMOND_EXECUTABLE"]="diamond"
@@ -213,8 +214,8 @@ params["bowtie2_human_output_folder"]="2.2-bowtie_human_output"
 params["bowtie2_human_delete_preexisting_output_folder"]=1
 params["bowtie2_human_log_file"]="2.2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz"
 ## Kraken2 annotation parameters
-params["kraken2_nprocesses"]=2
-params["kraken2_process_nthreads"]=30
+params["kraken2_nprocesses"]=1
+params["kraken2_process_nthreads"]=20
 params["kraken2_input_suffix"]="_1.fastq.gz"
 params["kraken2_input_folder"]="2.2-bowtie_human_output"
 params["kraken2_output_folder"]="3-taxonomic_output"
@@ -222,7 +223,7 @@ params["kraken2_delete_preexisting_output_folder"]=1
 params["kraken2_log_file"]="3-taxonomic_annotation-kraken_logs.tar.gz"
 params["kraken2_confidence"]=0
 params["kraken2_keep_output"]=1
-## Extract Kraken2 reads parameters
+## Extract viral reads parametersqq
 params["extract_reads_nprocesses"]=8
 params["extract_reads_process_nthreads"]=1
 params["extract_reads_input_suffix"]="_1.fastq.gz"
@@ -232,17 +233,17 @@ params["extract_reads_delete_preexisting_output_folder"]=1
 params["extract_reads_log_file"]="4.1-viral_discovery-extract_reads_logs.tar.gz"
 params["extract_reads_kraken_output"]="3-taxonomic_output"
 ## Assembly megahit parameters
-params["assembly_megahit_nprocesses"]=2
-params["assembly_megahit_process_nthreads"]=30
+params["assembly_megahit_nprocesses"]=1
+params["assembly_megahit_process_nthreads"]=20
 params["assembly_megahit_input_suffix"]="_1.fastq.gz"
 params["assembly_megahit_input_folder"]="4.1-viral_discovery_reads"
 params["assembly_megahit_output_folder"]="4.2-viral_discovery_contigs"
 params["assembly_megahit_delete_preexisting_output_folder"]=1
 params["assembly_megahit_log_file"]="4.2-viral_discovery-assembly_megahit_logs.tar.gz"
-## Blastn viral parameters
-params["blastn_nprocesses"]=4
-params["blastn_process_nthreads"]=15
-params["blastn_input_suffix"]=".fasta"
+## Blastn viral parameter
+params["blastn_nprocesses"]=1
+params["blastn_process_nthreads"]=20
+params["blastn_input_suffix"]=".contigs.fa"
 params["blastn_input_folder"]="4.2-viral_discovery_contigs"
 params["blastn_output_folder"]="5.1-blastn_contigs_output"
 params["blastn_delete_preexisting_output_folder"]=1
