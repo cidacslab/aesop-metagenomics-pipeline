@@ -73,7 +73,8 @@ declare -A params
 # params["execute_normalization"]=1
 # params["execute_extract_reads"]=1
 # params["execute_assembly_megahit"]=1
-params["execute_blastn"]=1
+params["execute_assembly_metaspades"]=1
+# params["execute_blastn"]=1
 # params["execute_normalization"]=0
 # params["execute_map_reads_to_assembly"]=0
 # params["execute_assembly_alignment"]=0
@@ -117,12 +118,13 @@ case $server in
     params["FASTP_EXECUTABLE"]="/scratch/pablo.viana/softwares/fastp-0.23.2"
     params["HISAT2_EXECUTABLE"]="/scratch/pablo.viana/softwares/hisat2-2.2.1/hisat2"
     params["BOWTIE2_EXECUTABLE"]="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2"
+    params["BOWTIE2_BUILD_EXECUTABLE"]="/scratch/pablo.viana/softwares/bowtie2-2.5.1-linux-x86_64/bowtie2-build"
     params["SAMTOOLS_EXECUTABLE"]="/scratch/pablo.viana/softwares/samtools-1.17/bin/samtools"
     params["KRAKEN2_EXECUTABLE"]="kraken2"
     params["BRACKEN_EXECUTABLE"]="/scratch/pablo.viana/softwares/Bracken-master/bracken"
     params["EXTRACT_READS_EXECUTABLE"]="/scratch/pablo.viana/softwares/KrakenTools-1.2/extract_kraken_reads.py"
     params["BLASTN_EXECUTABLE"]="/scratch/pablo.viana/softwares/ncbi-blast-2.14.0+/bin/blastn"
-    params["DIAMOND_EXECUTABLE"]="diamond"
+    params["SPADES_EXECUTABLE"]="/scratch/pablo.viana/softwares/SPAdes-4.0.0-Linux/bin/spades.py"
     params["MEGAHIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit"
     ;;
   "prometheus")
@@ -142,9 +144,11 @@ case $server in
     params["FASTP_EXECUTABLE"]="fastp"
     params["HISAT2_EXECUTABLE"]="hisat2"
     params["BOWTIE2_EXECUTABLE"]="bowtie2"
+    params["BOWTIE2_BUILD_EXECUTABLE"]="bowtie2-build"
     params["SAMTOOLS_EXECUTABLE"]="samtools"
     params["KRAKEN2_EXECUTABLE"]="kraken2"
     params["EXTRACT_READS_EXECUTABLE"]="/home/pedro/aesop/github/KrakenTools-1.2/extract_kraken_reads.py"
+    params["SPADES_EXECUTABLE"]="spades"
     params["BRACKEN_EXECUTABLE"]="bracken"
     params["BLASTN_EXECUTABLE"]="blastn"
     params["DIAMOND_EXECUTABLE"]="diamond"
@@ -169,7 +173,7 @@ params["download_input_folder"]="0-download"
 params["download_output_folder"]="0-raw_samples"
 params["download_delete_preexisting_output_folder"]=1
 params["download_log_file"]="0-raw_samples_download_logs.tar.gz"
-params["download_basespace_access_token"]="xxxxxxx"
+params["download_basespace_access_token"]="xxxxx"
 # params["download_basespace_access_token"]="$(cat ${params[repository_src]}/../data/basespace_access_token.txt)"
 ## Bowtie2 remove PHIX parameters
 params["bowtie2_phix_nprocesses"]=4
@@ -223,7 +227,7 @@ params["kraken2_delete_preexisting_output_folder"]=1
 params["kraken2_log_file"]="3-taxonomic_annotation-kraken_logs.tar.gz"
 params["kraken2_confidence"]=0
 params["kraken2_keep_output"]=1
-## Extract viral reads parametersqq
+## Extract viral reads parameters
 params["extract_reads_nprocesses"]=8
 params["extract_reads_process_nthreads"]=1
 params["extract_reads_input_suffix"]="_1.fastq.gz"
@@ -233,18 +237,26 @@ params["extract_reads_delete_preexisting_output_folder"]=1
 params["extract_reads_log_file"]="4.1-viral_discovery-extract_reads_logs.tar.gz"
 params["extract_reads_kraken_output"]="3-taxonomic_output"
 ## Assembly megahit parameters
-params["assembly_megahit_nprocesses"]=1
-params["assembly_megahit_process_nthreads"]=20
+params["assembly_megahit_nprocesses"]=2
+params["assembly_megahit_process_nthreads"]=15
 params["assembly_megahit_input_suffix"]="_1.fastq.gz"
 params["assembly_megahit_input_folder"]="4.1-viral_discovery_reads"
 params["assembly_megahit_output_folder"]="4.2-viral_discovery_contigs"
 params["assembly_megahit_delete_preexisting_output_folder"]=1
 params["assembly_megahit_log_file"]="4.2-viral_discovery-assembly_megahit_logs.tar.gz"
-## Blastn viral parameter
-params["blastn_nprocesses"]=1
-params["blastn_process_nthreads"]=20
+## Assembly metaspades parameters
+params["assembly_metaspades_nprocesses"]=2
+params["assembly_metaspades_process_nthreads"]=15
+params["assembly_metaspades_input_suffix"]="_1.fastq.gz"
+params["assembly_metaspades_input_folder"]="4.1-viral_discovery_reads"
+params["assembly_metaspades_output_folder"]="4.3-viral_discovery_contigs_metaspades"
+params["assembly_metaspades_delete_preexisting_output_folder"]=1
+params["assembly_metaspades_log_file"]="4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
+## Blastn viral parameters
+params["blastn_nprocesses"]=2
+params["blastn_process_nthreads"]=15
 params["blastn_input_suffix"]=".contigs.fa"
-params["blastn_input_folder"]="4.2-viral_discovery_contigs"
+params["blastn_input_folder"]="4.3-viral_discovery_contigs_metaspades"
 params["blastn_output_folder"]="5.1-blastn_contigs_output"
 params["blastn_delete_preexisting_output_folder"]=1
 params["blastn_log_file"]="5.1-taxonomic_annotation-blastn_contigs_logs.tar.gz"
@@ -260,33 +272,35 @@ pipeline_script=${params["repository_src"]}/pipeline_scripts/pipeline_viruses.sh
 script_for_datasets=${params["repository_src"]}/pipeline_scripts/execute_pipeline_for_datasets.sh
 
 ################################################################################
+###################### CONVERTING PARAMETERS TO A STRING #######################
 ################################################################################
 
-# CONVERTING PARAMETERS TO A STRING
-# Trim all lines, then filter out comments and empty lines
-sample_datasets=$(echo "$sample_datasets" | \
-                  sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | \
-                  grep -v '^[[:space:]]*$' | grep -v '^[[:space:]]*#')
-
+# ARGUMENTS
 # Initialize an empty string to hold the parameters as a string
 params_str=""
 # Iterate over the dictionary and build the string
 for key in "${!params[@]}"; do
   value=${params[$key]}
-  params_str+="$key=$value "
+  params_str+="$key=$value|"
 done
-# Remove the trailing space
-params_str=${params_str% }
+# Remove trailing | if present
+params_str=${params_str%|}
+
+# DATASETS
+# Trim all lines, then filter out comments and empty lines
+sample_datasets=$(echo "$sample_datasets" | \
+                  sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | \
+                  grep -v '^[[:space:]]*$' | grep -v '^[[:space:]]*#')
 
 ################################################################################
 ################################################################################
 
 echo "Execution command:" 
 echo "    $command $script_for_datasets $pipeline_script"
-echo "$sample_datasets"
 echo "    $params_str"
+echo "$sample_datasets"
 
-$command $script_for_datasets "$pipeline_script" "$sample_datasets" "$params_str"
+$command $script_for_datasets "$pipeline_script" "$params_str" "$sample_datasets"
 
 ################################################################################
 ################################################################################

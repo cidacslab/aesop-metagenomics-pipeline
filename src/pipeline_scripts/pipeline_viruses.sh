@@ -37,10 +37,12 @@ basespace_project_id=$3
 
 # Convert the argument string back to a dictionary
 declare -A args_dict
-for pair in $args_str; do
-    key=${pair%=*}
-    value=${pair#*=}
-    args_dict[$key]=$value
+# Use IFS to split by | and read each key-value pair
+IFS='|' read -ra pairs <<< "$args_str"
+# Loop through the key-value pairs
+for pair in "${pairs[@]}"; do
+  IFS='=' read -r key value <<< "$pair"
+  args_dict[$key]=$value
 done
 
 # Dataset name
@@ -60,7 +62,7 @@ custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 # Array of executable names
 executables=("FASTP_EXECUTABLE" "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
   "SAMTOOLS_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
-  "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" "DIAMOND_EXECUTABLE" \
+  "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" "SPADES_EXECUTABLE" \
   "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE")
 
 # Loop through each executable exporting to child scripts
@@ -84,7 +86,6 @@ run_pipeline_step() {
 
   # Global variable to track if the step was executed successfully
   step_executed=0  # Default is 0 (Step was not executed)
-  echo "Got in step $step_name: ${args_dict[execute_${step_name}]}"
 
   # Check if the step should be executed
   if [[ -v args_dict["execute_${step_name}"] && ${args_dict["execute_${step_name}"]} -eq 1 ]]; then
@@ -99,7 +100,7 @@ run_pipeline_step() {
             ${args_dict["${step_name}_process_nthreads"]}
             $@) # Add any extra arguments passed to the function
     
-    echo "Executing step $step_name"
+    echo "Executing step: $step_name"
     $script_path "${params[@]}"
     step_executed=1  # Step executed successfully
   fi
@@ -114,7 +115,7 @@ run_pipeline_step() {
 ## DOWNLOAD 
 run_pipeline_step "download" \
   "$repository_src/pipeline_steps/0-raw_sample_download_basepace.sh" \
-  ${args_dict["download_basespace_access_token"]}
+  ${args_dict["download_basespace_access_token"]} \
   $basespace_project_id
 
 
@@ -166,16 +167,21 @@ run_pipeline_step "kraken2" \
   ${args_dict["kraken2_keep_output"]} 
 
 
-##  EXTRACT READS
+##  EXTRACT READS 
 run_pipeline_step "extract_reads" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
   $base_dataset_path/${args_dict["extract_reads_kraken_output"]} \
   "0 10239"
 
 
-##  ASSEMBLY
+##  ASSEMBLY MEGAHIT
 run_pipeline_step "assembly_megahit" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_megahit.sh"
+
+
+##  ASSEMBLY METASPADES
+run_pipeline_step "assembly_metaspades" \
+  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_metaspades.sh"
 
 
 ## BLASTN ON CONTIGS
