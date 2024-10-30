@@ -43,7 +43,7 @@ input_suffix2=${input_suffix2/_1./_2.}
 input_file1="${input_dir}/${input_id}${input_suffix1}"
 input_file2="${input_dir}/${input_id}${input_suffix2}"
 
-megahit_script=$MEGAHIT_EXECUTABLE
+spades_script=$SPADES_EXECUTABLE
 
 
 # if not exists input
@@ -63,13 +63,16 @@ start=$(date +%s.%N)
 echo "Started task Input: $2 Count: $1"
 
 echo "Running megahit command: "
-echo "$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads" \
-  "-1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id"
+echo "$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2" \
+  "-o $output_dir/$input_id"
 
-$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads \
-  -1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id
+$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2 \
+  -o $output_dir/$input_id
   
-rm -rvf $output_dir/$input_id/intermediate_contigs
+# rm -rvf $output_dir/$input_id/corrected
+# rm -rvf $output_dir/$input_id/K*
+# rm -rvf $output_dir/$input_id/
+mv -vf $output_dir/$input_id/contigs.fasta $output_dir/${input_id}.contigs.fasta
 
 # Finish script profile
 finish=$(date +%s.%N)

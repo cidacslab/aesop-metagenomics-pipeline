@@ -27,10 +27,11 @@ echo "Started running job for all datasets!"
 
 # Pipeline script to be executed
 pipeline_script=$1
-# Dictionary with dataset names and their project_id
-sample_datasets=$2
 # Parameters to be passed to the script
-args_str=$3
+args_str=$2
+# Dictionary with dataset names and their project_id
+sample_datasets=$3
+
 
 # Loop throught all datasets
 while IFS= read -r dataset_line; do

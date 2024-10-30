@@ -54,11 +54,11 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running blastn command: "
 echo "$blastn_script -db $path_to_db -query $input_file" \
-    "-outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles'" \
+    "-outfmt '7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles'" \
     "-max_target_seqs 10 -evalue 0.001 -num_threads $nthreads -out $output_file"
 
 $blastn_script -db $path_to_db -query $input_file \
-    -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
+    -outfmt "7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
     -max_target_seqs 10 -evalue 0.001 -num_threads $nthreads -out $output_file
 
 
