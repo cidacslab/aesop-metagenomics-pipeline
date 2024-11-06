@@ -49,7 +49,7 @@ input_file2="${input_mapping_dir}/${input_id}${input_suffix2}"
 output_prefix="${output_dir}/${input_id}"
 
 bowtie2_script=$BOWTIE2_EXECUTABLE
-bowtie2-build_script=$BOWTIE2_BUILD_EXECUTABLE
+bowtie2_build_script=$BOWTIE2_BUILD_EXECUTABLE
 samtools_script=$SAMTOOLS_EXECUTABLE
 
 
@@ -71,11 +71,11 @@ echo "Started task Input: $2 Count: $1"
 
 # Step 1: Index the Contigs using Bowtie2
 echo "Indexing contigs with Bowtie2..."
-$bowtie2-build_script $input_contigs ${input_id}_contigs_index
+$bowtie2_build_script $input_contigs ${output_prefix}_contigs_index
 
 # Step 2: Align the Paired-End Reads to the Contigs using Bowtie2
 echo "Aligning reads with Bowtie2..."
-$bowtie2_script -x ${input_id}_contigs_index -1 $input_file1 -2 $input_file2 -S "${output_prefix}_aligned.sam"
+$bowtie2_script -x ${output_prefix}_contigs_index --threads $nthreads -1 $input_file1 -2 $input_file2 -S "${output_prefix}_aligned.sam"
 
 # Step 3: Convert SAM to BAM, Sort, and Index using Samtools
 echo "Converting SAM to BAM, sorting, and indexing..."
@@ -85,34 +85,41 @@ $samtools_script index "${output_prefix}_sorted_aligned.bam"
 
 # Step 4: Calculate Coverage per Contig using Samtools
 echo "Calculating coverage for each contig..."
-$samtools_script depth "${output_prefix}_sorted_aligned.bam" > "${output_prefix}_coverage.txt"
+$samtools_script depth "${output_prefix}_sorted_aligned.bam" > "${output_prefix}_coverage.tsv"
 
 # Step 5: Print per-contig read counts and coverage
 echo "Generating read count per contig and coverage summary..."
 
-echo -e "Contig\tTotal_Reads\tCoverage" > "${output_prefix}_contig_stats.txt"
-
 # Get contig read counts and coverage
-$samtools_script idxstats "${output_prefix}_sorted_aligned.bam" | cut -f 1,3 > "${output_prefix}_contig_read_counts.txt"
+$samtools_script idxstats "${output_prefix}_sorted_aligned.bam" > "${output_prefix}_contig_read_counts.tsv"
+
+printf "Contig\tReference_Length\tTotal_Reads\tCoverage\n" > "${output_prefix}_contig_stats.tsv"
 
 # Combine read counts and coverage in one report
 while read -r contig; do
   # Extract the number of reads that mapped to the current contig
-  reads_mapped=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.txt" | cut -f2)
+  reference_length=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.txt" | cut -f2)
+
+  # Extract the number of reads that mapped to the current contig
+  reads_mapped=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.txt" | cut -f3)
   
   # Calculate total coverage for the current contig
   total_coverage=$(grep "^$contig\s" "${output_prefix}_coverage.txt" | awk '{sum += $3} END {print sum}')
   
   # Output the results (use 0 for coverage if it's not found)
-  echo -e "$contig\t$reads_mapped\t${total_coverage:-0}" >> "${output_prefix}_contig_stats.txt"
+  printf "${contig}\t${reference_length}\t${reads_mapped}\t${total_coverage:-0}\n" >> "${output_prefix}_contig_stats.tsv"
 
-  # Step 6: Extract both reads of a pair where at least one read maps to the current contig
-  echo "Extracting reads mapped to $contig and their mates..."
+  # Step 6: Extract reads mapped to the current contig
+  echo "Extracting reads mapped to $contig..."
   
-  # Use samtools to extract all paired reads (both mapped and their mates), ensuring both reads are included
-  samtools view -f 1 -F 12 "${output_prefix}_sorted_aligned.bam" "$contig" | cut -f1 | sort | uniq > "${output_prefix}_${contig}_reads.txt"
+  # Use samtools to extract all reads mapped to the contig
+  $samtools_script view "${output_prefix}_sorted_aligned.bam" "$contig" | \
+    awk -v contig_name="$contig" '{print contig_name "\t" $1}' >> "${output_prefix}_contig_reads.tsv"
   
 done < <(grep ">" "$input_contigs" | sed 's/>//')
+
+echo "Cleaning intermediate files..."
+rm -rvf ${output_prefix}_contigs_index* ${output_prefix}_aligned* ${output_prefix}_sorted*
 
 echo "Mapping and coverage calculation completed."
 echo "Results are stored in ${output_prefix}_contig_stats.txt."

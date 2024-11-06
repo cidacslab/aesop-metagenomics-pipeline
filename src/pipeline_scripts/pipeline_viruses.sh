@@ -60,15 +60,28 @@ custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 ################################################################################
 
 # Array of executable names
-executables=("FASTP_EXECUTABLE" "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
-  "SAMTOOLS_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
-  "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" "SPADES_EXECUTABLE" \
-  "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE")
+executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
+  "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" "BASESPACE_CLI_EXECUTABLE" \
+  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
+  "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
+  "SPADES_EXECUTABLE" "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE" )
 
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
   if [[ -v args_dict["$executable"] ]]; then
     export $executable=${args_dict["$executable"]}
+    # Try different options to get the version
+    # command=${args_dict["$executable"]}
+    # if version=$($command -v 2>/dev/null); then
+    #     echo "$command version: $version"
+    # elif version=$($command -version 2>/dev/null); then
+    #     echo "$command version: $version"
+    # elif version=$($command --version 2>/dev/null); then
+    #     echo "$command version: $version"
+    # else
+    #     echo "Unable to determine version for $command"
+    # fi
+
   fi
 done
 
@@ -100,6 +113,7 @@ run_pipeline_step() {
             ${args_dict["${step_name}_process_nthreads"]}
             $@) # Add any extra arguments passed to the function
     
+    echo ""
     echo "Executing step: $step_name"
     $script_path "${params[@]}"
     step_executed=1  # Step executed successfully
@@ -175,13 +189,23 @@ run_pipeline_step "extract_reads" \
 
 
 ##  ASSEMBLY MEGAHIT
-run_pipeline_step "assembly_megahit" \
-  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_megahit.sh"
+# run_pipeline_step "assembly_megahit" \
+#   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_megahit.sh"
 
 
 ##  ASSEMBLY METASPADES
 run_pipeline_step "assembly_metaspades" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_metaspades.sh"
+
+run_pipeline_step "mapping_metaspades" \
+  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
+  ${args_dict["mapping_metaspades_origin_input_suffix"]} \
+  $base_dataset_path/${args_dict["mapping_metaspades_origin_input_folder"]}
+
+rm -rvf ${args_dict["final_output_path"]}/$dataset_name
+mkdir -p ${args_dict["final_output_path"]}/$dataset_name
+cp -rvf $base_dataset_path/${args_dict["mapping_metaspades_output_folder"]} \
+  ${args_dict["final_output_path"]}/$dataset_name
 
 
 ## BLASTN ON CONTIGS

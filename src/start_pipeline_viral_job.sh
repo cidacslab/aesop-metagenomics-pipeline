@@ -74,6 +74,7 @@ declare -A params
 # params["execute_extract_reads"]=1
 # params["execute_assembly_megahit"]=1
 params["execute_assembly_metaspades"]=1
+params["execute_mapping_metaspades"]=1
 # params["execute_blastn"]=1
 # params["execute_normalization"]=0
 # params["execute_map_reads_to_assembly"]=0
@@ -252,6 +253,16 @@ params["assembly_metaspades_input_folder"]="4.1-viral_discovery_reads"
 params["assembly_metaspades_output_folder"]="4.3-viral_discovery_contigs_metaspades"
 params["assembly_metaspades_delete_preexisting_output_folder"]=1
 params["assembly_metaspades_log_file"]="4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
+## Mapping metaspades parameters
+params["mapping_metaspades_nprocesses"]=2
+params["mapping_metaspades_process_nthreads"]=15
+params["mapping_metaspades_input_suffix"]=".contigs.fa"
+params["mapping_metaspades_input_folder"]="4.3-viral_discovery_contigs_metaspades"
+params["mapping_metaspades_output_folder"]="4.4-viral_discovery_mapping_metaspades"
+params["mapping_metaspades_delete_preexisting_output_folder"]=1
+params["mapping_metaspades_log_file"]="4.3-viral_discovery-mapping_metaspades_logs.tar.gz"
+params["mapping_metaspades_origin_input_suffix"]="_1.fastq.gz"
+params["mapping_metaspades_origin_input_folder"]="4.1-viral_discovery_reads"
 ## Blastn viral parameters
 params["blastn_nprocesses"]=2
 params["blastn_process_nthreads"]=15

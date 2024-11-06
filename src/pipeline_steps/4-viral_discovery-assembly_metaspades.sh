@@ -72,7 +72,7 @@ $spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2 \
 # rm -rvf $output_dir/$input_id/corrected
 # rm -rvf $output_dir/$input_id/K*
 # rm -rvf $output_dir/$input_id/
-mv -vf $output_dir/$input_id/contigs.fasta $output_dir/${input_id}.contigs.fasta
+mv -vf $output_dir/$input_id/contigs.fasta $output_dir/${input_id}.contigs.fa
 
 # Finish script profile
 finish=$(date +%s.%N)
