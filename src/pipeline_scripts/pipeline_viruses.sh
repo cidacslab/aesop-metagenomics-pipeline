@@ -64,7 +64,7 @@ executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
   "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" "BASESPACE_CLI_EXECUTABLE" \
   "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
   "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
-  "SPADES_EXECUTABLE" "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE" )
+  "SPADES_EXECUTABLE" "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE" "TAXONKIT_EXECUTABLE")
 
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
@@ -101,16 +101,16 @@ run_pipeline_step() {
   step_executed=0  # Default is 0 (Step was not executed)
 
   # Check if the step should be executed
-  if [[ -v args_dict["execute_${step_name}"] && ${args_dict["execute_${step_name}"]} -eq 1 ]]; then
+  if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
     # Create default argument list
-    params=($dataset_name
-            ${args_dict["${step_name}_nprocesses"]}
-            ${args_dict["${step_name}_delete_preexisting_output_folder"]}
-            ${dataset_name}_${args_dict["${step_name}_log_file"]}
-            ${args_dict["${step_name}_input_suffix"]}
-            ${base_dataset_path}/${args_dict["${step_name}_input_folder"]}
-            ${base_dataset_path}/${args_dict["${step_name}_output_folder"]}
-            ${args_dict["${step_name}_process_nthreads"]}
+    params=("$dataset_name"
+            "${args_dict[${step_name}_nprocesses]}"
+            "${args_dict[${step_name}_delete_preexisting_output_folder]}"
+            "${dataset_name}_${args_dict[${step_name}_log_file]}"
+            "${args_dict[${step_name}_input_suffix]}"
+            "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
+            "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"
+            "${args_dict[${step_name}_process_nthreads]}"
             $@) # Add any extra arguments passed to the function
     
     echo ""
@@ -185,7 +185,7 @@ run_pipeline_step "kraken2" \
 run_pipeline_step "extract_reads" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
   $base_dataset_path/${args_dict["extract_reads_kraken_output"]} \
-  "0 10239"
+  ${args_dict["extract_reads_from_taxons"]}
 
 
 ##  ASSEMBLY MEGAHIT
@@ -197,21 +197,29 @@ run_pipeline_step "extract_reads" \
 run_pipeline_step "assembly_metaspades" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_metaspades.sh"
 
+
+##  MAPPING METASPADES
 run_pipeline_step "mapping_metaspades" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
   ${args_dict["mapping_metaspades_origin_input_suffix"]} \
   $base_dataset_path/${args_dict["mapping_metaspades_origin_input_folder"]}
 
-rm -rvf ${args_dict["final_output_path"]}/$dataset_name
-mkdir -p ${args_dict["final_output_path"]}/$dataset_name
-cp -rvf $base_dataset_path/${args_dict["mapping_metaspades_output_folder"]} \
-  ${args_dict["final_output_path"]}/$dataset_name
+# rm -rvf ${args_dict["final_output_path"]}/$dataset_name
+# mkdir -p ${args_dict["final_output_path"]}/$dataset_name
+# cp -rvf $base_dataset_path/${args_dict["mapping_metaspades_output_folder"]} \
+#   ${args_dict["final_output_path"]}/$dataset_name
 
 
 ## BLASTN ON CONTIGS
 run_pipeline_step "blastn" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-blastn.sh" \
   ${args_dict["blastn_viral_index"]}
+
+
+## BLASTN TAXONKIT
+run_pipeline_step "blastn_taxonkit" \
+  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-blastn_taxonkit.sh" \
+  ${args_dict["taxonkit_database"]}
 
 
 ################################################################################

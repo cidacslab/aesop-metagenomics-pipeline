@@ -75,7 +75,8 @@ declare -A params
 # params["execute_assembly_megahit"]=1
 params["execute_assembly_metaspades"]=1
 params["execute_mapping_metaspades"]=1
-# params["execute_blastn"]=1
+params["execute_blastn"]=1
+params["execute_blastn_taxonkit"]=1
 # params["execute_normalization"]=0
 # params["execute_map_reads_to_assembly"]=0
 # params["execute_assembly_alignment"]=0
@@ -112,6 +113,8 @@ case $server in
     params["bracken_database"]="/scratch/pablo.viana/databases/kraken2_db/aesop_kraken2db_20240619"
     # Blast viral database
     params["blastn_viral_index"]="/scratch/pablo.viana/databases/blastn_db/viral_genomes/complete_viral_blastdb"
+    # Taxon kit db
+    params["taxonkit_database"]="/scratch/pablo.viana/databases/taxonkit_db"
     # Location of the final report output
     params["final_output_path"]="/opt/storage/shared/aesop/metagenomica/biome/pipeline_v1.0"
     # Location of software executables
@@ -127,6 +130,7 @@ case $server in
     params["BLASTN_EXECUTABLE"]="/scratch/pablo.viana/softwares/ncbi-blast-2.14.0+/bin/blastn"
     params["SPADES_EXECUTABLE"]="/scratch/pablo.viana/softwares/SPAdes-4.0.0-Linux/bin/spades.py"
     params["MEGAHIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit"
+    params["TAXONKIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/TaxonKit_v0.18.0/taxonkit"
     ;;
   "prometheus")
     params["repository_src"]="/home/pedro/aesop/github/aesop-metagenomics-pipeline/src"
@@ -136,10 +140,11 @@ case $server in
     params["bowtie2_phix_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
     params["hisat2_human_index"]="/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
     params["bowtie2_human_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
-    params["kraken2_database"]="/dev/shm/viruses_complete"
-    # params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
+    # params["kraken2_database"]="/dev/shm/viruses_complete"
+    params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_complete"
     params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
-    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_blast_db"
+    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
+    params["taxonkit_database"]="/home/pedro/aesop/pipeline/databases/taxonkit_db"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
@@ -149,12 +154,13 @@ case $server in
     params["SAMTOOLS_EXECUTABLE"]="samtools"
     params["KRAKEN2_EXECUTABLE"]="kraken2"
     params["EXTRACT_READS_EXECUTABLE"]="/home/pedro/aesop/github/KrakenTools-1.2/extract_kraken_reads.py"
-    params["SPADES_EXECUTABLE"]="spades"
+    params["SPADES_EXECUTABLE"]="spades.py"
     params["BRACKEN_EXECUTABLE"]="bracken"
     params["BLASTN_EXECUTABLE"]="blastn"
     params["DIAMOND_EXECUTABLE"]="diamond"
     params["MEGAHIT_EXECUTABLE"]="megahit"
     params["QUAST_EXECUTABLE"]="quast"
+    params["TAXONKIT_EXECUTABLE"]="/home/pedro/aesop/github/taxonkit"
     ;;
   *)
     # Default case if no pattern matches
@@ -237,6 +243,7 @@ params["extract_reads_output_folder"]="4.1-viral_discovery_reads"
 params["extract_reads_delete_preexisting_output_folder"]=1
 params["extract_reads_log_file"]="4.1-viral_discovery-extract_reads_logs.tar.gz"
 params["extract_reads_kraken_output"]="3-taxonomic_output"
+params["extract_reads_from_taxons"]="0,10239"
 ## Assembly megahit parameters
 params["assembly_megahit_nprocesses"]=2
 params["assembly_megahit_process_nthreads"]=15
@@ -258,9 +265,9 @@ params["mapping_metaspades_nprocesses"]=2
 params["mapping_metaspades_process_nthreads"]=15
 params["mapping_metaspades_input_suffix"]=".contigs.fa"
 params["mapping_metaspades_input_folder"]="4.3-viral_discovery_contigs_metaspades"
-params["mapping_metaspades_output_folder"]="4.4-viral_discovery_mapping_metaspades"
+params["mapping_metaspades_output_folder"]="4.3.1-viral_discovery_mapping_metaspades"
 params["mapping_metaspades_delete_preexisting_output_folder"]=1
-params["mapping_metaspades_log_file"]="4.3-viral_discovery-mapping_metaspades_logs.tar.gz"
+params["mapping_metaspades_log_file"]="4.3.1-viral_discovery-mapping_metaspades_logs.tar.gz"
 params["mapping_metaspades_origin_input_suffix"]="_1.fastq.gz"
 params["mapping_metaspades_origin_input_folder"]="4.1-viral_discovery_reads"
 ## Blastn viral parameters
@@ -268,9 +275,17 @@ params["blastn_nprocesses"]=2
 params["blastn_process_nthreads"]=15
 params["blastn_input_suffix"]=".contigs.fa"
 params["blastn_input_folder"]="4.3-viral_discovery_contigs_metaspades"
-params["blastn_output_folder"]="5.1-blastn_contigs_output"
+params["blastn_output_folder"]="4.3.2-blastn_contigs_metaspades"
 params["blastn_delete_preexisting_output_folder"]=1
-params["blastn_log_file"]="5.1-taxonomic_annotation-blastn_contigs_logs.tar.gz"
+params["blastn_log_file"]="4.3.2-taxonomic_annotation-blastn_contigs_metaspades_logs.tar.gz"
+## Blastn taxonkit parameters
+params["blastn_taxonkit_nprocesses"]=4
+params["blastn_taxonkit_process_nthreads"]=1
+params["blastn_taxonkit_input_suffix"]=".txt"
+params["blastn_taxonkit_input_folder"]="4.3.2-blastn_contigs_metaspades"
+params["blastn_taxonkit_output_folder"]="4.3.3-blastn_taxonkit_metaspades"
+params["blastn_taxonkit_delete_preexisting_output_folder"]=0
+params["blastn_taxonkit_log_file"]="4.3.3-viral_discovery-blastn_taxonkit_metaspades_logs.tar.gz"
 
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################

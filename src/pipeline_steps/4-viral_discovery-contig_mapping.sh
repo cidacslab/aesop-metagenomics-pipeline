@@ -98,13 +98,13 @@ printf "Contig\tReference_Length\tTotal_Reads\tCoverage\n" > "${output_prefix}_c
 # Combine read counts and coverage in one report
 while read -r contig; do
   # Extract the number of reads that mapped to the current contig
-  reference_length=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.txt" | cut -f2)
+  reference_length=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.tsv" | cut -f2)
 
   # Extract the number of reads that mapped to the current contig
-  reads_mapped=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.txt" | cut -f3)
+  reads_mapped=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.tsv" | cut -f3)
   
   # Calculate total coverage for the current contig
-  total_coverage=$(grep "^$contig\s" "${output_prefix}_coverage.txt" | awk '{sum += $3} END {print sum}')
+  total_coverage=$(grep "^$contig\s" "${output_prefix}_coverage.tsv" | awk 'BEGIN {sum = 0} {sum += $3} END {print sum}')
   
   # Output the results (use 0 for coverage if it's not found)
   printf "${contig}\t${reference_length}\t${reads_mapped}\t${total_coverage:-0}\n" >> "${output_prefix}_contig_stats.tsv"
@@ -122,7 +122,7 @@ echo "Cleaning intermediate files..."
 rm -rvf ${output_prefix}_contigs_index* ${output_prefix}_aligned* ${output_prefix}_sorted*
 
 echo "Mapping and coverage calculation completed."
-echo "Results are stored in ${output_prefix}_contig_stats.txt."
+echo "Results are stored in ${output_prefix}_contig_stats.tsv"
 
 
 # Finish script profile

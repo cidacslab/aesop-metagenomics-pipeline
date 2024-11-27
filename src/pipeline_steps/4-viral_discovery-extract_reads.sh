@@ -31,7 +31,7 @@ input_id=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
-nthreads=$6 # NOT USED
+# nthreads=$6 # NOT USED
 kraken_output_dir=$7
 taxons=$8
 
@@ -47,6 +47,8 @@ input_file2="${input_dir}/${input_id}${input_suffix2}"
 
 output_fastq1="${output_dir}/${input_id}_1.fastq"
 output_fastq2="${output_dir}/${input_id}_2.fastq"
+tmp_output_fastq1="${output_dir}/tmp_${input_id}_1.fastq"
+tmp_output_fastq2="${output_dir}/tmp_${input_id}_2.fastq"
 
 kraken_report="${kraken_output_dir}/${input_id}.kreport"
 kraken_output="${kraken_output_dir}/${input_id}.kout"
@@ -75,12 +77,27 @@ start=$(date +%s.%N)
 
 echo "Started task Input: $2 Count: $1"
 
-echo "Running extract kraken reads command: "
-echo "$extract_reads_script -k $kraken_output -r $kraken_report -t $taxons --include-children" \
-  "-s $input_file1 -s2 $input_file2 --fastq-output -o $output_fastq1 -o2 $output_fastq2"
+# Initialize output as empty files
+> $output_fastq1
+> $output_fastq1
 
-$extract_reads_script -k $kraken_output -r $kraken_report -t $taxons --include-children \
-  -s $input_file1 -s2 $input_file2 --fastq-output -o $output_fastq1 -o2 $output_fastq2
+IFS=',' read -r -a taxon_array <<< "$taxons"
+# Iterate over each taxon in the list and extract reads
+for taxon in "${taxon_array[@]}"; do
+  # Run extract_reads_script for the current taxon
+  echo "Running extract kraken reads command: "
+  echo "$extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children" \
+    "-s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2"
+  $extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children \
+    -s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2
+  
+  # Concatenate the current output to the final combined output
+  cat $tmp_output_fastq1 >> $output_fastq1
+  cat $tmp_output_fastq2 >> $output_fastq2
+  
+  # Remove the temporary output files to avoid duplication in the next iteration
+  rm -f $tmp_output_fastq1 $tmp_output_fastq2
+done
 
 echo "gzip $output_fastq1"
 gzip $output_fastq1
