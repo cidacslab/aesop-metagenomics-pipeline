@@ -60,6 +60,9 @@ class TreeNode:
         return f"{self.taxid},{self.level},{self.level_enum}," + \
             f"{str(self.level_name_spaces)},{self.name}," + \
             f"{parent_taxid},{parent_level},{parent_name}"
+            
+    def __repr__(self):
+        return self.__str__()
 
     def set_parent(self, last_node:'TreeNode'):
         # initialize parent node
@@ -67,7 +70,7 @@ class TreeNode:
         # look for parent       
         while parent_node is not None:
             if (parent_node.level_enum < self.level_enum) or \
-               (parent_node.level_name_spaces < self.level_name_spaces):
+              (parent_node.level_name_spaces < self.level_name_spaces):
                 # set children and parent attributes
                 parent_node.children.append(self)
                 self.parent = parent_node
@@ -99,11 +102,11 @@ class TreeNode:
     def get_all_nodes(self, all_nodes_dict = None):
         nodes_from = []
         nodes_from.append(self)
+        if all_nodes_dict is not None:
+            all_nodes_dict[self.taxid] = self
         for child_node in self.children:
             nodes = child_node.get_all_nodes(all_nodes_dict)
             nodes_from.extend(nodes)
-        if all_nodes_dict is not None:
-            all_nodes_dict[self] = nodes_from
         return nodes_from  
 
     def get_all_nodes_from_level(self, level: Level, higher_rank_dict = None):
