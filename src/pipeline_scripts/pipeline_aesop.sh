@@ -41,11 +41,14 @@ echo "    args: $args_str"
 
 # Convert the argument string back to a dictionary
 declare -A args_dict
-for pair in $args_str; do
-    key=${pair%=*}
-    value=${pair#*=}
-    args_dict[$key]=$value
+# Use IFS to split by | and read each key-value pair
+IFS='|' read -ra pairs <<< "$args_str"
+# Loop through the key-value pairs
+for pair in "${pairs[@]}"; do
+  IFS='=' read -r key value <<< "$pair"
+  args_dict[$key]=$value
 done
+
 
 # Dataset name
 dataset_name="aesop_${dataset}"
@@ -73,222 +76,119 @@ for executable in "${executables[@]}"; do
 done
 
 ################################################################################
-################################### DOWNLOAD ###################################
+###########################  PIPELINE STEP FUNCTION  ###########################
 ################################################################################
+# Global variable to track if the step was executed successfully
+step_executed=0  # Default is 0 (Step was not executed)
 
-if [ ${args_dict["execute_download"]} -eq 1 ]; then
-  params=($dataset_name
-          ${args_dict["download_delete_preexisting_output_folder"]}
-          ${dataset_name}_0-raw_sample_basepace_download.log
-          ${args_dict["download_input_suffix"]}
-          $base_dataset_path/${args_dict["download_input_folder"]}
-          $base_dataset_path/${args_dict["download_output_folder"]}
-          $basespace_project_id
-          ${args_dict["download_basespace_access_token"]})
+# Function to execute each step
+run_pipeline_step() {
+  local step_name=$1
+  local script_path=$2
+  shift 2 # Shift past the first two arguments (step_name, script_path)
 
-  # $repository_src/pipeline_steps/0-raw_sample_basepace_download.sh "${params[@]}"
-fi
+  # Global variable to track if the step was executed successfully
+  step_executed=0  # Default is 0 (Step was not executed)
 
-rm -rf $base_dataset_path/${args_dict["download_output_folder"]}
-mkdir -p $base_dataset_path/${args_dict["download_output_folder"]}
-
-cp /scratch/pablo.viana/aesop/pipeline_v4/dataset_mao01/0-raw_samples/* \
-   $base_dataset_path/${args_dict["download_output_folder"]}
-
-################################################################################
-##################################  BOWTIE2  ###################################
-################################################################################
-
-if [ ${args_dict["execute_bowtie2_phix"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh"
-          $dataset_name
-          ${args_dict["bowtie2_phix_nprocesses"]}
-          ${args_dict["bowtie2_phix_delete_preexisting_output_folder"]}
-          "${dataset_name}_1.1-sample_decontamination-bowtie2_remove_phix_reads_logs.tar.gz"
-          ${args_dict["bowtie2_phix_input_suffix"]}
-          $base_dataset_path/${args_dict["bowtie2_phix_input_folder"]}
-          $base_dataset_path/${args_dict["bowtie2_phix_output_folder"]}
-          ${args_dict["bowtie2_phix_process_nthreads"]}
-          ${args_dict["bowtie2_phix_index"]})
-
-  $custom_script "${params[@]}"      
-fi
-
+  # Check if the step should be executed
+  if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
+    # Create default argument list
+    params=("$dataset_name"
+            "${args_dict[${step_name}_nprocesses]}"
+            "${args_dict[${step_name}_delete_preexisting_output_folder]}"
+            "${dataset_name}_${args_dict[${step_name}_log_file]}"
+            "${args_dict[${step_name}_input_suffix]}"
+            "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
+            "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"
+            "${args_dict[${step_name}_process_nthreads]}"
+            $@) # Add any extra arguments passed to the function
+    
+    echo ""
+    echo "Executing step: $step_name"
+    $script_path "${params[@]}"
+    step_executed=1  # Step executed successfully
+  fi
+}
 
 ################################################################################
-##################################  BOWTIE2  ###################################
+##################################  PIPELINE  ##################################
 ################################################################################
+# rm -r ${base_dataset_path}
+# cp -vr /opt/storage/shared/aesop/metagenomica/biome/dataset_mock_viral/ ${base_dataset_path}
 
-if [ ${args_dict["execute_bowtie2_ercc"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh"
-          $dataset_name
-          ${args_dict["bowtie2_ercc_nprocesses"]}
-          ${args_dict["bowtie2_ercc_delete_preexisting_output_folder"]}
-          ${dataset_name}_1.2-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz
-          ${args_dict["bowtie2_ercc_input_suffix"]}
-          $base_dataset_path/${args_dict["bowtie2_ercc_input_folder"]}
-          $base_dataset_path/${args_dict["bowtie2_ercc_output_folder"]}
-          ${args_dict["bowtie2_ercc_process_nthreads"]}
-          ${args_dict["bowtie2_ercc_index"]})
+## DOWNLOAD 
+run_pipeline_step "download" \
+  "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
+  ${args_dict["download_basespace_access_token"]} \
+  $basespace_project_id
 
-  $custom_script "${params[@]}"
-fi
 
-################################################################################
-###################################  FASTP  ####################################
-################################################################################
+## BOWTIE2 PHIX
+run_pipeline_step "bowtie2_phix" \
+  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  ${args_dict["bowtie2_phix_index"]}
 
-if [ ${args_dict["execute_fastp"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/1-quality_control-fastp_filters.sh"
-          $dataset_name
-          ${args_dict["fastp_nprocesses"]}
-          ${args_dict["fastp_delete_preexisting_output_folder"]}
-          ${dataset_name}_1.3-quality_control-fastp_filters_logs.tar.gz
-          ${args_dict["fastp_input_suffix"]}
-          $base_dataset_path/${args_dict["fastp_input_folder"]}
-          $base_dataset_path/${args_dict["fastp_output_folder"]}
-          ${args_dict["fastp_process_nthreads"]}
-          ${args_dict["fastp_minimum_length"]}
-          ${args_dict["fastp_max_n_count"]})
 
-  $custom_script "${params[@]}"
+## BOWTIE2 ERCC
+run_pipeline_step "bowtie2_ercc" \
+  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  ${args_dict["bowtie2_ercc_index"]}
 
+
+## FASTP
+run_pipeline_step "fastp" \
+  "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
+  ${args_dict["fastp_minimum_length"]} \
+  ${args_dict["fastp_max_n_count"]}
+  
+if [ $step_executed -eq 1 ]; then  
+  # compress the reports
   echo "Tar gziping report files: tar -czf ${dataset_name}_fastp_filters_reports.tar.gz *.html *.json"
   tar -czf "${dataset_name}_fastp_filters_reports.tar.gz" *.html *.json
-
+  # delete the reports
+  echo "rm -vf *.html *.json"
   rm -vf *.html *.json
 fi
 
-################################################################################
-###################################  HISAT2  ###################################
-################################################################################
 
-if [ ${args_dict["execute_hisat2_human"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh"
-          $dataset_name
-          ${args_dict["hisat2_human_nprocesses"]}
-          ${args_dict["hisat2_human_delete_preexisting_output_folder"]}
-          ${dataset_name}_2.1-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz
-          ${args_dict["hisat2_human_input_suffix"]}
-          $base_dataset_path/${args_dict["hisat2_human_input_folder"]}
-          $base_dataset_path/${args_dict["hisat2_human_output_folder"]}
-          ${args_dict["hisat2_human_process_nthreads"]}
-          ${args_dict["hisat2_human_index"]})
+## HISAT2 HUMAN
+run_pipeline_step "hisat2_human" \
+  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
+  ${args_dict["hisat2_human_index"]}
 
-  $custom_script "${params[@]}"
-fi
 
-################################################################################
-##################################  BOWTIE2  ###################################
-################################################################################
+## BOWTIE2 HUMAN
+run_pipeline_step "bowtie2_human" \
+  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  ${args_dict["bowtie2_human_index"]}
 
-if [ ${args_dict["execute_bowtie2_human"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh"
-          $dataset_name
-          ${args_dict["bowtie2_human_nprocesses"]}
-          ${args_dict["bowtie2_human_delete_preexisting_output_folder"]}
-          ${dataset_name}_2.2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz
-          ${args_dict["bowtie2_human_input_suffix"]}
-          $base_dataset_path/${args_dict["bowtie2_human_input_folder"]}
-          $base_dataset_path/${args_dict["bowtie2_human_output_folder"]}
-          ${args_dict["bowtie2_human_process_nthreads"]}
-          ${args_dict["bowtie2_human_index"]})
 
-  $custom_script "${params[@]}"
-fi
+## KRAKEN2
+run_pipeline_step "kraken2" \
+  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
+  ${args_dict["kraken2_database"]} \
+  ${args_dict["kraken2_confidence"]} \
+  ${args_dict["kraken2_keep_output"]}
 
-################################################################################
-##################################  KRAKEN2  ###################################
-################################################################################
 
-if [ ${args_dict["execute_kraken2"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh"
-          $dataset_name
-          ${args_dict["kraken2_nprocesses"]}
-          ${args_dict["kraken2_delete_preexisting_output_folder"]}
-          ${dataset_name}_3-taxonomic_annotation-kraken_logs.tar.gz
-          ${args_dict["kraken2_input_suffix"]}
-          $base_dataset_path/${args_dict["kraken2_input_folder"]}
-          $base_dataset_path/${args_dict["kraken2_output_folder"]}
-          ${args_dict["kraken2_process_nthreads"]}
-          ${args_dict["kraken2_database"]}
-          ${args_dict["kraken2_confidence"]}
-          ${args_dict["kraken2_keep_output"]})
+## BRACKEN
+run_pipeline_step "bracken" \
+  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh" \
+  ${args_dict["bracken_database"]} \
+  ${args_dict["bracken_read_length"]} \
+  ${args_dict["bracken_threshold"]}
 
-  $custom_script "${params[@]}"
-fi
 
-################################################################################
-##################################  BRACKEN  ###################################
-################################################################################
+## NORMALIZATION
+run_pipeline_step "normalization" \
+  "python -u $repository_src/report_results/normalize_abundance_by_species.py" \
+  ${base_dataset_path} \
+  ${args_dict["normalization_folders"]}
 
-if [ ${args_dict["execute_bracken"]} -eq 1 ]; then
-  params=("$repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh"
-          $dataset_name
-          ${args_dict["bracken_nprocesses"]}
-          ${args_dict["bracken_delete_preexisting_output_folder"]}
-          ${dataset_name}_3-taxonomic_annotation-bracken_logs.tar.gz
-          ${args_dict["bracken_input_suffix"]}
-          $base_dataset_path/${args_dict["bracken_input_folder"]}
-          $base_dataset_path/${args_dict["bracken_output_folder"]}
-          1
-          ${args_dict["bracken_database"]}
-          ${args_dict["bracken_read_length"]}
-          ${args_dict["bracken_threshold"]})
-
-  $custom_script "${params[@]}"
-fi
-
-################################################################################
-###############################  NORMALIZATION  ################################
-################################################################################
-
-if [ ${args_dict["execute_normalization"]} -eq 1 ]; then
-    declare -A folders
-    folders["3-taxonomic_output"]="4-bracken_normalized"
-    # folders["3-kraken_results"]="5-kraken_reports"
-    # folders["4-bracken_results"]="6-bracken_reports"
-    # folders["4-bracken_czid_results"]="6-bracken_czid_reports"
-    # folders_str=${args_dict["normalization_input_suffix"]}
-    folders_str=""
-    # clean the output folder for the new execution
-    for input_folder in "${!folders[@]}"; do
-        output_folder=${folders[$input_folder]}
-        folders_str+=" $input_folder $output_folder"
-        rm -rvf "${base_dataset_path}/${output_folder}"
-    done
-
-    input_extension=${args_dict["normalization_input_suffix"]}
-    input_path=$base_dataset_path/${args_dict["normalization_input_folder"]}
-    task_script="$repository_src/report_results/normalize_abundance_by_species.py"
-
-    # Execute normalization code
-    python -u $task_script "$base_dataset_path" "$input_extension" "$input_path" $folders_str
-    
-    # send output to the final output path
-    final_output_path=${args_dict["final_output_path"]}
-    for input_folder in "${!folders[@]}"; do
-        output_folder=${folders[$input_folder]}
-        
-        mkdir -p "${final_output_path}/${input_folder}"
-        mkdir -p "${final_output_path}/${output_folder}"
-
-        cd "${base_dataset_path}/${input_folder}" && \
-           find . \( -name '*.kreport' -or -name '*.bracken' \) -print0 | \
-           xargs -0 tar -czvf "${final_output_path}/${input_folder}/dataset_${dataset}.tar.gz"
-
-        cd "${base_dataset_path}/${output_folder}" && \
-           tar -czvf "${final_output_path}/${output_folder}/dataset_${dataset}.tar.gz" *.csv
-    done
-fi
 
 ################################################################################
 ################################################################################
 
-# echo ""
-# df
-# du -hd 4 /scratch/pablo.viana
-# find /scratch/pablo.viana 
 
 #  Finish pipeline profile
 finish=$(date +%s.%N)

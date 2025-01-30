@@ -128,7 +128,7 @@ run_pipeline_step() {
 
 ## DOWNLOAD 
 run_pipeline_step "download" \
-  "$repository_src/pipeline_steps/0-raw_sample_download_basepace.sh" \
+  "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
   ${args_dict["download_basespace_access_token"]} \
   $basespace_project_id
 

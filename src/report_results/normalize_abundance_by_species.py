@@ -1,4 +1,4 @@
-import os, sys, csv, gzip
+import os, sys, csv, gzip, shutil
 import kraken_report_parser as KrakenParser
 
 
@@ -35,7 +35,7 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
   print(f"Count abundance by species, output file: {output_file}")
   output_content = "parent_tax_id,tax_level,category,tax_id,name,"
   output_content += "kraken_classified_reads,nt_rpm\n"
-
+  
   _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
   u_count = KrakenParser.get_abundance(report_by_taxid, "0")
   c_count = KrakenParser.get_abundance(report_by_taxid, "1")
@@ -51,21 +51,21 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
       nt_rpm = int((abundance*1000000)/total_reads)
       output_content += f"{parent_id},{level},{parent_domain},{taxid},"
       output_content += f"{name},{abundance},{nt_rpm}\n"
-
+  
   with open(output_file, 'w') as file:
     file.write(output_content)
-        
-        
+
+
 def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, output_file):
   print(f"Count abundance by species, output file: {output_file}")
   output_content = "parent_tax_id,tax_level,category,tax_id,name,"
   output_content += "kraken_classified_reads,bracken_classified_reads,nt_rpm\n"
-
+  
   _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
   u_count = KrakenParser.get_abundance(report_by_taxid, "0")
   c_count = KrakenParser.get_abundance(report_by_taxid, "1")
   print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
-
+  
   with open(bracken_file, 'r') as csvfile:
     csvreader = csv.reader(csvfile, delimiter='\t')
     next(csvreader) # remove header
@@ -81,49 +81,62 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
       nt_rpm = int((bracken_abundance*1000000)/total_reads)
       output_content += f"{parent_id},{level},{parent_domain},{tax_id},{tax_name},"
       output_content += f"{kraken_abundance},{bracken_abundance},{nt_rpm}\n"
-
+  
   with open(output_file, 'w') as file:
     file.write(output_content)
 
 
-def main():
+def main():  
   print(f"Normalization args: {sys.argv}")
   
-  base_path = sys.argv[1]
-  input_extension = '_L001_R1_001.fastq.gz'
-  input_path =  f"{base_path}/0-raw_samples"
-
-  # folders = {
-  #   # "3-kraken_results":"5-kraken_reports", 
-  #   "4-bracken_results":"5-bracken_reports"
-  # }
-
-  if len(sys.argv) > 3:        
-      input_extension = sys.argv[2]
-      input_path = f"{sys.argv[3]}"
+  # Dataset name
+  # dataset_name="$1"
+  # Extract the number of proccesses to be run in parallel
+  # num_processes="$2"
+  # Delete preexisting output directory
+  delete_output_dir = sys.argv[3]
+  # Tar Log file name
+  # tar_log_file="$4"
+  # Suffix of the input files
+  input_extension = sys.argv[5]
+  # Path containing the input files
+  input_path = sys.argv[6]
+  # Destination folder for the output files
+  output_dir = sys.argv[7]
+  # Number of parallel threads to be run in each process
+  # nthreads="$8"
+  # Extra arguments
+  base_path = sys.argv[9]
+  args_folders = sys.argv[10]
   
-  if len(sys.argv) > 5:
-    folders = {}
-    for i, o in zip(range(4, len(sys.argv), 2), range(5, len(sys.argv), 2)):
-      input_folder = sys.argv[i]
-      output_folder = sys.argv[o]
-      folders[input_folder] = output_folder
+  if delete_output_dir == "1":
+    try:
+      shutil.rmtree(output_dir) # Folder and its content removed
+      print(f"Output folder {output_dir} and its content removed.") 
+    except:
+      print(f"Output folder {output_dir} doesn't exist")
+  
+  folders = {}
+  for folders_split in args_folders.split():
+    in_out_splits = folders_split.split(":", 1)
+    input_folder = in_out_splits[0]
+    output_folder = in_out_splits[1]
+    folders[input_folder] = output_folder
   
   print(f"Running normalization with input: [{input_path}] [{input_extension}]")
   print(f"    For folders: {folders}")
   all_files = get_files_in_folder(input_path, input_extension)
   print(all_files)
-
+  
   for file in all_files:
     print(f"Analyzing input file: {file}")
     total_reads = get_read_abundance(file)
     print(f"Total reads on input fastq: {total_reads}")
     filename = os.path.basename(file).split(input_extension)[0].replace("_metadata", "")
     
-    
-    for input_folder in folders:
+    for input_folder,output_folder in folders.items():
       bracken_file = os.path.join(f"{base_path}/{input_folder}", filename + ".bracken")
-      output_path = f"{base_path}/{folders[input_folder]}"
+      output_path = f"{base_path}/{output_folder}"
       os.makedirs(output_path, exist_ok=True)
       
       report_file = bracken_file.replace(".bracken", ".kreport")#.replace("4-bracken", "3-kraken")
@@ -132,4 +145,16 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+  # Destination of the log file
+  log_file = sys.argv[4]
+  # Open the file where you want to redirect the prints
+  stdout_file = open(log_file, "w")
+  # Redirect sys.stdout to the file
+  sys.stdout = stdout_file
+  
+  main()
+  
+  # Reset sys.stdout to its default value
+  sys.stdout = sys.__stdout__
+  # Close the file
+  stdout_file.close()

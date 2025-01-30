@@ -59,7 +59,7 @@ echo "$blastn_script -db $path_to_db -query $input_file" \
 
 $blastn_script -db $path_to_db -query $input_file \
     -outfmt "7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
-    -max_target_seqs 10 -evalue 0.001 -num_threads $nthreads -out $output_file
+    -max_target_seqs 10 -num_threads $nthreads -out $output_file
 
 
 # Finish script profile

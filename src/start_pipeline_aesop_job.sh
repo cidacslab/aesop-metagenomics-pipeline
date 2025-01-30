@@ -20,10 +20,10 @@ DOC
 
 # Set execution command in singularity docker or local
 # Template: singularity exec [SINGULARITY_OPTIONS] <sif> [COMMAND_OPTIONS]
-command="singularity exec /opt/images/cidacs/biome.sif"
+# command="singularity exec /opt/images/cidacs/biome.sif"
 # command="singularity exec /opt/images/cidacs/cidacs-jupyter-datascience-v1-r2.sif"
 # Local execution
-# command=""
+command=""
 
 ################################################################################
 ################# DEFINE THE DATASETS TO EXECUTE THE PIPELINE ##################
@@ -34,7 +34,21 @@ command="singularity exec /opt/images/cidacs/biome.sif"
 # If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
 # You can execute mutiple datasets at once, commented lines will not be executed
 sample_datasets="
-                test01
+                # mao01:123456789
+                # ssa01:393298912
+                # ssa01_wgs:412407112
+                # aju01:398485813
+                # rio01:394153669
+                # rio02:403173828
+                # rio03:414143602
+                # rgs01:420835421
+                # rgs02:417421287
+                # rgs03:419098942
+                # bsb01:422858797
+                # rio04:423157194
+                # rio05:427570404
+                to01:442690473
+                # test01
                 "
 
 ################################################################################
@@ -48,23 +62,23 @@ declare -A params
 ################### DEFINE STAGES TO EXECUTE IN THE PIPELINE ###################
 ################################################################################
 # 0 = DONT EXECUTE STAGE | 1 = EXECUTE STAGE
-params["execute_download"]=1
-params["execute_bowtie2_phix"]=1
-params["execute_bowtie2_ercc"]=1
-params["execute_fastp"]=1
-params["execute_hisat2_human"]=1
-params["execute_bowtie2_human"]=1
-params["execute_kraken2"]=1
-params["execute_bracken"]=0
-params["execute_normalization"]=0
+# params["execute_download"]=1
+# params["execute_bowtie2_phix"]=1
+# params["execute_bowtie2_ercc"]=1
+# params["execute_fastp"]=1
+# params["execute_hisat2_human"]=1
+# params["execute_bowtie2_human"]=1
+# params["execute_kraken2"]=1
+# params["execute_bracken"]=1
+params["execute_normalization"]=1
 #If a stage is not executed change the input_path for the next stage accordingly
 
 ################################################################################
 ######################### DEFINE THE SERVER LOCATIONS ##########################
 ################################################################################
 # Location where to execute the pipeline
-server="hpc"
-# server="prometheus"
+# server="hpc"
+server="prometheus"
 
 # Set the server locations, paths MUST NOT have spaces
 # ADD NEW SERVER HERE IF NEEDED
@@ -98,14 +112,14 @@ case $server in
     params["BRACKEN_EXECUTABLE"]="/scratch/pablo.viana/softwares/Bracken-master/bracken"
     ;;
   "prometheus")
-    params["repository_src"]="/home/work/aesop/github/aesop-metagenomics-pipeline/src"
-    params["base_dataset_path"]="/home/work/aesop/pipeline/results/pipeline_v1.0"
-    params["bowtie2_ercc_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index"
-    params["bowtie2_phix_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
-    params["hisat2_human_index"]="/home/work/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
-    params["bowtie2_human_index"]="/home/work/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
-    params["kraken2_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
-    params["bracken_database"]="/home/work/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
+    params["repository_src"]="/home/pedro/aesop/github/aesop-metagenomics-pipeline/src"
+    params["base_dataset_path"]="/home/pedro/aesop/pipeline/results/pipeline_v1.0"
+    params["bowtie2_ercc_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index"
+    params["bowtie2_phix_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
+    params["hisat2_human_index"]="/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
+    params["bowtie2_human_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
+    params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
+    params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
@@ -126,10 +140,13 @@ esac
 ###################### DEFINE STAGES SPECIFIC PARAMETERS #######################
 ################################################################################
 ## Download parameters
+params["download_nprocesses"]=1
+params["download_process_nthreads"]=1
 params["download_input_suffix"]="_L001_R1_001.fastq.gz"
 params["download_input_folder"]="0-download"
 params["download_output_folder"]="0-raw_samples"
 params["download_delete_preexisting_output_folder"]=1
+params["download_log_file"]="0-raw_samples_download_logs.tar.gz"
 params["download_basespace_access_token"]="$(cat ${params[repository_src]}/../data/basespace_access_token.txt)"
 ## Bowtie2 remove PHIX parameters
 params["bowtie2_phix_nprocesses"]=4
@@ -138,6 +155,7 @@ params["bowtie2_phix_input_suffix"]="_L001_R1_001.fastq.gz"
 params["bowtie2_phix_input_folder"]="0-raw_samples"
 params["bowtie2_phix_output_folder"]="1.1-bowtie_phix_output"
 params["bowtie2_phix_delete_preexisting_output_folder"]=1
+params["bowtie2_phix_log_file"]="1.1-sample_decontamination-bowtie2_remove_phix_reads_logs.tar.gz"
 ## Bowtie2 remove ERCC parameters
 params["bowtie2_ercc_nprocesses"]=4
 params["bowtie2_ercc_process_nthreads"]=15
@@ -145,6 +163,7 @@ params["bowtie2_ercc_input_suffix"]="_1.fastq.gz"
 params["bowtie2_ercc_input_folder"]="1.1-bowtie_phix_output"
 params["bowtie2_ercc_output_folder"]="1.2-bowtie_ercc_output"
 params["bowtie2_ercc_delete_preexisting_output_folder"]=1
+params["bowtie2_ercc_log_file"]="1.2-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz"
 ## Fastp quality control parameters
 params["fastp_nprocesses"]="4"
 params["fastp_process_nthreads"]="8"
@@ -152,6 +171,7 @@ params["fastp_input_suffix"]="_1.fastq.gz"
 params["fastp_input_folder"]="1.2-bowtie_ercc_output"
 params["fastp_output_folder"]="1.3-fastp_output"
 params["fastp_delete_preexisting_output_folder"]=1
+params["fastp_log_file"]="1.3-quality_control-fastp_filters_logs.tar.gz"
 params["fastp_minimum_length"]=50
 params["fastp_max_n_count"]=2
 ## HISAT2 remove HUMAN parameters
@@ -161,6 +181,7 @@ params["hisat2_human_input_suffix"]="_1.fastq.gz"
 params["hisat2_human_input_folder"]="1.3-fastp_output"
 params["hisat2_human_output_folder"]="2.1-hisat_human_output"
 params["hisat2_human_delete_preexisting_output_folder"]=1
+params["hisat2_human_log_file"]="2.1-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz"
 ## Bowtie2 remove HUMAN parameters
 params["bowtie2_human_nprocesses"]="4"
 params["bowtie2_human_process_nthreads"]="15"
@@ -168,6 +189,7 @@ params["bowtie2_human_input_suffix"]="_1.fastq.gz"
 params["bowtie2_human_input_folder"]="2.1-hisat_human_output"
 params["bowtie2_human_output_folder"]="2.2-bowtie_human_output"
 params["bowtie2_human_delete_preexisting_output_folder"]=1
+params["bowtie2_human_log_file"]="2.2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz"
 ## Kraken2 annotation parameters
 params["kraken2_nprocesses"]="2"
 params["kraken2_process_nthreads"]="30"
@@ -175,21 +197,28 @@ params["kraken2_input_suffix"]="_1.fastq.gz"
 params["kraken2_input_folder"]="2.2-bowtie_human_output"
 params["kraken2_output_folder"]="3-taxonomic_output"
 params["kraken2_delete_preexisting_output_folder"]=1
+params["kraken2_log_file"]="3.1-taxonomic_annotation-kraken_logs.tar.gz"
 params["kraken2_confidence"]=0
 params["kraken2_keep_output"]=0
 ## Bracken annotation parameters
 params["bracken_nprocesses"]="6"
+params["bracken_process_nthreads"]="1"
 params["bracken_input_suffix"]=".kreport"
 params["bracken_input_folder"]="3-taxonomic_output"
 params["bracken_output_folder"]="3-taxonomic_output"
 params["bracken_delete_preexisting_output_folder"]=0
+params["bracken_log_file"]="3.2-taxonomic_annotation-bracken_logs.tar.gz"
 params["bracken_read_length"]=130
 params["bracken_threshold"]=1
 ## Normalization parameters
-params["normalization_input_suffix"]="_1.fastq.gz"
+params["normalization_nprocesses"]="1"
+params["normalization_process_nthreads"]="1"
+params["normalization_input_suffix"]="_L001_R1_001.fastq.gz"
 params["normalization_input_folder"]="0-raw_samples"
-params["normalization_folders"]="3-taxonomic_output:4-bracken_normalized"
+params["normalization_output_folder"]="4-bracken_normalized"
 params["normalization_delete_preexisting_output_folder"]=1
+params["normalization_log_file"]="4-bracken_normalized.log"
+params["normalization_folders"]="3-taxonomic_output:4-bracken_normalized"
 
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################
@@ -202,33 +231,35 @@ pipeline_script=${params["repository_src"]}/pipeline_scripts/pipeline_aesop.sh
 script_for_datasets=${params["repository_src"]}/pipeline_scripts/execute_pipeline_for_datasets.sh
 
 ################################################################################
+###################### CONVERTING PARAMETERS TO A STRING #######################
 ################################################################################
 
-# CONVERTING PARAMETERS TO A STRING
-# Trim all lines, then filter out comments and empty lines
-sample_datasets=$(echo "$sample_datasets" | \
-                  sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | \
-                  grep -v '^[[:space:]]*$' | grep -v '^[[:space:]]*#')
-
+# ARGUMENTS
 # Initialize an empty string to hold the parameters as a string
 params_str=""
 # Iterate over the dictionary and build the string
 for key in "${!params[@]}"; do
   value=${params[$key]}
-  params_str+="$key=$value "
+  params_str+="$key=$value|"
 done
-# Remove the trailing space
-params_str=${params_str% }
+# Remove trailing | if present
+params_str=${params_str%|}
+
+# DATASETS
+# Trim all lines, then filter out comments and empty lines
+sample_datasets=$(echo "$sample_datasets" | \
+                  sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | \
+                  grep -v '^[[:space:]]*$' | grep -v '^[[:space:]]*#')
 
 ################################################################################
 ################################################################################
 
 echo "Execution command:" 
 echo "    $command $script_for_datasets $pipeline_script"
-echo "$sample_datasets"
 echo "    $params_str"
+echo "$sample_datasets"
 
-$command $script_for_datasets "$pipeline_script" "$sample_datasets" "$params_str"
+$command $script_for_datasets "$pipeline_script" "$params_str" "$sample_datasets"
 
 ################################################################################
 ################################################################################

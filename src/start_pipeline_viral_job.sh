@@ -48,6 +48,7 @@ sample_datasets="
                 # bsb01:422858797
                 # rio04:423157194
                 # rio05:427570404
+                # to01:442690473
                 mock
                 "
 
@@ -69,18 +70,11 @@ declare -A params
 # params["execute_hisat2_human"]=1
 # params["execute_bowtie2_human"]=1
 # params["execute_kraken2"]=1
-# params["execute_bracken"]=1
-# params["execute_normalization"]=1
 # params["execute_extract_reads"]=1
-# params["execute_assembly_megahit"]=1
-params["execute_assembly_metaspades"]=1
-params["execute_mapping_metaspades"]=1
+# params["execute_assembly_metaspades"]=1
+# params["execute_mapping_metaspades"]=1
 params["execute_blastn"]=1
-params["execute_blastn_taxonkit"]=1
-# params["execute_normalization"]=0
-# params["execute_map_reads_to_assembly"]=0
-# params["execute_assembly_alignment"]=0
-# params["execute_quantify_read_alignment"]=0
+# params["execute_blastn_taxonkit"]=1
 #If a stage is not executed change the input_path for the next stage accordingly
 
 ################################################################################
@@ -141,9 +135,12 @@ case $server in
     params["hisat2_human_index"]="/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
     params["bowtie2_human_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
     # params["kraken2_database"]="/dev/shm/viruses_complete"
-    params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_complete"
-    params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
-    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
+    params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
+    # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
+    # params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_complete"
+    # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
+    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_no_coronaviridae/viruses_no_coronaviridae_blast_db"
+    # params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
     params["taxonkit_database"]="/home/pedro/aesop/pipeline/databases/taxonkit_db"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"

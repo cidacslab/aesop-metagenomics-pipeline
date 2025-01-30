@@ -32,7 +32,6 @@ args_str=$2
 # Dictionary with dataset names and their project_id
 sample_datasets=$3
 
-
 # Loop throught all datasets
 while IFS= read -r dataset_line; do
     IFS=":" read -r dataset project_id <<< "$dataset_line"
@@ -44,14 +43,12 @@ while IFS= read -r dataset_line; do
     $pipeline_script "$args_str" "$dataset" "$project_id"
 done <<< "$sample_datasets"
 
-
-echo ""
-df
-du -hd 4 /scratch/pablo.viana | sort -k2
-find /scratch/pablo.viana | sort
+# echo ""
+# df
+# du -hd 4 /scratch/pablo.viana | sort -k2
+# find /scratch/pablo.viana | sort
 # du -hd 4 /home/pedro/aesop/pipeline | sort -k2
 # find /home/pedro/aesop/pipeline | sort
-
 
 #  Finish pipeline profile
 finish=$(date +%s.%N)

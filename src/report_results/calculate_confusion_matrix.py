@@ -1,224 +1,65 @@
 import os, sys, shutil, csv, copy
-from dataclasses import dataclass, field
-import kraken_report_parser as KrakenParser
-from utility_functions import get_files_in_folder
-from get_fastq_read_info import count_reads_by_sequence_id
+sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
 
+import utilities.taxonomy_tree_parser as TaxonomyParser
+import utilities.blast_result_parser as BlastResultParser
+from utilities.utility_functions import get_files_in_folder
+from utilities.get_fastq_read_info import count_reads_by_sequence_id
 
-#########################################################################################[
-#### BLAST DATA FUNCTIONS
-
-@dataclass
-class ContigInfo:
-  reads: set = field(default_factory=set)
-  read_accession: dict = field(default_factory=dict)
-
-  def add_read(self, read_seqid: str):
-    # if read_seqid not in self.reads:
-    accession = read_seqid.rsplit('_', 2)[0]
-    if accession not in self.read_accession:
-      self.read_accession[accession] = 0
-    self.read_accession[accession] += 1
-    self.reads.add(read_seqid)
-
-
-def count_contig_unique_reads(mapping_file):
-  # Dictionary to store contig to unique reads mapping
-  contig_to_reads = {}
-  # Open the file and read line by line
-  with open(mapping_file, 'r') as file:
-    reader = csv.reader(file, delimiter='\t')
-    for row in reader:
-      contig_name = row[0].strip()
-      read_mapped_name = row[1].strip()
-      # Add the read to the set for the given contig
-      if contig_name not in contig_to_reads:
-        contig_to_reads[contig_name] = ContigInfo()
-      contig_to_reads[contig_name].add_read(read_mapped_name)
-  return contig_to_reads
-
-
-def get_blast_results(input_file):
-  # Dictionary to store each query ID and its corresponding row
-  contig_to_blast_result = {}
-  # Open the BLAST output file and use csv.DictReader to read it
-  with open(input_file, 'r') as infile:
-    filtered_lines = (line for line in infile if not line.startswith('#'))
-    # Use DictReader to automatically map columns to fieldnames
-    reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=[
-      'qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 
-      'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore', 
-      'staxids', 'salltitles'])
-    for row in reader:
-      # Store the first occurrence of each query in the dictionary
-      contig_id = row['qseqid']
-      identity = float(row['pident'])
-      evalue = float(row['evalue'])
-      length = float(row['length'])
-      if contig_id not in contig_to_blast_result:
-        if identity < 95 and evalue > 0.00001 and length < 200:
-          print(f"Query didn't meet the filter criteria: {row}")
-        else:          
-          contig_to_blast_result[contig_id] = row
-  return contig_to_blast_result
-
-
-def load_blast_results(contig_reads, contig_to_blast_result, blast_taxid_to_species_taxid, \
-                        accession_species_taxid, blast_classified_tree, true_positive_tree):
-  # Example: Print the dictionary for each contig
-  for contig, blast_result in contig_to_blast_result.items():
-    if contig in contig_reads:
-      contig_info = contig_reads[contig]
-      taxid = blast_result['staxids'].strip()
-      species_taxid = blast_taxid_to_species_taxid[taxid]
-      print(f"{contig}: {contig_info.read_accession}")
-      for accession, read_count in contig_info.read_accession.items():
-        blast_classified_tree[species_taxid].set_abundance(read_count)
-        accession_taxid = accession_species_taxid.get(accession, 0)
-        # run through the accession node and the true positive node until find root
-        # looking if there is an equal taxid in any step of the route
-        true_node = true_positive_tree[species_taxid]
-        accession_node = true_positive_tree.get(accession_taxid, None)
-        is_true_positive = False
-        while not is_true_positive and true_node is not None:
-          node = accession_node
-          while not is_true_positive and node is not None:
-            if node.taxid == true_node.taxid:
-              node.set_abundance(read_count)
-              is_true_positive = True
-              # print(f"For {accession}:{taxid} found true positive node {node} for {accession}:{species_taxid}:{accession_true_node}")
-            node = node.parent
-          true_node = true_node.parent
-        if not is_true_positive:
-          print(f"False positive for contig {contig}:{species_taxid} got mapped by {accession}:{accession_taxid}")
-    else:
-      print(f"Contig {contig} had no read mapped!")
-
-#### INCLUDE BLAST METADATA
-def update_report_tree_with_metadata_blast(metadata_file, all_classified_tree):  
-  print(f"Get accession taxa tree from: {metadata_file}")
-  print(f"Initial report tree size: {len(all_classified_tree)}")
-  taxid_to_species_taxid = {}
-
-  with open(metadata_file, "r") as file:
-    csv_reader = csv.reader(file)
-    # next(csv_reader)
-    for row in csv_reader:
-      domain = row[1].strip().lower()
-      if domain != "viruses":
-        continue
-      # update accession taxid
-      taxid = row[0].strip()
-      species_taxid = row[-1].strip()
-      taxid_to_species_taxid[taxid] = species_taxid
-      # update report tree
-      names = row[1:8]
-      taxids = row[8:]
-      domain_taxid = taxids[0].strip()
-      last_node = all_classified_tree[domain_taxid]
-      for i in range(1, 7):
-        taxid = taxids[i].strip()
-        if not taxid:
-          continue
-        if taxid not in all_classified_tree:
-          level = KrakenParser.Level(i + 3).name
-          node = KrakenParser.TreeNode(names[i], taxid, level)
-          node.set_parent(last_node)
-          all_classified_tree[taxid] = node
-          # print(names)
-          # print(taxids)
-          # print(f"  Included node {i}: {node}")
-        else:
-          node = all_classified_tree[taxid]
-        last_node = node
-  print(f"Final all_classified_tree size: {len(all_classified_tree)}")
-  return taxid_to_species_taxid
 
 #########################################################################################
 #### INCLUDE SAMPLES METADATA
 
-def update_report_tree_with_metadata_taxa(metadata_file, all_classified_tree):  
-  print(f"Get accession taxa tree from: {metadata_file}")
-  print(f"Initial report tree size: {len(all_classified_tree)}")
-  accession_species_taxid = {}
-
+def load_accession_metadata(metadata_file):  
+  accession_taxids = {}
+  
   with open(metadata_file, "r") as file:
-    csv_reader = csv.reader(file)
-    next(csv_reader)
-    for row in csv_reader:
-      domain = row[2].strip().lower()
-      if domain != "viruses":
-        continue
+    for line in file:
+      row = line.split()
       # update accession taxid
       accession = row[0].strip()
-      species_taxid = row[-1].strip()
-      accession_species_taxid[accession] = species_taxid
-      # update report tree
-      names = row[2:9]
-      taxids = row[9:]
-      domain_taxid = taxids[0]
-      last_node = all_classified_tree[domain_taxid]
-      for i in range(1, 7):
-        taxid = taxids[i].strip()
-        if not taxid:
-          continue
-        if taxid not in all_classified_tree:
-          level = KrakenParser.Level(i + 3).name
-          node = KrakenParser.TreeNode(names[i], taxid, level)
-          node.set_parent(last_node)
-          all_classified_tree[taxid] = node
-          # print(f"  Included node {node}")
-        else:
-          node = all_classified_tree[taxid]
-          # if node.parent.taxid != last_node.taxid:
-          #   node.set_parent(last_node)
-        last_node = node
-  print(f"Final all_classified_tree size: {len(all_classified_tree)}")
-  return accession_species_taxid
+      taxid = row[1].strip()
+      accession_taxids[accession] = taxid
+  return accession_taxids
 
+#########################################################################################
 
-
-def set_ground_truth_tree_real_counts(accession_abundance, accession_species_taxid, ground_truth_tree, output_file):
-  KrakenParser.clear_abundance_from_tree(ground_truth_tree)
+def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_file):
   output_content = "read_accession_id,count\n"
   total_abundance = 0
-
-  for accession in accession_species_taxid:
+  
+  for accession, taxid in accession_taxids.items():
     abundance = accession_abundance[accession].count
-    taxid = accession_species_taxid[accession]
     ground_truth_tree[taxid].set_abundance(abundance)
     output_content += f"{accession},{abundance}\n"
     total_abundance += abundance
-
+  
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
-
+  
   return total_abundance
 
 
-
-def set_ground_truth_tree_real_counts_from_ground_truth_file(ground_truth_file, accession_species_taxid, ground_truth_tree):
-  KrakenParser.clear_abundance_from_tree(ground_truth_tree)
+def set_ground_truth_tree_real_counts_from_ground_truth_file(ground_truth_file, accession_taxids, ground_truth_tree):
   total_abundance = 0
-
+  
   with open(ground_truth_file, "r") as file:
     csv_reader = csv.reader(file)
     next(csv_reader)
     for row in csv_reader:
       accession = row[0].strip()
       abundance = row[1].strip()
-      taxid = accession_species_taxid[accession]
+      taxid = accession_taxids[accession]
       ground_truth_tree[taxid].set_abundance(abundance)  
       total_abundance += abundance
-
-  return total_abundance
   
+  return total_abundance
 
 
 def get_accession_taxid_abundance(kout_file, output_file):
   print(f"Get accession taxid abundance from: {kout_file}")
-  accession_taxid_counts = {}
-
+  accession_results_by_taxid = {}
+  
   with open(kout_file, "r") as kraken_file:
     for line in kraken_file:
       line = line.strip().split()
@@ -227,26 +68,25 @@ def get_accession_taxid_abundance(kout_file, output_file):
         taxid = line[2].strip()
         if len(accession_id) == 0 or len(taxid) == 0:
           continue 
-        if accession_id not in accession_taxid_counts:
-          accession_taxid_counts[accession_id] = {}
-        if taxid not in accession_taxid_counts[accession_id]:
-          accession_taxid_counts[accession_id][taxid] = 0
-        accession_taxid_counts[accession_id][taxid] += 1
-
+        if accession_id not in accession_results_by_taxid:
+          accession_results_by_taxid[accession_id] = {}
+        if taxid not in accession_results_by_taxid[accession_id]:
+          accession_results_by_taxid[accession_id][taxid] = 0
+        accession_results_by_taxid[accession_id][taxid] += 1
+  
   output_content = "read_accession_id,taxid,count\n"
-  for accession_id, taxid_counts in accession_taxid_counts.items():
+  for accession_id, taxid_counts in accession_results_by_taxid.items():
     for taxid, count in taxid_counts.items():
       output_content += f"{accession_id},{taxid},{count}\n"
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
-
-  return accession_taxid_counts
-
+  
+  return accession_results_by_taxid
 
 
 def get_accession_taxid_abundance_from_classified_file(classified_file):
   print(f"Get accession taxid abundance from: {classified_file}")
-  accession_taxid_counts = {}
+  accession_results_by_taxid = {}
   with open(classified_file, "r") as file:
     csv_reader = csv.reader(file)
     next(csv_reader)
@@ -254,32 +94,79 @@ def get_accession_taxid_abundance_from_classified_file(classified_file):
       accession_id = row[0].strip()
       taxid = row[1].strip()
       count = int(row[2].strip())        
-      if accession_id not in accession_taxid_counts:
-        accession_taxid_counts[accession_id] = {}
-      accession_taxid_counts[accession_id][taxid] = count
-  return accession_taxid_counts
+      if accession_id not in accession_results_by_taxid:
+        accession_results_by_taxid[accession_id] = {}
+      accession_results_by_taxid[accession_id][taxid] = count
+  return accession_results_by_taxid
 
 
+#########################################################################################
+#### INCLUDE BLAST RESULT
 
-def set_true_positive_tree_counts(accession_taxid_counts, accession_species_taxid, true_positive_tree):
+def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tree, count):
+  # get taxids of the correct accession full taxonomy
+  true_positive_taxids = set()
+  true_node = true_positive_tree.get(true_taxid, None)
+  while true_node is not None:
+    true_positive_taxids.add(true_node.taxid)
+    true_node = true_node.parent
+  #  for every taxid from the classified result taxonomy
+  # check if any is equal to the expected result (true_node)
+  is_true_positive = False
+  classified_node = true_positive_tree.get(classified_taxid, None)
+  while not is_true_positive and classified_node is not None:
+    if classified_node.taxid in true_positive_taxids:
+      classified_node.set_abundance(count)
+      is_true_positive = True
+    else:
+      classified_node = classified_node.parent
+  # return the true positive match or None
+  return classified_node if is_true_positive else None
+
+
+def load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, 
+                        blast_classified_tree, true_positive_tree):
+  # Example: Print the dictionary for each contig
+  
+  for contig,contig_info in contig_reads.items():
+    print(f"{contig}: {contig_info.accession_read_count}")
+    if contig in contig_to_blast_result:
+      # contig_info = contig_reads[contig]
+      blast_result = contig_to_blast_result[contig]
+      taxid = blast_result['staxids'].strip()
+      for accession, read_count in contig_info.accession_read_count.items():
+        blast_classified_tree[taxid].set_abundance(read_count)
+        # set true positive tree
+        true_taxid = accession_taxids.get(accession, 0)
+        blast_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
+        is_true_positive = blast_node is not None
+        #if not is_true_positive:
+        print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
+              f"from {accession}:{true_taxid}:{blast_node}.")
+    else:
+      print(f"Contig {contig} had no read mapped!")
+
+
+#########################################################################################
+#### INCLUDE KRAKEN TRUE POSITIVE RESULT
+
+def set_true_positive_tree_counts(accession_results_by_taxid, accession_taxids, true_positive_tree):
   # loop through all accessions
-  for accession, species_taxid in accession_species_taxid.items():
-    for taxid in accession_taxid_counts[accession]:
-      abundance = accession_taxid_counts[accession][taxid]
-      accession_true_node = true_positive_tree[species_taxid]
-      classified_node = true_positive_tree.get(taxid, None)
-      is_true_positive = False
-      while not is_true_positive and accession_true_node is not None:
-        node = classified_node
-        while not is_true_positive and node is not None:
-          if node.taxid == accession_true_node.taxid:
-            accession_true_node.set_abundance(abundance)
-            is_true_positive = True
-            # print(f"For {accession}:{taxid} found true positive node {node} for {accession}:{species_taxid}:{accession_true_node}")
-          node = node.parent
-        accession_true_node = accession_true_node.parent
+  for accession, true_taxid in accession_taxids.items():
+    if accession not in accession_results_by_taxid:
+      continue
+    for taxid in accession_results_by_taxid[accession]:
+      count = accession_results_by_taxid[accession][taxid]      
+      # set true positive tree
+      classified_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, count)
+      is_true_positive = classified_node is not None
+      #if not is_true_positive:
+      print(f"{is_true_positive} positive for {accession}:{true_taxid} mapping {count} reads " + \
+            f"to {taxid}:{classified_node}")
 
 
+#########################################################################################
+#### CALCULATE COFUSION MATRIX
 
 def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mapped_to_tax, correct_tax_reads):
   # print(f"{sample_total_reads}, {total_tax_reads}, {total_mapped_to_tax}, {correct_tax_reads}")
@@ -300,52 +187,40 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mappe
 
 
 
-def calculate_confusion_matrix(accession_species_taxid, sample_total_reads, ground_truth_tree, true_positive_tree, all_classified_tree, output_file):
+def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_truth_tree, true_positive_tree, all_classified_tree, output_file):
   print(f"Calculating confusion matrix: {output_file}")
       
-  output_content = "accession_id,total_reads,genus,genus_taxid,genus_true_positive,genus_true_negative,"
-  output_content += "genus_false_positive,genus_false_negative,species,species_taxid,species_true_positive,"
-  output_content += "species_true_negative,species_false_positive,species_false_negative\n"
+  output_content = "accession_id,total_reads,level,taxid,name,sample_total_reads,"
+  output_content += "level_total_reads,level_total_classified,level_correct_reads,"
+  output_content += "true_positive,true_negative,false_positive,false_negative\n"
 
-  for accession in accession_species_taxid:
-    species_taxid = accession_species_taxid[accession]
-    accession_species_node = ground_truth_tree[species_taxid]
-    accession_total_reads = accession_species_node.acumulated_abundance
-
-    species_name = accession_species_node.name
-    species_total_reads = accession_species_node.acumulated_abundance
-    species_correct_reads = true_positive_tree[species_taxid].acumulated_abundance
-    species_total_classified = all_classified_tree[species_taxid].acumulated_abundance
+  for accession, taxid in accession_taxids.items():
+    node = ground_truth_tree[taxid]
+    accession_total_reads = node.acumulated_abundance
     
-    accession_genus_node = accession_species_node.parent
-    while accession_genus_node.parent.level_enum == KrakenParser.Level.G:
-      accession_genus_node = accession_genus_node.parent
-
-    genus_taxid = accession_genus_node.taxid
-    genus_name = accession_genus_node.name 
-    genus_total_reads = accession_genus_node.acumulated_abundance
-    genus_correct_reads = true_positive_tree[genus_taxid].acumulated_abundance
-    genus_total_classified = all_classified_tree[genus_taxid].acumulated_abundance
-    if accession_genus_node.level_enum != KrakenParser.Level.G:
-      genus_name = "Undefined genus in " + genus_name
-
-    print(f"{species_taxid}, {species_name}, {species_total_reads}, {species_correct_reads}, {species_total_classified}")
-    print(f"{genus_taxid}, {genus_name}, {genus_total_reads}, {genus_correct_reads}, {genus_total_classified}")
-    
-    genus_metrics = get_confusion_matrix_values(sample_total_reads, genus_total_reads, genus_total_classified, genus_correct_reads)
-    species_metrics = get_confusion_matrix_values(sample_total_reads, species_total_reads, species_total_classified, species_correct_reads)
-
-    output_content += f"{accession},{accession_total_reads},{genus_name},{genus_taxid},{genus_metrics[0]},"
-    output_content += f"{genus_metrics[1]},{genus_metrics[2]},{genus_metrics[3]},{species_name},{species_taxid},"
-    output_content += f"{species_metrics[0]},{species_metrics[1]},{species_metrics[2]},{species_metrics[3]}\n"
+    for level in range(9, 1, -1):
+      level_enum = TaxonomyParser.Level(level)
+      level_node = node.get_parent_by_level(level_enum)
+      if level_node is None:
+        continue
+      #
+      level_total_reads = level_node.acumulated_abundance
+      level_correct_reads = true_positive_tree[level_node.taxid].acumulated_abundance
+      level_total_classified = all_classified_tree[level_node.taxid].acumulated_abundance
+      #print(f"{level_node.taxid}, {level_node.name}, {level_total_reads}, {level_correct_reads}, {level_total_classified}")
+      #
+      level_metrics = get_confusion_matrix_values(sample_total_reads, level_total_reads, level_total_classified, level_correct_reads)
+      #
+      output_content += f"{accession},{accession_total_reads},{level},{level_node.taxid},{level_node.name},"
+      output_content += f"{sample_total_reads},{level_total_reads},{level_total_classified},{level_correct_reads},"
+      output_content += f"{level_metrics[0]},{level_metrics[1]},{level_metrics[2]},{level_metrics[3]}\n"
       
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
 
 
-
 def main():
-  base_path = "./data/dataset_mock"
+  base_path = "/home/pedro/aesop/pipeline/results/viral_discovery_v1/dataset_mock"
   input_extension = "_1.fastq.gz"
   # input_fastq_path = os.path.join(base_path, "mock_metagenomes")
   # input_fastq_path = os.path.join(base_path, "1.2-bowtie_ercc_output")
@@ -353,112 +228,145 @@ def main():
   input_kraken_path = os.path.join(base_path, "3-taxonomic_output")
   input_mapping_path = os.path.join(base_path, "4.3.1-viral_discovery_mapping_metaspades")
   input_blast_path = os.path.join(base_path, "4.3.2-blastn_contigs_metaspades")
-  input_taxonkit_path = os.path.join(base_path, "4.3.3-blastn_taxonkit_metaspades")
-  input_metadata_path = os.path.join(base_path,  "metadata")
-  output_path = os.path.join(base_path, "performance_metrics")
+  # input_taxonkit_path = os.path.join(base_path, "4.3.3-blastn_taxonkit_metaspades")
+  input_accession_metadata_path = "./data/dataset_mock/metadata"
+  # output_path = os.path.join(base_path, "performance_metrics2")
+  output_path = "./data/dataset_mock/performance_metrics"
+  
+  ########################################################################################################
+  # Load complete taxonomy tree
+  input_metadata_path = "./data/database/taxdump_20241211"  
+  names_file = os.path.join(input_metadata_path, "names.dmp")
+  nodes_file = os.path.join(input_metadata_path, "nodes.dmp")
+  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
+  
+  # set Viruses Domain as root and deletes the rest of the tree
+  viruses_root = taxonomy_tree["10239"]
+  viruses_root.parent = None
+  # get all viruses nodes and set them as kraken result tree
+  viruses_tree = {}
+  viruses_root.get_all_nodes(viruses_tree)
+  TaxonomyParser.clear_abundance_from_tree(viruses_tree)
+  
+  # create the ground truth tree with the real taxa from the mocks and the number of reads from each one
+  ground_truth_tree = copy.deepcopy(viruses_tree)
+  # create the blast result tree
+  kraken_classified_tree = copy.deepcopy(viruses_tree)
+  # create the true positive tree adding the abundance only if they are correctly mapped
+  true_positive_tree = copy.deepcopy(viruses_tree)
+  # create the blast result tree
+  blast_classified_tree = copy.deepcopy(viruses_tree)
   
   # shutil.rmtree(output_path)
   os.makedirs(output_path, exist_ok=True)
-
+  
   all_files = get_files_in_folder(input_fastq_path, input_extension)
   print(all_files)
-
+  
   for fastq_file in all_files:
     # fastq_file = all_files[0]
     print(f"Analyzing file: {fastq_file}")
     filename = os.path.basename(fastq_file).replace(input_extension, "")
-
-    # if filename.startswith("SI041_2_"):
-    #   continue
     
-    # create the all_classified_tree from the kraken output
-    report_file = os.path.join(input_kraken_path, filename + ".kreport")
-    _, report_tree = KrakenParser.load_kraken_report_tree(report_file)
-    # set Viruses Domain as root and deletes the rest of the tree
-    viruses_root = report_tree["10239"]
-    viruses_root.parent = None
-    # get all viruses nodes and set them as kraken result tree
-    kraken_classified_tree = {}
-    viruses_root.get_all_nodes(kraken_classified_tree)
-
+    #######################################################################################################
+    # GROUND TRUTH
+    # create the ground truth tree with the real taxa from the mocks and the number of reads from each one
+    TaxonomyParser.clear_abundance_from_tree(ground_truth_tree)
+    
     meta_filename = filename.rsplit("_", 1)[0]
     # meta_filename = "_".join(splits[0:-2])
-    metadata_file = os.path.join(input_metadata_path, meta_filename + "_metadata.csv")
-    # add the taxa from the accession metadata if they are not in the classified tree
-    accession_species_taxid = update_report_tree_with_metadata_taxa(metadata_file, kraken_classified_tree)
-    # add the taxa from the blast result metadata if they are not in the classified tree
-    blast_metadata_file = os.path.join(input_taxonkit_path, filename + "_metadata.csv")
-    blast_taxid_to_species_taxid = update_report_tree_with_metadata_blast(blast_metadata_file, kraken_classified_tree)
-    # double the abundance value to account for each mate from the sequencing
-    for k,node in kraken_classified_tree.items():
-      node.acumulated_abundance *= 2
-
-    #######################################################################################################
-    # create the ground truth tree with the real taxa from the mocks and the number of reads from each one
-    ground_truth_tree = copy.deepcopy(kraken_classified_tree)
-    KrakenParser.clear_abundance_from_tree(ground_truth_tree)
-
+    metadata_file = os.path.join(input_accession_metadata_path, meta_filename + ".txt")
+    loaded_accession_taxids = load_accession_metadata(metadata_file)
+    accession_taxids = {}
+    for accession,taxid in loaded_accession_taxids.items():
+      node = taxonomy_tree[taxid]
+      domain_node = node.get_parent_by_level(TaxonomyParser.Level.D)
+      if domain_node.name.lower() == "viruses":
+        accession_taxids[accession] = taxid
+      else:
+        print(f"Removing {accession}:{taxid} because its domain is {domain_node.name}")
+    
     # include the number of reads of each accession as the abundance of each taxa species
     accession_abundance = count_reads_by_sequence_id(fastq_file)
     output_ground_truth_file = os.path.join(output_path, filename + "_ground_truth.csv")
-    total_abundance = set_ground_truth_tree_real_counts(accession_abundance, accession_species_taxid, ground_truth_tree, output_ground_truth_file)
-    # set_ground_truth_tree_real_counts_from_ground_truth_file(output_ground_truth_file, accession_species_taxid, ground_truth_tree)
+    total_abundance = set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_ground_truth_file)
+    # set_ground_truth_tree_real_counts_from_ground_truth_file(output_ground_truth_file, accession_accession_taxid, ground_truth_tree)
     # double the abundance value to account for each mate from the sequencing
     for k,node in ground_truth_tree.items():
       node.acumulated_abundance *= 2
     total_abundance *= 2
-
-    #######################################################################################################
-    # create the true positive tree adding the abundance only if they are correctly mapped
-    true_positive_tree = copy.deepcopy(kraken_classified_tree)
-    KrakenParser.clear_abundance_from_tree(true_positive_tree)
-    # create the blast result tree
-    blast_classified_tree = copy.deepcopy(kraken_classified_tree)
-    KrakenParser.clear_abundance_from_tree(blast_classified_tree)  
-    # get blast results for the contigs and the reads mapped to each contig
-    blast_file = os.path.join(input_blast_path, filename + ".txt")
-    contig_to_blast_result = get_blast_results(blast_file)
-    mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
-    contig_reads = count_contig_unique_reads(mapping_file)
-    # Set blast result tree and the true positive tree
-    load_blast_results(contig_reads, contig_to_blast_result, blast_taxid_to_species_taxid, \
-      accession_species_taxid, blast_classified_tree, true_positive_tree)
-    # Calculate confusion matrix for blast
-    output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
-    calculate_confusion_matrix(accession_species_taxid, total_abundance, ground_truth_tree, true_positive_tree, blast_classified_tree, output_file)
     
-    #######################################################################################################     
+    #######################################################################################################
+    # KRAKEN CLASSIFIED
+    # create the all_classified_tree from the kraken output
+    report_file = os.path.join(input_kraken_path, filename + ".kreport")
+    _, report_tree = TaxonomyParser.load_tree_from_kraken_report(report_file)
+    
+    TaxonomyParser.clear_abundance_from_tree(kraken_classified_tree)
+    
+    # set Viruses Domain as root and deletes the rest of the tree
+    viruses_root = report_tree["10239"]
+    viruses_root.parent = None
+    # get all viruses nodes and set them as kraken result tree
+    report_tree = {}
+    viruses_root.get_all_nodes(report_tree)
+    
+    for k,node in report_tree.items():
+      if k not in viruses_tree:
+        print(f"Node not found in taxonomy tree: {node}")
+      else:
+        kraken_classified_tree[k].set_abundance(node.abundance * 2)
+    
+    #######################################################################################################
+    # KRAKEN TRUE POSITIVE
     # create the true positive tree adding the abundance only if they are correctly mapped
-    true_positive_tree = copy.deepcopy(kraken_classified_tree)
-    KrakenParser.clear_abundance_from_tree(true_positive_tree)
-
+    TaxonomyParser.clear_abundance_from_tree(true_positive_tree)
+    
     accession_taxid_abundance_file = os.path.join(input_kraken_path, filename + ".kout")
     output_class_file = os.path.join(output_path, filename + "_classified.csv")
-    accession_taxid_counts = get_accession_taxid_abundance(accession_taxid_abundance_file, output_class_file)
+    accession_results_by_taxid = get_accession_taxid_abundance(accession_taxid_abundance_file, output_class_file)
     # double the abundance value to account for each mate from the sequencing
-    for accession in accession_taxid_counts:
-      for taxid in accession_taxid_counts[accession]:
-        accession_taxid_counts[accession][taxid] *= 2
-    # accession_taxid_counts = get_accession_taxid_abundance_from_classified_file(output_class_file)
-    set_true_positive_tree_counts(accession_taxid_counts, accession_species_taxid, true_positive_tree)
-
+    for accession in accession_results_by_taxid:
+      for taxid in accession_results_by_taxid[accession]:
+        accession_results_by_taxid[accession][taxid] *= 2
+    # accession_results_by_taxid = get_accession_taxid_abundance_from_classified_file(output_class_file)
+    set_true_positive_tree_counts(accession_results_by_taxid, accession_taxids, true_positive_tree)
+    
     # Calculate confusion matrix for kraken
     output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
-    calculate_confusion_matrix(accession_species_taxid, total_abundance, ground_truth_tree, true_positive_tree, kraken_classified_tree, output_file)
-  
-    # for accession,taxid in accession_species_taxid.items():
-    #   domain = ground_truth_tree[taxid].get_parent_by_level(KrakenParser.Level.D)
+    calculate_confusion_matrix(accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, kraken_classified_tree, output_file)
+    
+    #######################################################################################################
+    # BLASTN RESULTS
+    # create the true positive tree adding the abundance only if they are correctly mapped
+    TaxonomyParser.clear_abundance_from_tree(true_positive_tree)
+    # create the blast result tree
+    TaxonomyParser.clear_abundance_from_tree(blast_classified_tree)
+    
+    # get blast results for the contigs and the reads mapped to each contig
+    blast_file = os.path.join(input_blast_path, filename + ".txt")
+    contig_to_blast_result = BlastResultParser.get_best_result(blast_file)
+    mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
+    contig_reads = BlastResultParser.count_contig_reads(mapping_file)
+    # Set blast result tree and the true positive tree
+    load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, blast_classified_tree, true_positive_tree)
+    # Calculate confusion matrix for blast
+    output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
+    calculate_confusion_matrix(accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, blast_classified_tree, output_file)
+    
+    # for accession,taxid in accession_accession_taxid.items():
+    #   domain = ground_truth_tree[taxid].get_parent_by_level(TaxonomyParser.Level.D)
     #   if(domain != "viruses"):
     #     continue
     #   ground_abundance = ground_truth_tree[taxid].acumulated_abundance
     #   kraken_abundance = kraken_classified_tree[taxid].acumulated_abundance
     #   blast_abundance = blast_classified_tree[taxid].acumulated_abundance
     #   true_positive_abundance = true_positive_tree[taxid].acumulated_abundance
-      
+    
     #   print(f"{accession}:{taxid} -> {ground_abundance} ; {kraken_abundance} ;" + \
     #     f" {blast_abundance} ; {true_positive_abundance}")
 
-  
+
 
 if __name__ == '__main__':
     main()

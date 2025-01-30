@@ -10,7 +10,7 @@ DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -23,22 +23,27 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 ############################ PARAMETERS VALIDATION ############################
 ###############################################################################
 
-# Name of the current dataset
+
+# Dataset name
 dataset_name="$1"
+# Extract the number of proccesses to be run in parallel
+num_processes="$2"
 # Delete preexisting output directory
-delete_output_dir="$2"
-# Log file name
-log_file="$3"
-# suffix of each sample forward sequence
-input_suffix="$4"
+delete_output_dir="$3"
+# Tar Log file name
+log_file="$4"
+# Suffix of the input files
+input_suffix="$5"
 # Download folder
-download_dir="$5"
+download_dir="$6"
 # Destination folder
-output_dir="$6"
-# Basespace project ID
-basespace_project_id="$7"
+output_dir="$7"
+# Number of parallel threads to be run in each process
+nthreads="$8"
 # Basespace access token
-basespace_access_token="$8"
+basespace_access_token="$9"
+# Basespace project ID
+basespace_project_id="${10}"
 
 
 ################################################################################
@@ -73,8 +78,8 @@ mkdir -p $download_dir
 echo "$task_script list projects"
 $task_script list projects
 
-echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension=fastq.gz --exclude='*unmapped*'"
-$task_script download project -v -i $basespace_project_id -o $download_dir --extension=fastq.gz --exclude='*unmapped*'
+echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension='fastq.gz' --exclude='*unmapped*' --exclude='*deter*'"
+$task_script download project -v -i $basespace_project_id -o $download_dir --extension='fastq.gz' --exclude='*unmapped*' --exclude='*deter*'
 
 echo "ls -la $download_dir"
 ls -la $download_dir
