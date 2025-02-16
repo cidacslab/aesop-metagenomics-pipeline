@@ -33,14 +33,14 @@ input_suffix=$3
 output_dir=$5
 nthreads=$6 
 path_to_db=$7
-blastn_task=$8
+diamond_filter_taxon=$8
 
 input_id=$(basename $input_file $input_suffix)
 
 # input_file="${input_dir}/${input_id}${input_suffix}"
 output_file="${output_dir}/${input_id}.txt"
 
-blastn_script=$BLASTN_EXECUTABLE
+diamond_script=$DIAMOND_EXECUTABLE
 
 if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
@@ -53,17 +53,14 @@ start=$(date +%s.%N)
 
 echo "Started task Input: $2 Count: $1"
 
-echo "Running blastn command: "
-echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task" \
-    "-outfmt '7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles'" \
-    "-max_target_seqs -num_threads $nthreads -out $output_file"
-
-# $blastn_script -db $path_to_db -query $input_file -task $blastn_task \
-#     -outfmt "7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
-#     -max_target_seqs 5 -word_size 7 -gapopen 5 -gapextend 2 -penalty '-1' -reward 1 -perc_identity 50 -evalue 10 -num_threads $nthreads -out $output_file
-$blastn_script -db $path_to_db -query $input_file -task $blastn_task \
-    -outfmt "7 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
-    -max_target_seqs 10 -num_threads $nthreads -out $output_file
+echo "Running diamond command: "
+echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
+    "--max-target-seqs 5 --very-sensitive --iterate --taxon-exclude $diamond_filter_taxon --out $output_file " \
+    "--outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles"
+    
+$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
+    --max-target-seqs 5 --fast --taxon-exclude $diamond_filter_taxon --out $output_file \
+    --outfmt 6 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
 
 
 # Finish script profile

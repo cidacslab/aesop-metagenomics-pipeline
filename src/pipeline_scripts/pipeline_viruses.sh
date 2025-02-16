@@ -42,7 +42,7 @@ IFS='|' read -ra pairs <<< "$args_str"
 # Loop through the key-value pairs
 for pair in "${pairs[@]}"; do
   IFS='=' read -r key value <<< "$pair"
-  args_dict[$key]=$value
+  args_dict[$key]="$value"
 done
 
 # Dataset name
@@ -61,15 +61,15 @@ custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 
 # Array of executable names
 executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
-  "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" "BASESPACE_CLI_EXECUTABLE" \
-  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
+  "BASESPACE_CLI_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
+  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" "SPADES_EXECUTABLE" \
   "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
-  "SPADES_EXECUTABLE" "MEGAHIT_EXECUTABLE" "QUAST_EXECUTABLE" "TAXONKIT_EXECUTABLE")
+  "DIAMOND_EXECUTABLE" )
 
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
   if [[ -v args_dict["$executable"] ]]; then
-    export $executable=${args_dict["$executable"]}
+    export $executable="${args_dict[$executable]}"
     # Try different options to get the version
     # command=${args_dict["$executable"]}
     # if version=$($command -v 2>/dev/null); then
@@ -94,12 +94,12 @@ step_executed=0  # Default is 0 (Step was not executed)
 # Function to execute each step
 run_pipeline_step() {
   local step_name=$1
-  local script_path=$2
+  local full_command=$2
   shift 2 # Shift past the first two arguments (step_name, script_path)
-
+  
   # Global variable to track if the step was executed successfully
   step_executed=0  # Default is 0 (Step was not executed)
-
+  
   # Check if the step should be executed
   if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
     # Create default argument list
@@ -115,7 +115,20 @@ run_pipeline_step() {
     
     echo ""
     echo "Executing step: $step_name"
-    $script_path "${params[@]}"
+    
+    # Convert full_command into an array while preserving spaces inside quotes
+    set -- $full_command
+    script_runner=$1  # First argument is the script runner
+    shift  # Remove the first argument from list
+    script_command="$*"  # Join remaining words as a single string
+    
+    # Execute command with the preserved extra parameters
+    if [[ -n "$script_command" ]]; then
+      "$script_runner" "$script_command" "${params[@]}"
+    else
+      "$full_command" "${params[@]}"
+    fi
+    
     step_executed=1  # Step executed successfully
   fi
 }
@@ -129,28 +142,29 @@ run_pipeline_step() {
 ## DOWNLOAD 
 run_pipeline_step "download" \
   "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
-  ${args_dict["download_basespace_access_token"]} \
-  $basespace_project_id
+  "${args_dict[download_basespace_access_token]}" \
+  "$basespace_project_id"
 
 
 ## BOWTIE2 PHIX
 run_pipeline_step "bowtie2_phix" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_phix_index"]}
+  "${args_dict[bowtie2_phix_index]}"
 
 
 ## BOWTIE2 ERCC
 run_pipeline_step "bowtie2_ercc" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_ercc_index"]}
+  "${args_dict[bowtie2_ercc_index]}"
 
 
 ## FASTP
 run_pipeline_step "fastp" \
   "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
-  ${args_dict["fastp_minimum_length"]} \
-  ${args_dict["fastp_max_n_count"]}
-  
+  "${args_dict[fastp_minimum_length]}" \
+  "${args_dict[fastp_max_n_count]}"
+
+
 if [ $step_executed -eq 1 ]; then  
   # compress the reports
   echo "Tar gziping report files: tar -czf ${dataset_name}_fastp_filters_reports.tar.gz *.html *.json"
@@ -164,28 +178,28 @@ fi
 ## HISAT2 HUMAN
 run_pipeline_step "hisat2_human" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
-  ${args_dict["hisat2_human_index"]}
+  "${args_dict[hisat2_human_index]}"
 
 
 ## BOWTIE2 HUMAN
 run_pipeline_step "bowtie2_human" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_human_index"]}
+  "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
 run_pipeline_step "kraken2" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
-  ${args_dict["kraken2_database"]} \
-  ${args_dict["kraken2_confidence"]} \
-  ${args_dict["kraken2_keep_output"]} 
+  "${args_dict[kraken2_database]}" \
+  "${args_dict[kraken2_confidence]}" \
+  "${args_dict[kraken2_keep_output]}"
 
 
 ##  EXTRACT READS 
 run_pipeline_step "extract_reads" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
-  $base_dataset_path/${args_dict["extract_reads_kraken_output"]} \
-  ${args_dict["extract_reads_from_taxons"]}
+  "$base_dataset_path/${args_dict[extract_reads_kraken_output]}" \
+  "${args_dict[extract_reads_from_taxons]}"
 
 
 ##  ASSEMBLY MEGAHIT
@@ -201,8 +215,9 @@ run_pipeline_step "assembly_metaspades" \
 ##  MAPPING METASPADES
 run_pipeline_step "mapping_metaspades" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
-  ${args_dict["mapping_metaspades_origin_input_suffix"]} \
-  $base_dataset_path/${args_dict["mapping_metaspades_origin_input_folder"]}
+  "${args_dict[mapping_metaspades_origin_input_suffix]}" \
+  "$base_dataset_path/${args_dict[mapping_metaspades_origin_input_folder]}"
+
 
 # rm -rvf ${args_dict["final_output_path"]}/$dataset_name
 # mkdir -p ${args_dict["final_output_path"]}/$dataset_name
@@ -213,13 +228,27 @@ run_pipeline_step "mapping_metaspades" \
 ## BLASTN ON CONTIGS
 run_pipeline_step "blastn" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-blastn.sh" \
-  ${args_dict["blastn_viral_index"]}
+  "${args_dict[blastn_database]}" \
+  "${args_dict[blastn_task]}"
+
+
+## DIAMOND ON CONTIGS
+run_pipeline_step "diamond" \
+  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-diamond.sh" \
+  "${args_dict[diamond_database]}" \
+  "${args_dict[diamond_filter_taxon]}"
+
+
+# ## PSIBLAST ON CONTIGS
+# run_pipeline_step "blastn" \
+#   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-psiblast.sh" \
+#   ${args_dict["blastn_viral_index"]}
 
 
 ## BLASTN TAXONKIT
-run_pipeline_step "blastn_taxonkit" \
-  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-blastn_taxonkit.sh" \
-  ${args_dict["taxonkit_database"]}
+# run_pipeline_step "blastn_taxonkit" \
+#   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-blastn_taxonkit.sh" \
+#   ${args_dict["taxonkit_database"]}
 
 
 ################################################################################

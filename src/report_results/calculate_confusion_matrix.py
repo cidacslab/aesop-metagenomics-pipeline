@@ -26,22 +26,17 @@ def load_accession_metadata(metadata_file):
 
 def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_file):
   output_content = "read_accession_id,count\n"
-  total_abundance = 0
   
   for accession, taxid in accession_taxids.items():
     abundance = accession_abundance[accession].count
     ground_truth_tree[taxid].set_abundance(abundance)
     output_content += f"{accession},{abundance}\n"
-    total_abundance += abundance
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
-  
-  return total_abundance
 
 
 def set_ground_truth_tree_real_counts_from_ground_truth_file(ground_truth_file, accession_taxids, ground_truth_tree):
-  total_abundance = 0
   
   with open(ground_truth_file, "r") as file:
     csv_reader = csv.reader(file)
@@ -51,9 +46,6 @@ def set_ground_truth_tree_real_counts_from_ground_truth_file(ground_truth_file, 
       abundance = row[1].strip()
       taxid = accession_taxids[accession]
       ground_truth_tree[taxid].set_abundance(abundance)  
-      total_abundance += abundance
-  
-  return total_abundance
 
 
 def get_accession_taxid_abundance(kout_file, output_file):
@@ -125,12 +117,13 @@ def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tr
 
 
 def load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, 
-                        blast_classified_tree, true_positive_tree):
-  # Example: Print the dictionary for each contig
+                        blast_classified_tree, true_positive_tree,
+                        output_no_matched_contig_file):
+  output_content = "contig\tread_count\n"
   
   for contig,contig_info in contig_reads.items():
-    print(f"{contig}: {contig_info.accession_read_count}")
     if contig in contig_to_blast_result:
+      print(f"{contig}: {contig_info.accession_read_count}")
       # contig_info = contig_reads[contig]
       blast_result = contig_to_blast_result[contig]
       taxid = blast_result['staxids'].strip()
@@ -144,7 +137,11 @@ def load_blast_results(contig_reads, contig_to_blast_result, accession_taxids,
         print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
               f"from {accession}:{true_taxid}:{blast_node}.")
     else:
-      print(f"Contig {contig} had no read mapped!")
+      # print(f"Contig {contig} had no read mapped!")
+      output_content += f"{contig}\t{str(contig_info.accession_read_count)}\n"
+  
+  with open(output_no_matched_contig_file, "w") as out_file:
+    out_file.write(output_content)
 
 
 #########################################################################################
@@ -190,9 +187,10 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mappe
 def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_truth_tree, true_positive_tree, all_classified_tree, output_file):
   print(f"Calculating confusion matrix: {output_file}")
       
-  output_content = "accession_id,total_reads,level,taxid,name,sample_total_reads,"
-  output_content += "level_total_reads,level_total_classified,level_correct_reads,"
+  output_content = "level,taxid,name,sample_total_reads,level_total_reads,"
+  output_content += "level_total_classified,level_correct_reads,"
   output_content += "true_positive,true_negative,false_positive,false_negative\n"
+  output_taxids = set()
 
   for accession, taxid in accession_taxids.items():
     node = ground_truth_tree[taxid]
@@ -203,6 +201,8 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_trut
       level_node = node.get_parent_by_level(level_enum)
       if level_node is None:
         continue
+      if level_node.taxid in output_taxids:
+        continue
       #
       level_total_reads = level_node.acumulated_abundance
       level_correct_reads = true_positive_tree[level_node.taxid].acumulated_abundance
@@ -211,33 +211,35 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_trut
       #
       level_metrics = get_confusion_matrix_values(sample_total_reads, level_total_reads, level_total_classified, level_correct_reads)
       #
-      output_content += f"{accession},{accession_total_reads},{level},{level_node.taxid},{level_node.name},"
-      output_content += f"{sample_total_reads},{level_total_reads},{level_total_classified},{level_correct_reads},"
+      output_content += f"{level},{level_node.taxid},{level_node.name},{sample_total_reads},"
+      output_content += f"{level_total_reads},{level_total_classified},{level_correct_reads},"
       output_content += f"{level_metrics[0]},{level_metrics[1]},{level_metrics[2]},{level_metrics[3]}\n"
+      output_taxids.add(level_node.taxid)
       
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
 
 
 def main():
-  base_path = "/home/pedro/aesop/pipeline/results/viral_discovery_v1/dataset_mock"
-  input_extension = "_1.fastq.gz"
-  # input_fastq_path = os.path.join(base_path, "mock_metagenomes")
-  # input_fastq_path = os.path.join(base_path, "1.2-bowtie_ercc_output")
-  input_fastq_path = os.path.join(base_path, "4.1-viral_discovery_reads")
-  input_kraken_path = os.path.join(base_path, "3-taxonomic_output")
-  input_mapping_path = os.path.join(base_path, "4.3.1-viral_discovery_mapping_metaspades")
-  input_blast_path = os.path.join(base_path, "4.3.2-blastn_contigs_metaspades")
-  # input_taxonkit_path = os.path.join(base_path, "4.3.3-blastn_taxonkit_metaspades")
-  input_accession_metadata_path = "./data/dataset_mock/metadata"
-  # output_path = os.path.join(base_path, "performance_metrics2")
-  output_path = "./data/dataset_mock/performance_metrics"
+  project_path = "/home/pedro/aesop/github/aesop-metagenomics-pipeline/"
+  results_path = "/home/pedro/aesop/pipeline/results/viral_discovery_v1/dataset_mock"
+  input_extension = ".txt"
+  # input_fastq_path = os.path.join(results_path, "mock_metagenomes")
+  # input_fastq_path = os.path.join(results_path, "1.2-bowtie_ercc_output")
+  input_fastq_path = os.path.join(results_path, "4.1-viral_discovery_reads")
+  input_kraken_path = os.path.join(results_path, "3-taxonomic_output")
+  input_mapping_path = os.path.join(results_path, "4.3.1-viral_discovery_mapping_metaspades")
+  # input_blast_path = os.path.join(results_path, "forth-blast_parameter_tweak/4.3.2-blastn_contigs_metaspades")
+  input_blast_path = os.path.join(results_path, "4.3.3-diamond_contigs_metaspades/fast")
+  # input_taxonkit_path = os.path.join(results_path, "4.3.3-blastn_taxonkit_metaspades")
+  input_metadata_path = os.path.join(project_path, "data/dataset_mock/metadata")
+  output_path = os.path.join(project_path, "data/dataset_mock/performance_metrics")
   
   ########################################################################################################
   # Load complete taxonomy tree
-  input_metadata_path = "./data/database/taxdump_20241211"  
-  names_file = os.path.join(input_metadata_path, "names.dmp")
-  nodes_file = os.path.join(input_metadata_path, "nodes.dmp")
+  input_taxonomy_path = "/home/pedro/aesop/pipeline/databases/taxdump"
+  names_file = os.path.join(input_taxonomy_path, "names.dmp")
+  nodes_file = os.path.join(input_taxonomy_path, "nodes.dmp")
   _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
   
   # set Viruses Domain as root and deletes the rest of the tree
@@ -260,13 +262,14 @@ def main():
   # shutil.rmtree(output_path)
   os.makedirs(output_path, exist_ok=True)
   
-  all_files = get_files_in_folder(input_fastq_path, input_extension)
+  all_files = get_files_in_folder(input_blast_path, input_extension)
   print(all_files)
   
-  for fastq_file in all_files:
+  for currfile in all_files:
     # fastq_file = all_files[0]
-    print(f"Analyzing file: {fastq_file}")
-    filename = os.path.basename(fastq_file).replace(input_extension, "")
+    print(f"Analyzing file: {currfile}")
+    filename = os.path.basename(currfile).replace(input_extension, "")
+    fastq_file = os.path.join(input_fastq_path, filename + "_1.fastq.gz")
     
     #######################################################################################################
     # GROUND TRUTH
@@ -275,7 +278,7 @@ def main():
     
     meta_filename = filename.rsplit("_", 1)[0]
     # meta_filename = "_".join(splits[0:-2])
-    metadata_file = os.path.join(input_accession_metadata_path, meta_filename + ".txt")
+    metadata_file = os.path.join(input_metadata_path, meta_filename + ".txt")
     loaded_accession_taxids = load_accession_metadata(metadata_file)
     accession_taxids = {}
     for accession,taxid in loaded_accession_taxids.items():
@@ -289,12 +292,12 @@ def main():
     # include the number of reads of each accession as the abundance of each taxa species
     accession_abundance = count_reads_by_sequence_id(fastq_file)
     output_ground_truth_file = os.path.join(output_path, filename + "_ground_truth.csv")
-    total_abundance = set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_ground_truth_file)
+    set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_ground_truth_file)
     # set_ground_truth_tree_real_counts_from_ground_truth_file(output_ground_truth_file, accession_accession_taxid, ground_truth_tree)
     # double the abundance value to account for each mate from the sequencing
     for k,node in ground_truth_tree.items():
       node.acumulated_abundance *= 2
-    total_abundance *= 2
+    total_abundance = sum([accession_abundance[acc].count for acc in accession_abundance]) * 2
     
     #######################################################################################################
     # KRAKEN CLASSIFIED
@@ -312,7 +315,7 @@ def main():
     viruses_root.get_all_nodes(report_tree)
     
     for k,node in report_tree.items():
-      if k not in viruses_tree:
+      if k not in kraken_classified_tree:
         print(f"Node not found in taxonomy tree: {node}")
       else:
         kraken_classified_tree[k].set_abundance(node.abundance * 2)
@@ -345,26 +348,17 @@ def main():
     
     # get blast results for the contigs and the reads mapped to each contig
     blast_file = os.path.join(input_blast_path, filename + ".txt")
-    contig_to_blast_result = BlastResultParser.get_best_result(blast_file)
+    contig_to_blast_result = BlastResultParser.get_best_result(blast_file, min_identity=80, max_evalue=0.001, min_length=30)
     mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
     contig_reads = BlastResultParser.count_contig_reads(mapping_file)
     # Set blast result tree and the true positive tree
-    load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, blast_classified_tree, true_positive_tree)
+    output_file = os.path.join(output_path, filename + "_contig_not_matched_blast.tsv")
+    load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, blast_classified_tree, true_positive_tree, output_file)
     # Calculate confusion matrix for blast
     output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
     calculate_confusion_matrix(accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, blast_classified_tree, output_file)
-    
-    # for accession,taxid in accession_accession_taxid.items():
-    #   domain = ground_truth_tree[taxid].get_parent_by_level(TaxonomyParser.Level.D)
-    #   if(domain != "viruses"):
-    #     continue
-    #   ground_abundance = ground_truth_tree[taxid].acumulated_abundance
-    #   kraken_abundance = kraken_classified_tree[taxid].acumulated_abundance
-    #   blast_abundance = blast_classified_tree[taxid].acumulated_abundance
-    #   true_positive_abundance = true_positive_tree[taxid].acumulated_abundance
-    
-    #   print(f"{accession}:{taxid} -> {ground_abundance} ; {kraken_abundance} ;" + \
-    #     f" {blast_abundance} ; {true_positive_abundance}")
+  
+  print("Finished!")
 
 
 

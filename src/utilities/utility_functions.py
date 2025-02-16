@@ -3,9 +3,10 @@ import os, csv
 
 def get_files_in_folder(input_path, input_extension):
   files_fullpath = []
+  gz_extension = input_extension + ".gz"
   for root, _, files in os.walk(input_path):
     for file_name in files:
-      if file_name.endswith(input_extension):
+      if file_name.endswith(input_extension) or file_name.endswith(gz_extension):
         file_path = os.path.join(root, file_name)
         files_fullpath.append(file_path)
   return files_fullpath

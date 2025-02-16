@@ -1,34 +1,10 @@
 import os, sys, csv, gzip, shutil
+sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+
 import kraken_report_parser as KrakenParser
-
-
-def get_files_in_folder(input_path, input_extension):
-  print("Start process")
-  files_fullpath = []
-  gz_extension = input_extension + ".gz"
-  for root, dirs, files in os.walk(input_path):
-    for file_name in files:
-      if file_name.endswith(input_extension) or file_name.endswith(gz_extension):
-        file_path = os.path.join(root, file_name)
-        files_fullpath.append(file_path)
-  return files_fullpath
-
-
-def get_read_abundance(input_file):
-  line_counter = 0
-  if input_file.endswith(".gz"):
-    with gzip.open(input_file, 'rt') as fastq_file:
-      for line in fastq_file:
-        line = line.strip()
-        if len(line) > 0:
-          line_counter += 1
-  else:
-    with open(input_file, 'rt') as fastq_file:
-      for line in fastq_file:
-        line = line.strip()
-        if len(line) > 0:
-          line_counter += 1
-  return int(line_counter/4)
+# import utilities.taxonomy_tree_parser as TaxonomyParser
+from utilities.utility_functions import get_files_in_folder
+from utilities.get_fastq_read_info import get_read_abundance
 
 
 def count_kraken_abundance_by_species(report_file, total_reads, output_file):

@@ -73,7 +73,8 @@ declare -A params
 # params["execute_extract_reads"]=1
 # params["execute_assembly_metaspades"]=1
 # params["execute_mapping_metaspades"]=1
-params["execute_blastn"]=1
+# params["execute_blastn"]=1
+params["execute_diamond"]=1
 # params["execute_blastn_taxonkit"]=1
 #If a stage is not executed change the input_path for the next stage accordingly
 
@@ -139,9 +140,11 @@ case $server in
     # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
     # params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_complete"
     # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
-    params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_no_coronaviridae/viruses_no_coronaviridae_blast_db"
-    # params["blastn_viral_index"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
-    params["taxonkit_database"]="/home/pedro/aesop/pipeline/databases/taxonkit_db"
+    params["blastn_database"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_no_coronaviridae/viruses_no_coronaviridae_blast_db"
+    # params["blastn_database"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
+    # params["diamond_database"]="/home/pedro/aesop/pipeline/databases/blastp_db/nr.dmnd"
+    params["diamond_database"]="/home/pedro/pablo/aesop/database_files/ncbi_nr_20250205/nr.dmnd"
+    # params["taxonkit_database"]="/home/pedro/aesop/pipeline/databases/taxonkit_db"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
@@ -157,7 +160,7 @@ case $server in
     params["DIAMOND_EXECUTABLE"]="diamond"
     params["MEGAHIT_EXECUTABLE"]="megahit"
     params["QUAST_EXECUTABLE"]="quast"
-    params["TAXONKIT_EXECUTABLE"]="/home/pedro/aesop/github/taxonkit"
+    # params["TAXONKIT_EXECUTABLE"]="/home/pedro/aesop/github/taxonkit"
     ;;
   *)
     # Default case if no pattern matches
@@ -268,21 +271,43 @@ params["mapping_metaspades_log_file"]="4.3.1-viral_discovery-mapping_metaspades_
 params["mapping_metaspades_origin_input_suffix"]="_1.fastq.gz"
 params["mapping_metaspades_origin_input_folder"]="4.1-viral_discovery_reads"
 ## Blastn viral parameters
-params["blastn_nprocesses"]=2
-params["blastn_process_nthreads"]=15
+params["blastn_nprocesses"]=1
+params["blastn_process_nthreads"]=30
 params["blastn_input_suffix"]=".contigs.fa"
 params["blastn_input_folder"]="4.3-viral_discovery_contigs_metaspades"
 params["blastn_output_folder"]="4.3.2-blastn_contigs_metaspades"
 params["blastn_delete_preexisting_output_folder"]=1
 params["blastn_log_file"]="4.3.2-taxonomic_annotation-blastn_contigs_metaspades_logs.tar.gz"
+params["blastn_task"]="blastn"
+params["blastn_filter_taxon"]="coronaviridae.txt"
+## Diamond viral parameters
+params["diamond_nprocesses"]=1
+params["diamond_process_nthreads"]=30
+params["diamond_input_suffix"]=".contigs.fa"
+params["diamond_input_folder"]="4.3-viral_discovery_contigs_metaspades"
+params["diamond_output_folder"]="4.3.3-diamond_contigs_metaspades"
+params["diamond_delete_preexisting_output_folder"]=1
+params["diamond_log_file"]="4.3.2-taxonomic_annotation-diamond_contigs_metaspades_logs.tar.gz"
+params["diamond_filter_taxon"]="81077,11118"
+# artificial_sequences = "81077"
+# coronaviridae = "11118"
+# betacoronavirus = "694002"
+# sars_cov = "694009"
+# alphainfluenzavirus = "197911"
+# enterovirus = "12059"
+# orthoflavivirus = "3044782"
+# params["blastn_task"]="dc-megablast"
+# params["blastn_output_folder"]="4.3.3-psiblast_contigs_metaspades"
+# params["blastn_delete_preexisting_output_folder"]=1
+# params["blastn_log_file"]="4.3.3-taxonomic_annotation-psiblast_contigs_metaspades_logs.tar.gz"
 ## Blastn taxonkit parameters
-params["blastn_taxonkit_nprocesses"]=4
-params["blastn_taxonkit_process_nthreads"]=1
-params["blastn_taxonkit_input_suffix"]=".txt"
-params["blastn_taxonkit_input_folder"]="4.3.2-blastn_contigs_metaspades"
-params["blastn_taxonkit_output_folder"]="4.3.3-blastn_taxonkit_metaspades"
-params["blastn_taxonkit_delete_preexisting_output_folder"]=0
-params["blastn_taxonkit_log_file"]="4.3.3-viral_discovery-blastn_taxonkit_metaspades_logs.tar.gz"
+# params["blastn_taxonkit_nprocesses"]=4
+# params["blastn_taxonkit_process_nthreads"]=1
+# params["blastn_taxonkit_input_suffix"]=".txt"
+# params["blastn_taxonkit_input_folder"]="4.3.2-blastn_contigs_metaspades"
+# params["blastn_taxonkit_output_folder"]="4.3.3-blastn_taxonkit_metaspades"
+# params["blastn_taxonkit_delete_preexisting_output_folder"]=0
+# params["blastn_taxonkit_log_file"]="4.3.3-viral_discovery-blastn_taxonkit_metaspades_logs.tar.gz"
 
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################

@@ -1,6 +1,9 @@
 import os, sys, csv, gzip
-import kraken_report_parser as KrakenParser
-import get_fastq_read_info as FastqReads
+sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+
+import utilities.taxonomy_tree_parser as TaxonomyParser
+import utilities.get_fastq_read_info import FastqReads
+
 
 
 def list_files(directory_path, extension):

@@ -47,7 +47,8 @@ sample_datasets="
                 # bsb01:422858797
                 # rio04:423157194
                 # rio05:427570404
-                to01:442690473
+                # to01:442690473
+                bsb02:443706623
                 # test01
                 "
 
@@ -146,7 +147,7 @@ params["download_input_suffix"]="_L001_R1_001.fastq.gz"
 params["download_input_folder"]="0-download"
 params["download_output_folder"]="0-raw_samples"
 params["download_delete_preexisting_output_folder"]=1
-params["download_log_file"]="0-raw_samples_download_logs.tar.gz"
+params["download_log_file"]="0-raw_samples_download.log"
 params["download_basespace_access_token"]="$(cat ${params[repository_src]}/../data/basespace_access_token.txt)"
 ## Bowtie2 remove PHIX parameters
 params["bowtie2_phix_nprocesses"]=4
@@ -213,8 +214,10 @@ params["bracken_threshold"]=1
 ## Normalization parameters
 params["normalization_nprocesses"]="1"
 params["normalization_process_nthreads"]="1"
-params["normalization_input_suffix"]="_L001_R1_001.fastq.gz"
-params["normalization_input_folder"]="0-raw_samples"
+# params["normalization_input_suffix"]="_L001_R1_001.fastq.gz"
+# params["normalization_input_folder"]="0-raw_samples"
+params["normalization_input_suffix"]="_1.fastq.gz"
+params["normalization_input_folder"]="1.2-bowtie_ercc_output"
 params["normalization_output_folder"]="4-bracken_normalized"
 params["normalization_delete_preexisting_output_folder"]=1
 params["normalization_log_file"]="4-bracken_normalized.log"

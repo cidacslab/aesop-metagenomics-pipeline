@@ -119,27 +119,27 @@ run_pipeline_step() {
 ## DOWNLOAD 
 run_pipeline_step "download" \
   "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
-  ${args_dict["download_basespace_access_token"]} \
+  "${args_dict[download_basespace_access_token]}" \
   $basespace_project_id
 
 
 ## BOWTIE2 PHIX
 run_pipeline_step "bowtie2_phix" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_phix_index"]}
+  "${args_dict[bowtie2_phix_index]}"
 
 
 ## BOWTIE2 ERCC
 run_pipeline_step "bowtie2_ercc" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_ercc_index"]}
+  "${args_dict[bowtie2_ercc_index]}"
 
 
 ## FASTP
 run_pipeline_step "fastp" \
   "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
-  ${args_dict["fastp_minimum_length"]} \
-  ${args_dict["fastp_max_n_count"]}
+  "${args_dict[fastp_minimum_length]}" \
+  "${args_dict[fastp_max_n_count]}"
   
 if [ $step_executed -eq 1 ]; then  
   # compress the reports
@@ -154,36 +154,36 @@ fi
 ## HISAT2 HUMAN
 run_pipeline_step "hisat2_human" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
-  ${args_dict["hisat2_human_index"]}
+  "${args_dict[hisat2_human_index]}"
 
 
 ## BOWTIE2 HUMAN
 run_pipeline_step "bowtie2_human" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  ${args_dict["bowtie2_human_index"]}
+  "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
 run_pipeline_step "kraken2" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
-  ${args_dict["kraken2_database"]} \
-  ${args_dict["kraken2_confidence"]} \
-  ${args_dict["kraken2_keep_output"]}
+  "${args_dict[kraken2_database]}" \
+  "${args_dict[kraken2_confidence]}" \
+  "${args_dict[kraken2_keep_output]}"
 
 
 ## BRACKEN
 run_pipeline_step "bracken" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh" \
-  ${args_dict["bracken_database"]} \
-  ${args_dict["bracken_read_length"]} \
-  ${args_dict["bracken_threshold"]}
+  "${args_dict[bracken_database]}" \
+  "${args_dict[bracken_read_length]}" \
+  "${args_dict[bracken_threshold]}"
 
 
 ## NORMALIZATION
 run_pipeline_step "normalization" \
   "python -u $repository_src/report_results/normalize_abundance_by_species.py" \
-  ${base_dataset_path} \
-  ${args_dict["normalization_folders"]}
+  "${base_dataset_path}" \
+  "${args_dict[normalization_folders]}"
 
 
 ################################################################################

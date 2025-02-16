@@ -3,6 +3,23 @@ from Bio import SeqIO
 from dataclasses import dataclass
 
 
+def get_read_abundance(input_file):
+  line_counter = 0
+  if input_file.endswith(".gz"):
+    with gzip.open(input_file, 'rt') as fastq_file:
+      for line in fastq_file:
+        line = line.strip()
+        if len(line) > 0:
+          line_counter += 1
+  else:
+    with open(input_file, 'rt') as fastq_file:
+      for line in fastq_file:
+        line = line.strip()
+        if len(line) > 0:
+          line_counter += 1
+  return int(line_counter/4)
+
+
 @dataclass
 class ReadInfo:
   count: int = 0
