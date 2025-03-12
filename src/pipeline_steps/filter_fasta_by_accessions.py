@@ -1,4 +1,4 @@
-import sys
+import sys, os, csv
 
 
 def filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, buffer_size=100000):
@@ -12,37 +12,32 @@ def filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, 
   - buffer_size: Number of lines to batch before writing to disk.
   """
   print(f"Valid accessions to write: {len(valid_accessions)}")
-  with open(output_file, 'w') as out_file:
+  with open(output_file, "w") as out_file:
     out_file.write("")
-  write_count = 0
+  
+  write_count = 0  
+  write_flag = False
+  buffer = []  # Buffer to accumulate lines for batch writing
   
   # Step 2: Process the FASTA file in chunks and batch write
-  with open(fasta_file, 'r') as in_file:
-    buffer = []  # Buffer to accumulate lines for batch writing
-    write_flag = False
-    
+  with open(fasta_file, "r") as in_file:
     for line in in_file:
-      if line.startswith('>'):  # Header line
-        accession = line.split()[0][1:]  # Extract accession (remove '>')
+      if line.startswith(">"):  # Header line
+        accession = line.split()[0][1:]  # Extract accession (remove ">")
         write_flag = accession in valid_accessions
-        # print(f"{accession}: {write_flag}")
-      
+        # print(f"{accession}: {write_flag}")      
       if write_flag:
-        buffer.append(line)
-      
+        buffer.append(line)      
       # Flush buffer to file when it reaches the buffer size
       if len(buffer) >= buffer_size:  
-        with open(output_file, 'a') as out_file:
+        with open(output_file, "a") as out_file:
           out_file.writelines(buffer)
           write_count += 1
         buffer.clear()
-      
-      # if write_count > 1000:
-      #   break
-  
+        
   # Write any remaining lines in the buffer
   if len(buffer) > 0:
-    with open(output_file, 'a') as out_file:
+    with open(output_file, "a") as out_file:
       out_file.writelines(buffer)
       write_count += 1
   print(f"Count blocks written: {write_count}")
@@ -50,31 +45,27 @@ def filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, 
 
 
 def main():
-
-  # Dataset name
-  # dataset_name="$1"
-  # Extract the number of proccesses to be run in parallel
-  # num_processes="$2"
-  # Delete preexisting output directory
-  delete_output_dir = sys.argv[3]
-  # Tar Log file name
-  # tar_log_file="$4"
-  # Suffix of the input files
-  input_extension = sys.argv[5]
-  # Path containing the input files
-  input_path = sys.argv[6]
-  # Destination folder for the output files
-  output_dir = sys.argv[7]
-
-
-  fasta_file = sys.argv[1]
-  accession_file = sys.argv[2]
-  output_file = sys.argv[3]
+  # count=$1
+  input_file=sys.argv[2]
+  input_suffix=sys.argv[3]
+  input_dir=sys.argv[4]
+  output_dir=sys.argv[5]
+  # nthreads=$6 
+  contigs_dir=sys.argv[7]
+  contigs_extension=sys.argv[8]
+  print(sys.argv)
+  
+  input_id = os.path.basename(input_file).replace(input_suffix,"")
+  accession_file = os.path.join(input_dir, input_id + input_suffix)
+  fasta_file = os.path.join(contigs_dir, input_id + contigs_extension)
+  output_file = os.path.join(output_dir, input_id + contigs_extension)
   
   valid_accessions = set()
   with open(accession_file, "r") as file:
-    for line in file:
-      valid_accessions.add(line.strip())
+    csv_reader = csv.reader(file, delimiter="\t")
+    next(csv_reader) # remove header
+    for row in csv_reader:
+      valid_accessions.add(row[0].strip())
   
   filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, buffer_size=100000)
 

@@ -36,12 +36,13 @@ fi
 task_script="$1"
 
 # Check if the script file exists
-if [ ! -f "$task_script" ]; then
-    echo "Error: Script file '$task_script' not found." >&2
-    exit 1
-fi
-script_name=$(basename "$task_script")
-script_name=${script_name%.*}
+# if [ ! -f "$task_script" ]; then
+#     echo "Error: Script file '$task_script' not found." >&2
+#     exit 1
+# fi
+# script_name=$(basename "$task_script")
+# script_name=${script_name%.*}
+script_name=$task_script
 
 # Dataset name
 dataset_name="$2"
@@ -83,6 +84,7 @@ echo "mkdir -p $output_dir"
 mkdir -p $output_dir
 
 find "$input_dir" -type f -name "*${input_suffix}" | \
+  # head -n 1 | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 

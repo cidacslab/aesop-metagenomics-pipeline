@@ -25,6 +25,84 @@ bash --version
 start=$(date +%s.%N)
 echo "Started running job for all datasets!"
 
+
+################################################################################
+#########################  SET VALUES IN DICT FUNCTION  ########################
+################################################################################
+
+# Function to modify any dictionary variable (associative array)
+set_values_in_dict() {
+  local dict_var=$1  # Name of the dictionary variable
+  local dict_args=$2
+  # local exports_str=$3
+  
+  # Use `declare -n` to create a reference to the dictionary
+  declare -n dict_ref=$dict_var
+  
+  # Use IFS to split by | and read each key-value pair
+  IFS='|' read -ra pairs <<< "$dict_args"
+  # Loop through the key-value pairs
+  for pair in "${pairs[@]}"; do
+    IFS='=' read -r key value <<< "$pair"
+    dict_ref["$key"]="$value"
+  done
+}
+
+################################################################################
+###########################  PIPELINE STEP FUNCTION  ###########################
+################################################################################
+
+# Global variable to track if the step was executed successfully
+step_executed=0  # Default is 0 (Step was not executed)
+
+# Function to execute each step
+run_pipeline_step() {
+  local step_name=$1
+  local dataset_name=$2
+  local base_dataset_path=$3
+  local full_command=$4
+  shift 4 # Shift past the first two arguments (step_name, script_path)
+  
+  # Global variable to track if the step was executed successfully
+  step_executed=0  # Default is 0 (Step was not executed)
+  
+  # Check if the step should be executed
+  if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
+    # Create default argument list
+    params=("$dataset_name"
+            "${args_dict[${step_name}_nprocesses]}"
+            "${args_dict[${step_name}_delete_preexisting_output_folder]}"
+            "${dataset_name}_${args_dict[${step_name}_log_file]}"
+            "${args_dict[${step_name}_input_suffix]}"
+            "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
+            "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"
+            "${args_dict[${step_name}_process_nthreads]}"
+            $@) # Add any extra arguments passed to the function
+    
+    echo ""
+    echo "Executing step: $step_name"
+    
+    # Convert full_command into an array while preserving spaces inside quotes
+    set -- $full_command
+    script_runner=$1  # First argument is the script runner
+    shift  # Remove the first argument from list
+    script_command="$*"  # Join remaining words as a single string
+    
+    # Execute command with the preserved extra parameters
+    if [[ -n "$script_command" ]]; then
+      "$script_runner" "$script_command" "${params[@]}"
+    else
+      "$full_command" "${params[@]}"
+    fi
+    
+    step_executed=1  # Step executed successfully
+  fi
+}
+################################################################################
+# make functions available to child processes
+export -f set_values_in_dict
+export -f run_pipeline_step
+
 # Pipeline script to be executed
 pipeline_script=$1
 # Parameters to be passed to the script

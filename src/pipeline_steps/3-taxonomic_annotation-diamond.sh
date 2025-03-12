@@ -34,6 +34,7 @@ output_dir=$5
 nthreads=$6 
 path_to_db=$7
 diamond_filter_taxon=$8
+diamond_sensitivity=$9
 
 input_id=$(basename $input_file $input_suffix)
 
@@ -55,11 +56,11 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running diamond command: "
 echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
-    "--max-target-seqs 5 --very-sensitive --iterate --taxon-exclude $diamond_filter_taxon --out $output_file " \
+    "--max-target-seqs 5 $diamond_sensitivity --iterate --taxon-exclude $diamond_filter_taxon --out $output_file " \
     "--outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles"
-    
+
 $diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
-    --max-target-seqs 5 --fast --taxon-exclude $diamond_filter_taxon --out $output_file \
+    --max-target-seqs 5 $diamond_sensitivity --taxon-exclude $diamond_filter_taxon --out $output_file \
     --outfmt 6 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
 
 

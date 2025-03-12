@@ -49,7 +49,7 @@ sample_datasets="
                 # rio04:423157194
                 # rio05:427570404
                 # to01:442690473
-                mock
+                mock2
                 "
 
 ################################################################################
@@ -74,8 +74,10 @@ declare -A params
 # params["execute_assembly_metaspades"]=1
 # params["execute_mapping_metaspades"]=1
 # params["execute_blastn"]=1
-params["execute_diamond"]=1
-# params["execute_blastn_taxonkit"]=1
+# params["execute_calculate_matrix"]=1
+# params["execute_filter_contigs"]=1
+# params["execute_diamond"]=1
+params["execute_diamond_matrix"]=1
 #If a stage is not executed change the input_path for the next stage accordingly
 
 ################################################################################
@@ -124,8 +126,6 @@ case $server in
     params["EXTRACT_READS_EXECUTABLE"]="/scratch/pablo.viana/softwares/KrakenTools-1.2/extract_kraken_reads.py"
     params["BLASTN_EXECUTABLE"]="/scratch/pablo.viana/softwares/ncbi-blast-2.14.0+/bin/blastn"
     params["SPADES_EXECUTABLE"]="/scratch/pablo.viana/softwares/SPAdes-4.0.0-Linux/bin/spades.py"
-    params["MEGAHIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit"
-    params["TAXONKIT_EXECUTABLE"]="/scratch/pablo.viana/softwares/TaxonKit_v0.18.0/taxonkit"
     ;;
   "prometheus")
     params["repository_src"]="/home/pedro/aesop/github/aesop-metagenomics-pipeline/src"
@@ -135,16 +135,14 @@ case $server in
     params["bowtie2_phix_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index"
     params["hisat2_human_index"]="/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2"
     params["bowtie2_human_index"]="/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full"
-    # params["kraken2_database"]="/dev/shm/viruses_complete"
+    params["taxonomy_database"]="/home/pedro/aesop/pipeline/databases/taxdump"
     params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
     # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_without_coronaviridae"
     # params["kraken2_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/viruses_complete"
-    # params["bracken_database"]="/home/pedro/aesop/pipeline/databases/kraken2_db/aesop_kraken2db_20240619"
     params["blastn_database"]="/home/pedro/aesop/pipeline/databases/blastn_db/viruses_no_coronaviridae/viruses_no_coronaviridae_blast_db"
     # params["blastn_database"]="/home/pedro/aesop/pipeline/databases/viral_blastn_db/viral_database"
     # params["diamond_database"]="/home/pedro/aesop/pipeline/databases/blastp_db/nr.dmnd"
     params["diamond_database"]="/home/pedro/pablo/aesop/database_files/ncbi_nr_20250205/nr.dmnd"
-    # params["taxonkit_database"]="/home/pedro/aesop/pipeline/databases/taxonkit_db"
     params["final_output_path"]="${params[base_dataset_path]}"
     params["BASESPACE_CLI_EXECUTABLE"]="bs"
     params["FASTP_EXECUTABLE"]="fastp"
@@ -158,9 +156,6 @@ case $server in
     params["BRACKEN_EXECUTABLE"]="bracken"
     params["BLASTN_EXECUTABLE"]="blastn"
     params["DIAMOND_EXECUTABLE"]="diamond"
-    params["MEGAHIT_EXECUTABLE"]="megahit"
-    params["QUAST_EXECUTABLE"]="quast"
-    # params["TAXONKIT_EXECUTABLE"]="/home/pedro/aesop/github/taxonkit"
     ;;
   *)
     # Default case if no pattern matches
@@ -244,17 +239,9 @@ params["extract_reads_delete_preexisting_output_folder"]=1
 params["extract_reads_log_file"]="4.1-viral_discovery-extract_reads_logs.tar.gz"
 params["extract_reads_kraken_output"]="3-taxonomic_output"
 params["extract_reads_from_taxons"]="0,10239"
-## Assembly megahit parameters
-params["assembly_megahit_nprocesses"]=2
-params["assembly_megahit_process_nthreads"]=15
-params["assembly_megahit_input_suffix"]="_1.fastq.gz"
-params["assembly_megahit_input_folder"]="4.1-viral_discovery_reads"
-params["assembly_megahit_output_folder"]="4.2-viral_discovery_contigs"
-params["assembly_megahit_delete_preexisting_output_folder"]=1
-params["assembly_megahit_log_file"]="4.2-viral_discovery-assembly_megahit_logs.tar.gz"
 ## Assembly metaspades parameters
 params["assembly_metaspades_nprocesses"]=2
-params["assembly_metaspades_process_nthreads"]=15
+params["assembly_metaspades_process_nthreads"]=30
 params["assembly_metaspades_input_suffix"]="_1.fastq.gz"
 params["assembly_metaspades_input_folder"]="4.1-viral_discovery_reads"
 params["assembly_metaspades_output_folder"]="4.3-viral_discovery_contigs_metaspades"
@@ -262,7 +249,7 @@ params["assembly_metaspades_delete_preexisting_output_folder"]=1
 params["assembly_metaspades_log_file"]="4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
 ## Mapping metaspades parameters
 params["mapping_metaspades_nprocesses"]=2
-params["mapping_metaspades_process_nthreads"]=15
+params["mapping_metaspades_process_nthreads"]=30
 params["mapping_metaspades_input_suffix"]=".contigs.fa"
 params["mapping_metaspades_input_folder"]="4.3-viral_discovery_contigs_metaspades"
 params["mapping_metaspades_output_folder"]="4.3.1-viral_discovery_mapping_metaspades"
@@ -271,24 +258,45 @@ params["mapping_metaspades_log_file"]="4.3.1-viral_discovery-mapping_metaspades_
 params["mapping_metaspades_origin_input_suffix"]="_1.fastq.gz"
 params["mapping_metaspades_origin_input_folder"]="4.1-viral_discovery_reads"
 ## Blastn viral parameters
-params["blastn_nprocesses"]=1
+params["blastn_nprocesses"]=2
 params["blastn_process_nthreads"]=30
 params["blastn_input_suffix"]=".contigs.fa"
 params["blastn_input_folder"]="4.3-viral_discovery_contigs_metaspades"
 params["blastn_output_folder"]="4.3.2-blastn_contigs_metaspades"
 params["blastn_delete_preexisting_output_folder"]=1
 params["blastn_log_file"]="4.3.2-taxonomic_annotation-blastn_contigs_metaspades_logs.tar.gz"
-params["blastn_task"]="blastn"
+params["blastn_task"]="megablast"
 params["blastn_filter_taxon"]="coronaviridae.txt"
+## Filter contigs parameters
+params["calculate_matrix_nprocesses"]=1
+params["calculate_matrix_process_nthreads"]=1
+params["calculate_matrix_input_suffix"]=".txt"
+params["calculate_matrix_input_folder"]="4.3.2-blastn_contigs_metaspades"
+params["calculate_matrix_output_folder"]="4.3.3-tabulated_result_blastn"
+params["calculate_matrix_delete_preexisting_output_folder"]=1
+params["calculate_matrix_log_file"]="4.3.3-tabulated_result_blastn_logs.tar.gz"
+## Filter contigs parameters
+params["filter_contigs_nprocesses"]=1
+params["filter_contigs_process_nthreads"]=1
+params["filter_contigs_input_suffix"]="_contig_not_matched_blast.tsv"
+params["filter_contigs_input_folder"]="4.3.3-tabulated_result_blastn"
+params["filter_contigs_output_folder"]="5-filtered_contigs_blastn"
+params["filter_contigs_delete_preexisting_output_folder"]=1
+params["filter_contigs_log_file"]="5-contigs_not_matched_blast_logs.tar.gz"
+params["filter_contigs_folder"]="4.3-viral_discovery_contigs_metaspades"
+params["filter_contigs_extension"]=".contigs.fa"
 ## Diamond viral parameters
 params["diamond_nprocesses"]=1
 params["diamond_process_nthreads"]=30
 params["diamond_input_suffix"]=".contigs.fa"
-params["diamond_input_folder"]="4.3-viral_discovery_contigs_metaspades"
-params["diamond_output_folder"]="4.3.3-diamond_contigs_metaspades"
+params["diamond_input_folder"]="5-filtered_contigs_blastn"
+params["diamond_output_folder"]="5.2-filtered_contigs_diamond_sensitive"
 params["diamond_delete_preexisting_output_folder"]=1
-params["diamond_log_file"]="4.3.2-taxonomic_annotation-diamond_contigs_metaspades_logs.tar.gz"
-params["diamond_filter_taxon"]="81077,11118"
+params["diamond_log_file"]="5.2-filtered_contigs_diamond_logs.tar.gz"
+params["diamond_sensitivity"]="--sensitive" # --fast  --sensitive  --ultra-sensitive
+params["diamond_filter_taxon"]="2787823,81077,9606,11118"
+# Homo sapiens = "9606"
+# unclassified_entries = "2787823"
 # artificial_sequences = "81077"
 # coronaviridae = "11118"
 # betacoronavirus = "694002"
@@ -296,18 +304,20 @@ params["diamond_filter_taxon"]="81077,11118"
 # alphainfluenzavirus = "197911"
 # enterovirus = "12059"
 # orthoflavivirus = "3044782"
-# params["blastn_task"]="dc-megablast"
-# params["blastn_output_folder"]="4.3.3-psiblast_contigs_metaspades"
-# params["blastn_delete_preexisting_output_folder"]=1
-# params["blastn_log_file"]="4.3.3-taxonomic_annotation-psiblast_contigs_metaspades_logs.tar.gz"
-## Blastn taxonkit parameters
-# params["blastn_taxonkit_nprocesses"]=4
-# params["blastn_taxonkit_process_nthreads"]=1
-# params["blastn_taxonkit_input_suffix"]=".txt"
-# params["blastn_taxonkit_input_folder"]="4.3.2-blastn_contigs_metaspades"
-# params["blastn_taxonkit_output_folder"]="4.3.3-blastn_taxonkit_metaspades"
-# params["blastn_taxonkit_delete_preexisting_output_folder"]=0
-# params["blastn_taxonkit_log_file"]="4.3.3-viral_discovery-blastn_taxonkit_metaspades_logs.tar.gz"
+## Diamond confusion matrix
+params["diamond_matrix_nprocesses"]=1
+params["diamond_matrix_process_nthreads"]=1
+params["diamond_matrix_input_suffix"]=".txt"
+params["diamond_matrix_input_folder"]="5.2-filtered_contigs_diamond_sensitive"
+params["diamond_matrix_output_folder"]="5.2.1-tabulated_result_diamond_sensitive"
+params["diamond_matrix_delete_preexisting_output_folder"]=1
+params["diamond_matrix_log_file"]="5.2.1-tabulated_result_diamond_logs.tar.gz"
+params["diamond_matrix_metadata_path"]="${params[repository_src]}/../data/dataset_mock/metadata"
+params["diamond_matrix_contigs_folder"]="5-filtered_contigs_blastn"
+params["diamond_matrix_mapping_folder"]="4.3.1-viral_discovery_mapping_metaspades"
+params["diamond_matrix_align_identity"]="80"
+params["diamond_matrix_align_length"]="30"
+params["diamond_matrix_align_evalue"]="0.001"
 
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################

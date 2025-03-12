@@ -25,6 +25,16 @@ echo "Started running job!"
 
 
 ################################################################################
+######################  SET EXECUTABLES FOR THIS PIPELINE  #####################
+################################################################################
+# Array of executable names
+executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
+  "BASESPACE_CLI_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
+  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" "SPADES_EXECUTABLE" \
+  "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
+  "DIAMOND_EXECUTABLE" )
+
+################################################################################
 ################################## INPUT ARGS ##################################
 ################################################################################
 
@@ -35,15 +45,15 @@ dataset=$2
 # Basespace project ID
 basespace_project_id=$3
 
-# Convert the argument string back to a dictionary
+# Create the argument dictionary
 declare -A args_dict
-# Use IFS to split by | and read each key-value pair
-IFS='|' read -ra pairs <<< "$args_str"
-# Loop through the key-value pairs
-for pair in "${pairs[@]}"; do
-  IFS='=' read -r key value <<< "$pair"
-  args_dict[$key]="$value"
-done
+
+# Join array as a quoted string
+# exports_string=$(printf "'%s' " "${executables[@]}")
+
+# Convert the argument string back to a dictionary
+# Pass the name of the dictionary and the key-value pairs to add/update
+set_values_in_dict "args_dict" "$args_str"
 
 # Dataset name
 dataset_name="aesop_${dataset}"
@@ -54,84 +64,12 @@ base_dataset_path=${args_dict["base_dataset_path"]}/dataset_${dataset}
 # Script to execute the tasks
 custom_script="$repository_src/pipeline_scripts/custom_task.sh"
 
-
-################################################################################
-#############################  EXPORT EXECUTABLES  #############################
-################################################################################
-
-# Array of executable names
-executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
-  "BASESPACE_CLI_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
-  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" "SPADES_EXECUTABLE" \
-  "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
-  "DIAMOND_EXECUTABLE" )
-
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
   if [[ -v args_dict["$executable"] ]]; then
     export $executable="${args_dict[$executable]}"
-    # Try different options to get the version
-    # command=${args_dict["$executable"]}
-    # if version=$($command -v 2>/dev/null); then
-    #     echo "$command version: $version"
-    # elif version=$($command -version 2>/dev/null); then
-    #     echo "$command version: $version"
-    # elif version=$($command --version 2>/dev/null); then
-    #     echo "$command version: $version"
-    # else
-    #     echo "Unable to determine version for $command"
-    # fi
-
   fi
 done
-
-################################################################################
-###########################  PIPELINE STEP FUNCTION  ###########################
-################################################################################
-# Global variable to track if the step was executed successfully
-step_executed=0  # Default is 0 (Step was not executed)
-
-# Function to execute each step
-run_pipeline_step() {
-  local step_name=$1
-  local full_command=$2
-  shift 2 # Shift past the first two arguments (step_name, script_path)
-  
-  # Global variable to track if the step was executed successfully
-  step_executed=0  # Default is 0 (Step was not executed)
-  
-  # Check if the step should be executed
-  if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
-    # Create default argument list
-    params=("$dataset_name"
-            "${args_dict[${step_name}_nprocesses]}"
-            "${args_dict[${step_name}_delete_preexisting_output_folder]}"
-            "${dataset_name}_${args_dict[${step_name}_log_file]}"
-            "${args_dict[${step_name}_input_suffix]}"
-            "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
-            "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"
-            "${args_dict[${step_name}_process_nthreads]}"
-            $@) # Add any extra arguments passed to the function
-    
-    echo ""
-    echo "Executing step: $step_name"
-    
-    # Convert full_command into an array while preserving spaces inside quotes
-    set -- $full_command
-    script_runner=$1  # First argument is the script runner
-    shift  # Remove the first argument from list
-    script_command="$*"  # Join remaining words as a single string
-    
-    # Execute command with the preserved extra parameters
-    if [[ -n "$script_command" ]]; then
-      "$script_runner" "$script_command" "${params[@]}"
-    else
-      "$full_command" "${params[@]}"
-    fi
-    
-    step_executed=1  # Step executed successfully
-  fi
-}
 
 ################################################################################
 ##################################  PIPELINE  ##################################
@@ -140,30 +78,29 @@ run_pipeline_step() {
 # cp -vr /opt/storage/shared/aesop/metagenomica/biome/dataset_mock_viral/ ${base_dataset_path}
 
 ## DOWNLOAD 
-run_pipeline_step "download" \
+run_pipeline_step "download" "$dataset_name" "$base_dataset_path" \
   "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
   "${args_dict[download_basespace_access_token]}" \
   "$basespace_project_id"
 
 
 ## BOWTIE2 PHIX
-run_pipeline_step "bowtie2_phix" \
+run_pipeline_step "bowtie2_phix" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_phix_index]}"
 
 
 ## BOWTIE2 ERCC
-run_pipeline_step "bowtie2_ercc" \
+run_pipeline_step "bowtie2_ercc" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_ercc_index]}"
 
 
 ## FASTP
-run_pipeline_step "fastp" \
+run_pipeline_step "fastp" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
   "${args_dict[fastp_minimum_length]}" \
   "${args_dict[fastp_max_n_count]}"
-
 
 if [ $step_executed -eq 1 ]; then  
   # compress the reports
@@ -176,19 +113,19 @@ fi
 
 
 ## HISAT2 HUMAN
-run_pipeline_step "hisat2_human" \
+run_pipeline_step "hisat2_human" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
   "${args_dict[hisat2_human_index]}"
 
 
 ## BOWTIE2 HUMAN
-run_pipeline_step "bowtie2_human" \
+run_pipeline_step "bowtie2_human" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
-run_pipeline_step "kraken2" \
+run_pipeline_step "kraken2" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
   "${args_dict[kraken2_database]}" \
   "${args_dict[kraken2_confidence]}" \
@@ -196,29 +133,23 @@ run_pipeline_step "kraken2" \
 
 
 ##  EXTRACT READS 
-run_pipeline_step "extract_reads" \
+run_pipeline_step "extract_reads" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
   "$base_dataset_path/${args_dict[extract_reads_kraken_output]}" \
   "${args_dict[extract_reads_from_taxons]}"
 
 
-##  ASSEMBLY MEGAHIT
-# run_pipeline_step "assembly_megahit" \
-#   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_megahit.sh"
-
-
 ##  ASSEMBLY METASPADES
-run_pipeline_step "assembly_metaspades" \
+run_pipeline_step "assembly_metaspades" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_metaspades.sh"
 
 
 ##  MAPPING METASPADES
-run_pipeline_step "mapping_metaspades" \
+run_pipeline_step "mapping_metaspades" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
   "${args_dict[mapping_metaspades_origin_input_suffix]}" \
   "$base_dataset_path/${args_dict[mapping_metaspades_origin_input_folder]}"
-
-
+  
 # rm -rvf ${args_dict["final_output_path"]}/$dataset_name
 # mkdir -p ${args_dict["final_output_path"]}/$dataset_name
 # cp -rvf $base_dataset_path/${args_dict["mapping_metaspades_output_folder"]} \
@@ -226,30 +157,44 @@ run_pipeline_step "mapping_metaspades" \
 
 
 ## BLASTN ON CONTIGS
-run_pipeline_step "blastn" \
+run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-blastn.sh" \
   "${args_dict[blastn_database]}" \
   "${args_dict[blastn_task]}"
 
 
+## CALCULATE CONFUSION MATRIX
+run_pipeline_step "calculate_matrix" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/calculate_confusion_matrix.py"
+
+
+## FILTER CONTIGS NOT CLASSIFIED
+run_pipeline_step "filter_contigs" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/filter_fasta_by_accessions.py" \
+  "$base_dataset_path/${args_dict[filter_contigs_folder]}" \
+  "${args_dict[filter_contigs_extension]}"
+
+
 ## DIAMOND ON CONTIGS
-run_pipeline_step "diamond" \
+run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-diamond.sh" \
   "${args_dict[diamond_database]}" \
-  "${args_dict[diamond_filter_taxon]}"
+  "${args_dict[diamond_filter_taxon]}" \
+  "${args_dict[diamond_sensitivity]}"
 
 
-# ## PSIBLAST ON CONTIGS
-# run_pipeline_step "blastn" \
-#   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-psiblast.sh" \
-#   ${args_dict["blastn_viral_index"]}
-
-
-## BLASTN TAXONKIT
-# run_pipeline_step "blastn_taxonkit" \
-#   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-blastn_taxonkit.sh" \
-#   ${args_dict["taxonkit_database"]}
-
+## CALCULATE CONFUSION MATRIX
+run_pipeline_step "diamond_matrix" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/calculate_confusion_matrix_diamond.py" \
+  "${args_dict[taxonomy_database]}" \
+  "$base_dataset_path" \
+  "${args_dict[diamond_matrix_metadata_path]}" \
+  "${args_dict[diamond_matrix_contigs_folder]}" \
+  "${args_dict[diamond_matrix_mapping_folder]}" \
+  "" \
+  "${args_dict[diamond_matrix_align_identity]}" \
+  "${args_dict[diamond_matrix_align_length]}" \
+  "${args_dict[diamond_matrix_align_evalue]}"
 
 ################################################################################
 ################################################################################

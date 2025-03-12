@@ -68,7 +68,7 @@ echo "$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2" \
 
 $spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2 \
   -o $output_dir/$input_id
-  
+
 # rm -rvf $output_dir/$input_id/corrected
 # rm -rvf $output_dir/$input_id/K*
 # rm -rvf $output_dir/$input_id/
