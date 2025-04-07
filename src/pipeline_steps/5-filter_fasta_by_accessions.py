@@ -72,4 +72,18 @@ def main():
 
 
 if __name__ == "__main__":
+  # Get the current process ID
+  pid = os.getpid()
+  input_file = sys.argv[2]
+  input_id = os.path.basename(input_file).rsplit(".", 1)[0]
+  filename = f"{pid}_{input_id}.log"  
+  # Option 1: Assign sys.stdout
+  f = open(filename, "w")
+  sys.stdout = f
+  
+  # RUN MAIN CODE
   main()
+  
+  # Restore and close
+  sys.stdout = sys.__stdout__
+  f.close()

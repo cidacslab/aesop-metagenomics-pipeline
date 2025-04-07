@@ -30,8 +30,9 @@ input_suffix=$3
 input_dir=$4
 output_dir=$5
 nthreads=$6
-minimum_length=$7
-max_n_count=$8
+minimum_quality=$7
+minimum_length=$8
+max_n_count=$9
 
 input_id=$(basename $input_id $input_suffix)
 
@@ -66,18 +67,17 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Executing FASTP using command:"
 echo "$fastp_script -i $input_file1 -I $input_file2" \
-     " -o $output_file1 -O $output_file2 --thread $nthreads" \
-     " -j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html" \
-     " --length_required $minimum_length --average_qual 20" \
-     " --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20" \
-     " --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20" \
-     " --n_base_limit $max_n_count"
+      " -o $output_file1 -O $output_file2 --thread $nthreads" \
+      " -j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html" \
+      " --length_required $minimum_length --average_qual 20" \
+      " --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20" \
+      " --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20" \
+      " --n_base_limit $max_n_count"
 $fastp_script -i $input_file1 -I $input_file2 \
   -o $output_file1 -O $output_file2 --thread $nthreads \
   -j "${input_id}_fastp_report.json" -h "${input_id}_fastp_report.html" \
-  --length_required $minimum_length --average_qual 20 \
-  --cut_front --cut_front_window_size 1 --cut_front_mean_quality 20 \
-  --cut_tail --cut_tail_window_size 1 --cut_tail_mean_quality 20 \
+  --cut_front --cut_tail --cut_window_size 3 --cut_mean_quality $minimum_quality \
+  --length_required $minimum_length --qualified_quality_phred $minimum_quality \
   --n_base_limit $max_n_count
 
 # Finish script profile

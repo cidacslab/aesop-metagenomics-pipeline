@@ -48,9 +48,6 @@ basespace_project_id=$3
 # Create the argument dictionary
 declare -A args_dict
 
-# Join array as a quoted string
-# exports_string=$(printf "'%s' " "${executables[@]}")
-
 # Convert the argument string back to a dictionary
 # Pass the name of the dictionary and the key-value pairs to add/update
 set_values_in_dict "args_dict" "$args_str"
@@ -99,6 +96,7 @@ run_pipeline_step "bowtie2_ercc" "$dataset_name" "$base_dataset_path" \
 ## FASTP
 run_pipeline_step "fastp" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
+  "${args_dict[fastp_minimum_quality]}" \
   "${args_dict[fastp_minimum_length]}" \
   "${args_dict[fastp_max_n_count]}"
 
@@ -136,7 +134,7 @@ run_pipeline_step "kraken2" "$dataset_name" "$base_dataset_path" \
 run_pipeline_step "extract_reads" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
   "$base_dataset_path/${args_dict[extract_reads_kraken_output]}" \
-  "${args_dict[extract_reads_from_taxons]}"
+  "${args_dict[extract_reads_filter_taxons]}"
 
 
 ##  ASSEMBLY METASPADES
@@ -149,52 +147,71 @@ run_pipeline_step "mapping_metaspades" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
   "${args_dict[mapping_metaspades_origin_input_suffix]}" \
   "$base_dataset_path/${args_dict[mapping_metaspades_origin_input_folder]}"
-  
-# rm -rvf ${args_dict["final_output_path"]}/$dataset_name
-# mkdir -p ${args_dict["final_output_path"]}/$dataset_name
-# cp -rvf $base_dataset_path/${args_dict["mapping_metaspades_output_folder"]} \
-#   ${args_dict["final_output_path"]}/$dataset_name
 
 
 ## BLASTN ON CONTIGS
 run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-blastn.sh" \
   "${args_dict[blastn_database]}" \
-  "${args_dict[blastn_task]}"
+  "${args_dict[blastn_task]}" \
+  "${args_dict[taxonomy_database]}/taxids_by_taxons/${args_dict[blastn_filter_taxon]}" 
 
 
 ## CALCULATE CONFUSION MATRIX
-run_pipeline_step "calculate_matrix" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/calculate_confusion_matrix.py"
+run_pipeline_step "tabulate_blastn" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "${args_dict[tabulate_blastn_align_identity]}" \
+  "${args_dict[tabulate_blastn_align_length]}" \
+  "${args_dict[tabulate_blastn_align_evalue]}" \
+  "${args_dict[taxonomy_database]}" \
+  "$base_dataset_path" \
+  "$repository_src/../${args_dict[tabulate_blastn_metadata_path]}" \
+  "${args_dict[tabulate_blastn_count_reads_folder]}" \
+  "${args_dict[tabulate_blastn_count_reads_extension]}" \
+  "${args_dict[tabulate_blastn_mapping_folder]}" \
+  "${args_dict[tabulate_blastn_kraken_folder]}"
 
 
 ## FILTER CONTIGS NOT CLASSIFIED
-run_pipeline_step "filter_contigs" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/filter_fasta_by_accessions.py" \
-  "$base_dataset_path/${args_dict[filter_contigs_folder]}" \
-  "${args_dict[filter_contigs_extension]}"
+run_pipeline_step "filter_contigs_blastn" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/5-filter_fasta_by_accessions.py" \
+  "$base_dataset_path/${args_dict[filter_contigs_blastn_contigs_folder]}" \
+  "${args_dict[filter_contigs_blastn_contigs_extension]}"
 
 
 ## DIAMOND ON CONTIGS
 run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-diamond.sh" \
   "${args_dict[diamond_database]}" \
-  "${args_dict[diamond_filter_taxon]}" \
-  "${args_dict[diamond_sensitivity]}"
+  "${args_dict[diamond_sensitivity]}" \
+  "${args_dict[diamond_filter_taxon]}"
 
 
 ## CALCULATE CONFUSION MATRIX
-run_pipeline_step "diamond_matrix" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/calculate_confusion_matrix_diamond.py" \
+run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "${args_dict[tabulate_diamond_fast_align_identity]}" \
+  "${args_dict[tabulate_diamond_fast_align_length]}" \
+  "${args_dict[tabulate_diamond_fast_align_evalue]}" \
   "${args_dict[taxonomy_database]}" \
   "$base_dataset_path" \
-  "${args_dict[diamond_matrix_metadata_path]}" \
-  "${args_dict[diamond_matrix_contigs_folder]}" \
-  "${args_dict[diamond_matrix_mapping_folder]}" \
-  "" \
-  "${args_dict[diamond_matrix_align_identity]}" \
-  "${args_dict[diamond_matrix_align_length]}" \
-  "${args_dict[diamond_matrix_align_evalue]}"
+  "$repository_src/../${args_dict[tabulate_diamond_fast_metadata_path]}" \
+  "${args_dict[tabulate_diamond_fast_count_reads_folder]}" \
+  "${args_dict[tabulate_diamond_fast_count_reads_extension]}"
+  
+
+## CALCULATE CONFUSION MATRIX
+run_pipeline_step "tabulate_diamond_fast_sensitive" "$dataset_name" "$base_dataset_path" \
+  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "${args_dict[tabulate_diamond_fast_sensitive_align_identity]}" \
+  "${args_dict[tabulate_diamond_fast_sensitive_align_length]}" \
+  "${args_dict[tabulate_diamond_fast_sensitive_align_evalue]}" \
+  "${args_dict[taxonomy_database]}" \
+  "$base_dataset_path" \
+  "$repository_src/../${args_dict[tabulate_diamond_fast_sensitive_metadata_path]}" \
+  "${args_dict[tabulate_diamond_fast_sensitive_count_reads_folder]}" \
+  "${args_dict[tabulate_diamond_fast_sensitive_count_reads_extension]}"
+
 
 ################################################################################
 ################################################################################

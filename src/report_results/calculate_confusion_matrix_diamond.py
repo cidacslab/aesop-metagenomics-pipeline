@@ -28,9 +28,10 @@ def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, gro
   output_content = "read_accession_id,count\n"
   
   for accession, taxid in accession_taxids.items():
-    abundance = accession_abundance[accession].count
-    ground_truth_tree[taxid].set_abundance(abundance)
-    output_content += f"{accession},{abundance}\n"
+    if accession in accession_abundance:
+      abundance = accession_abundance[accession].count
+      ground_truth_tree[taxid].set_abundance(abundance)
+      output_content += f"{accession},{abundance}\n"
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
@@ -158,7 +159,8 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mappe
   return (true_positive, true_negative, false_positive, false_negative)
 
 
-def get_output_for_confusion_matrix(node, output_taxids, ground_truth_tree, true_positive_tree, classified_tree):
+def get_output_for_confusion_matrix(node, output_taxids,  sample_total_reads,
+                                    ground_truth_tree, true_positive_tree, classified_tree):
   output_content = ""  
   if node.taxid not in output_taxids:
     total_reads = node.acumulated_abundance
@@ -187,7 +189,8 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_trut
     
     domain_node = node.get_parent_by_level(TaxonomyParser.Level.D)
     if domain_node.name.lower() != "viruses":
-      output_content += get_output_for_confusion_matrix(domain_node, output_taxids, ground_truth_tree, true_positive_tree, classified_tree)    
+      output_content += get_output_for_confusion_matrix(domain_node, output_taxids,
+        sample_total_reads, ground_truth_tree, true_positive_tree, classified_tree)    
       continue
     
     for level in range(9, 1, -1):
@@ -195,7 +198,8 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads, ground_trut
       level_node = node.get_parent_by_level(level_enum)
       if level_node is None:
         continue
-      output_content += get_output_for_confusion_matrix(level_node, output_taxids, ground_truth_tree, true_positive_tree, classified_tree)    
+      output_content += get_output_for_confusion_matrix(level_node, output_taxids,
+        sample_total_reads, ground_truth_tree, true_positive_tree, classified_tree)    
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
@@ -208,18 +212,18 @@ def main():
   input_dir = sys.argv[4]
   output_dir = sys.argv[5]
   # nthreads=$6 
-  taxonomy_database = sys.argv[7]
-  base_path = sys.argv[8]
-  metadata_path = sys.argv[9]
-  contigs_folder = sys.argv[10]
-  mapping_folder = sys.argv[11]
-  kraken_folder = sys.argv[12]
-  align_identity = float(sys.argv[13])
-  align_length = float(sys.argv[14])
-  align_evalue = float(sys.argv[15])
+  align_identity = float(sys.argv[7])
+  align_length = float(sys.argv[8])
+  align_evalue = float(sys.argv[9])
+  taxonomy_database = sys.argv[10]
+  base_path = sys.argv[11]
+  metadata_path = sys.argv[12]
+  fastq_folder = sys.argv[13]
+  mapping_folder = sys.argv[14]
+  kraken_folder = sys.argv[15] if len(sys.argv) > 15 else ""
   print(f"Parameters: {sys.argv}")
   
-  input_fastq_path = os.path.join(base_path, contigs_folder)
+  input_fastq_path = os.path.join(base_path, fastq_folder)
   input_mapping_path = os.path.join(base_path, mapping_folder)
   input_kraken_path = os.path.join(base_path, kraken_folder)
   input_blast_path = input_dir
@@ -262,7 +266,8 @@ def main():
   
   # set counts on the ground_truth_tree
   output_ground_truth_file = os.path.join(output_path, filename + "_ground_truth.csv")
-  set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_ground_truth_file)
+  set_ground_truth_tree_real_counts(
+    accession_abundance, accession_taxids, ground_truth_tree, output_ground_truth_file)
   
   # double the abundance value to account for each mate from the sequencing
   for k,node in ground_truth_tree.items():
@@ -303,7 +308,8 @@ def main():
     
     # Calculate confusion matrix for kraken
     output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
-    calculate_confusion_matrix(accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, classified_tree, output_file)
+    calculate_confusion_matrix(
+      accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, classified_tree, output_file)
   
   #######################################################################################################
   # SET BLAST CONFUSION MATRIX
@@ -315,16 +321,21 @@ def main():
   
   # get blast results for the contigs and the reads mapped to each contig
   blast_file = os.path.join(input_blast_path, filename + ".txt")
-  contig_to_blast_result = BlastResultParser.get_best_result(blast_file, align_identity, align_evalue, align_length)
+  contig_to_blast_result = BlastResultParser.get_best_result(
+    blast_file, align_identity, align_evalue, align_length)
+  
   mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
   contig_reads = BlastResultParser.count_contig_reads(mapping_file)
   
   # Set blast classified tree and the true positive
   output_file = os.path.join(output_path, filename + "_contig_not_matched_blast.tsv")
-  load_blast_results(contig_reads, contig_to_blast_result, accession_taxids, classified_tree, true_positive_tree, output_file)
+  load_blast_results(
+    contig_reads, contig_to_blast_result, accession_taxids, classified_tree, true_positive_tree, output_file)
+  
   # Calculate confusion matrix for blast
   output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
-  calculate_confusion_matrix(accession_taxids, total_abundance, ground_truth_tree, true_positive_tree, classified_tree, output_file)
+  calculate_confusion_matrix(
+    accession_taxids, total_abundance,ground_truth_tree, true_positive_tree, classified_tree, output_file)
   
   print("Finished!")
 
