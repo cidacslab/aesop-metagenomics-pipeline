@@ -84,49 +84,63 @@ def build_sample(
   viral_total: float,
   rng: np.random.Generator | None = None,
 ) -> pd.DataFrame:
-  """Return DataFrame Organism,TaxID,Percentage for one sample."""
+  """
+  Build a synthetic sample composition DataFrame.
+  
+  Parameters:
+    core_taxa (dict[str, str]): Mapping of core bacterial species to their accession IDs.
+    cst_dominance (dict[str, float]): Dominance percentages of certain core species.
+    tail_taxa (dict[str, str]): Mapping of tail bacterial species to their accession IDs.
+    virus_taxa (dict[str, str]): Mapping of viral species to their accession IDs.
+    human_pct (float): Percentage of the sample that is human.
+    pathogens (dict[str, float]): Pathogen species with their respective percentages.
+    viral_total (float): Total percentage allocated to viruses.
+    rng (np.random.Generator | None): Random number generator instance.
+  
+  Returns:
+    pd.DataFrame: DataFrame containing Organism accession and Percentage columns for the sample.
+  """
   rng = rng or np.random.default_rng()
+  
+  # Calculate remaining percentage for bacteria after accounting for human, viral, and pathogen components
   patho_total = sum(pathogens.values())
   remaining = 100 - human_pct - viral_total - patho_total
-  bacteria_total = remaining * 0.9                  # core bacteria is 90% of bacteria
-  tail_bacteria_total = remaining - bacteria_total  # tail is 10 % of bacteria
-  # print(f"{human_pct},{patho_total},{viral_total},{bacteria_total},{tail_bacteria_total}")
-
+  bacteria_total = remaining * 0.9  # Core bacteria is 90% of bacteria
+  tail_bacteria_total = remaining - bacteria_total  # Tail is 10% of bacteria
+  
   rows: list[tuple[str, int, float]] = [("Homo sapiens", "AP023461.1", human_pct)]
-
-  # dominant species fixed
+  
+  # Add dominant species with fixed percentages
   used = 0
   for sp, frac in cst_dominance.items():
     rows.append((sp, core_taxa[sp], bacteria_total * frac))
     used += frac
   residual = bacteria_total * (1 - used)
-
-  # choose additional core species (25 total)
+  
+  # Select additional core species to reach a total of 25
   core_pool = [sp for sp in core_taxa if sp not in cst_dominance]
   extra_sel = rng.choice(core_pool, 25 - len(cst_dominance), replace=False)
-  w = rng.dirichlet(np.ones(len(extra_sel)))  
-  # print(w)
+  w = rng.dirichlet(np.ones(len(extra_sel)))
   rows += [(sp, core_taxa[sp], residual * w_i) for sp, w_i in zip(extra_sel, w)]
-
-  # choose 50 tail species (10 % of bacteria)
+  
+  # Select 50 tail species (10% of bacteria)
   tail_sel = rng.choice(list(tail_taxa), 50, replace=False)
   tail_perc = rng.dirichlet(np.ones(50))
-  # print(tail_perc)
   rows += [(sp, tail_taxa[sp], tail_bacteria_total * w_i) for sp, w_i in zip(tail_sel, tail_perc)]
-
-  # background virome (2-5 genomes)
-  n_viruses = rng.integers(2, 6) 
+  
+  # Select background virome (2-5 genomes)
+  n_viruses = rng.integers(2, 6)
   viral_sel = rng.choice(list(virus_taxa), n_viruses, replace=False)
   viral_perc = rng.dirichlet(np.ones(n_viruses))
-  # print(viral_perc)
   rows += [(sp, virus_taxa[sp], viral_total * w_i) for sp, w_i in zip(viral_sel, viral_perc)]
-
-  # pathogen spike(s)
+  
+  # Add pathogen spikes
   rows += [(sp, PATHOGENS_ACC[sp], pct) for sp, pct in pathogens.items()]
-
-  # renormalise float drift
-  tot=sum(r[2] for r in rows)
-  rows=[(acc, p/tot) for o, acc, p in rows]
+  
+  # Renormalize to account for float drift
+  tot = sum(r[2] for r in rows)
+  rows = [(acc, p / tot) for o, acc, p in rows]
+  
   return pd.DataFrame(rows)
 
 
@@ -140,37 +154,27 @@ def generate_all(
 ):
   out_dir.mkdir(exist_ok=True)
   rng = np.random.default_rng(seed)
-
-  scen = "CoV"
-  cst_key = "CST1"
-  cst_dominance = CST_TEMPLATE[cst_key]
-  pdict = BASELINE_SCENARIOS[scen]
-
+  
   # load reference dictionaries
   core_taxa, tail_taxa, virus_taxa = load_reference_lists(list_dir)
-
-  df = build_sample(core_taxa, cst_dominance, tail_taxa, virus_taxa,
-                    rng.uniform(75, 85), pdict, 0.9, rng)
-  df.to_csv(out_dir / f"{cst_key}_{scen}_1.tsv", sep="\t",
-            index=False, header=False, float_format="%.18f")
-
-
-  # # --- 1 baseline scenarios with 2 reps × 3 CSTs
-  # for cst_key, cst_dominance in CST_TEMPLATE.items():
-  #   for scen, pdict in BASELINE_SCENARIOS.items():
-  #     for rep in (1, 2):
-  #       df = build_sample(
-  #         core_taxa,
-  #         cst_dominance,
-  #         tail_taxa,
-  #         virus_taxa,
-  #         human_pct=rng.uniform(75, 85),
-  #         pathogens=pdict,
-  #         rng=rng,
-  #       )
-  #       df.to_csv(out_dir / f"{cst_key}_{scen}_{rep}.csv",
-  #                 index=False, float_format="%.18f")
-
+  
+  # --- 1 baseline scenarios with 2 reps × 3 CSTs
+  for cst_key, cst_dominance in CST_TEMPLATE.items():
+    for scen, pdict in BASELINE_SCENARIOS.items():
+      for rep in (1, 2):
+        df = build_sample(
+          core_taxa,
+          cst_dominance,
+          tail_taxa,
+          virus_taxa,
+          human_pct=rng.uniform(75, 85),
+          pathogens=pdict,
+          viral_total=1,
+          rng=rng,
+        )
+        df.to_csv(out_dir / f"{cst_key}_{scen}_{rep}.tsv", sep="\t",
+                  index=False, header=False, float_format="%.18f")
+  
   # # --- 2 SARS-CoV-2 mutants (CST1)
   # for i in range(1, 6):
   #     df = build_sample(
@@ -183,7 +187,7 @@ def generate_all(
   #         rng=rng,
   #     )
   #     df.to_csv(out_dir / f"novelCoV_{i}.csv", index=False)
-
+  
   # # --- 3 Low-abundance RSV (CST2)
   # for i in range(1, 6):
   #     df = build_sample(
@@ -196,7 +200,7 @@ def generate_all(
   #         rng=rng,
   #     )
   #     df.to_csv(out_dir / f"RSV_low_{i}.csv", index=False)
-
+  
   print(f"✓  30 composition CSVs written to {out_dir.resolve()}")
 
 
@@ -204,24 +208,31 @@ def generate_all(
 # 5.  entry-point
 # ----------------------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Generate synthetic CST metagenomes.")
-    parser.add_argument(
-        "--lists",
-        default="data/viral_discovery/mock_generation",
-        type=pathlib.Path,
-        help="Folder containing core_bacteria.csv, tail_bacteria.csv, core_viruses.csv",
-    )
-    parser.add_argument(
-        "--out",
-        default="data/viral_discovery/mock_compositions",
-        type=pathlib.Path,
-        help="Output folder for composition CSVs",
-    )
-    parser.add_argument("--seed", default=20250428, type=int, help="Random seed")
-    args = parser.parse_args()
-
-    generate_all(args.lists, args.out, args.seed)
+  """Entry-point for generating synthetic CST metagenomes.
+  
+  This script uses random number generators to generate a set of synthetic
+  metagenomes with varying human, viral, and bacterial components. The
+  resulting compositions are written to TSV files in the specified output
+  folder.
+  """
+  parser = argparse.ArgumentParser(description=__doc__)
+  parser.add_argument(
+    "--lists",
+    default="data/viral_discovery/mock_generation",
+    type=pathlib.Path,
+    help="Folder containing core_bacteria.csv, tail_bacteria.csv, core_viruses.csv",
+  )
+  parser.add_argument(
+    "--out",
+    default="data/viral_discovery/compositions",
+    type=pathlib.Path,
+    help="Output folder for composition CSVs",
+  )
+  parser.add_argument("--seed", default=20250428, type=int, help="Random seed")
+  args = parser.parse_args()
+  
+  generate_all(args.lists, args.out, args.seed)
 
 
 if __name__ == "__main__":
-    main()
+  main()

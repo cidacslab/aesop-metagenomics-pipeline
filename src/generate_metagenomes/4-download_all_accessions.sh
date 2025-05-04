@@ -1,15 +1,13 @@
 #!/bin/bash
 
-cd data/viral_discovery/
+path="/home/pedro/aesop/github/aesop-metagenomics-pipeline/data/viral_discovery"
+mkdir -p $path/genomes
 
-mkdir -p mock_generation
-mkdir -p mock_genomes
+# List all accessions
+# awk -F',' 'FNR>1 {print $1}' $path/mock_generation/*fixed_completed.csv | sort -u > $path/all_accessions.txt
 
-awk -F',' 'FNR>1 {print $1}' mock_generation/*.csv | sort -u > all_accessions.txt
-
-
-infile="$1"         # text file with one accession per line
+# iterate over each accession in the file and download one by one 
 while IFS= read -r acc && [[ -n $acc ]]; do
     printf 'Downloading %s …\n' "$acc" >&2
-    efetch -db nuccore -id "$acc" -format fasta > "mock_genomes/${acc}.fasta"
-done < all_accessions.txt
+    efetch -db nuccore -id "$acc" -format fasta > "${path}/genomes/${acc}.fasta"
+done < $path/all_accessions.txt
