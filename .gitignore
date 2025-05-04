@@ -1,6 +1,13 @@
 # Python files
-*.pyc
+complete_viruses*
+data/dataset_mock
+data/taxdump
+results/
+src/databases_setup
+src/utils
+venv
 __pycache__/
+*.pyc
 *.pyo
 *.pyd
 
@@ -18,6 +25,4 @@ __pycache__/
 
 # Miscellaneous
 .DS_Store
-# data/**
-# results/**
 data/basespace_access_token.txt
