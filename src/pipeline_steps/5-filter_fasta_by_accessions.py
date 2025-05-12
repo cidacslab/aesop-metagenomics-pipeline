@@ -1,4 +1,5 @@
 import sys, os, csv
+from datetime import datetime, timezone
 
 
 def filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, buffer_size=100000):
@@ -74,16 +75,25 @@ def main():
 if __name__ == "__main__":
   # Get the current process ID
   pid = os.getpid()
+  input_count = sys.argv[1]
   input_file = sys.argv[2]
   input_id = os.path.basename(input_file).rsplit(".", 1)[0]
-  filename = f"{pid}_{input_id}.log"  
-  # Option 1: Assign sys.stdout
-  f = open(filename, "w")
+  timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
+  
+  # # Replace stdout with an unbuffered version
+  # sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
+  # Print start message
+  print(f"B_PID: {pid} [{timestamp}]: Started task Input: {input_file} Count: {input_count}", flush=True)
+  
+  # Open the log file in line-buffered mode and assign sys.stdout
+  f = open(f"{pid}_{input_id}.log", "w", buffering=1)  # buffering=1 => line buffering
   sys.stdout = f
   
-  # RUN MAIN CODE
-  main()
-  
-  # Restore and close
-  sys.stdout = sys.__stdout__
-  f.close()
+  try:
+    # RUN MAIN CODE
+    main()
+  finally:
+    # Restore original stdout and close the log file
+    sys.stdout = sys.__stdout__
+    f.close()
+    

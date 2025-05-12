@@ -34,7 +34,7 @@ def count_contig_reads(mapping_file):
   return contig_to_reads
 
 
-def get_best_result(input_file, min_identity=95, max_evalue=0.00001, min_length=200):
+def get_best_result(input_file, min_coverage=90, min_identity=97, max_evalue=0.00001, min_length=200):
   # Dictionary to store each query ID and its corresponding row
   contig_to_blast_result = {}
   # Open the BLAST output file and use csv.DictReader to read it
@@ -42,8 +42,8 @@ def get_best_result(input_file, min_identity=95, max_evalue=0.00001, min_length=
     filtered_lines = (line for line in infile if not line.startswith('#'))
     # Use DictReader to automatically map columns to fieldnames
     reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=[
-      'qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 
-      'gaps', 'qstart', 'qend', 'sstart', 'send', 'evalue', 
+      'qseqid', 'sseqid', 'pident', 'length', 'qcovs', 'qcovhsp', 'mismatch',
+      'gapopen', 'gaps', 'qstart', 'qend', 'sstart', 'send', 'evalue', 
       'bitscore', 'staxids', 'salltitles'])
     
     for row in reader:
@@ -52,8 +52,10 @@ def get_best_result(input_file, min_identity=95, max_evalue=0.00001, min_length=
       identity = float(row['pident'])
       evalue = float(row['evalue'])
       length = float(row['length'])
+      coverage = float(row['qcovs'])
       if contig_id not in contig_to_blast_result:
-        if not (identity < min_identity or evalue > max_evalue or length < min_length):
+        if ((coverage >= min_coverage and identity >= min_identity and evalue <= max_evalue and length >= min_length) 
+            or (coverage >= 90 and identity >= 99 and evalue <= 0.00001 and length >= 100)):
           contig_to_blast_result[contig_id] = row
         else:
           # print(f"Query didn't meet the filter criteria: {row}")

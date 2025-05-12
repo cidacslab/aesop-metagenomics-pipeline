@@ -1,4 +1,5 @@
 import os, sys, shutil, csv, copy
+from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
 
 import utilities.taxonomy_tree_parser as TaxonomyParser
@@ -54,7 +55,7 @@ def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, gro
       ground_truth_tree[taxid].set_abundance(abundance)
       output_content += f"{accession},{abundance}\n"
     else:
-      print(f"Accession {accession} with unknown tax id.")
+      print(f"Accession {accession} not present in ground truth.")
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
@@ -235,16 +236,17 @@ def main():
   input_dir = sys.argv[4]
   output_dir = sys.argv[5]
   # nthreads=$6 
-  align_identity = float(sys.argv[7])
-  align_length = float(sys.argv[8])
-  align_evalue = float(sys.argv[9])
-  taxonomy_database = sys.argv[10]
-  base_path = sys.argv[11]
-  metadata_path = sys.argv[12]
-  count_reads_folder = sys.argv[13]
-  count_reads_extension = sys.argv[14]
-  mapping_folder = sys.argv[15] if len(sys.argv) > 15 else ""
-  kraken_folder = sys.argv[16] if len(sys.argv) > 16 else ""
+  align_coverage = float(sys.argv[7])
+  align_identity = float(sys.argv[8])
+  align_length = float(sys.argv[9])
+  align_evalue = float(sys.argv[10])
+  taxonomy_database = sys.argv[11]
+  base_path = sys.argv[12]
+  metadata_path = sys.argv[13]
+  count_reads_folder = sys.argv[14]
+  count_reads_extension = sys.argv[15]
+  mapping_folder = sys.argv[16] if len(sys.argv) > 16 else ""
+  kraken_folder = sys.argv[17] if len(sys.argv) > 17 else ""
   print(f"Parameters: {sys.argv}")
   
   input_count_reads_path = os.path.join(base_path, count_reads_folder)
@@ -260,7 +262,7 @@ def main():
   # Load complete taxonomy tree
   names_file = os.path.join(taxonomy_database, "names.dmp")
   nodes_file = os.path.join(taxonomy_database, "nodes.dmp")
-  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)  
+  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
   TaxonomyParser.clear_abundance_from_tree(taxonomy_tree)
   # create a copy of the taxonomy tree for the confusion matrix calculation
   ground_truth_tree = copy.deepcopy(taxonomy_tree)
@@ -282,8 +284,8 @@ def main():
   # include the number of reads of each accession as the abundance of each taxa species
   count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
   accession_abundance,contig_reads = {},{}
-  if count_reads_extension.endswith("_1.fastq.gz"):
-    accession_abundance = FastqReadInfo.count_reads_by_sequence_id(count_reads_file)    
+  if count_reads_extension.endswith(".fastq.gz"):
+    accession_abundance = FastqReadInfo.count_reads_by_sequence_id(count_reads_file)
     # double the abundance value to account for each mate from the sequencing
     for acc in accession_abundance:
       accession_abundance[acc].count *= 2
@@ -296,8 +298,9 @@ def main():
   total_abundance = sum([accession_abundance[acc].count for acc in accession_abundance])
   
   # collect the expected taxid count from accessions of the mock
-  meta_filename = filename.rsplit("_", 1)[0]
-  metadata_file = os.path.join(metadata_path, meta_filename + ".txt")
+  metadata_file = metadata_path
+  # meta_filename = filename.rsplit("_", 1)[0]
+  # metadata_file = os.path.join(metadata_path, meta_filename + ".txt")
   accession_taxids = load_accession_metadata(metadata_file)
   
   # set counts on the ground_truth_tree
@@ -354,7 +357,7 @@ def main():
   # get blast results for the contigs and the reads mapped to each contig
   blast_file = os.path.join(input_blast_path, filename + ".txt")
   contig_to_blast_result = BlastResultParser.get_best_result(
-    blast_file, align_identity, align_evalue, align_length)
+    blast_file, align_coverage, align_identity, align_evalue, align_length)
   
   if len(contig_reads) == 0:
     mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
@@ -377,16 +380,24 @@ def main():
 if __name__ == '__main__':
   # Get the current process ID
   pid = os.getpid()
+  input_count = sys.argv[1]
   input_file = sys.argv[2]
   input_id = os.path.basename(input_file).rsplit(".", 1)[0]
-  filename = f"{pid}_{input_id}.log"  
-  # Option 1: Assign sys.stdout
-  f = open(filename, "w")
+  timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
+  
+  # # Replace stdout with an unbuffered version
+  # sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
+  # Print start message
+  print(f"B_PID: {pid} [{timestamp}]: Started task Input: {input_file} Count: {input_count}", flush=True)
+  
+  # Open the log file in line-buffered mode and assign sys.stdout
+  f = open(f"{pid}_{input_id}.log", "w", buffering=1)  # buffering=1 => line buffering
   sys.stdout = f
   
-  # RUN MAIN CODE
-  main()
-  
-  # Restore and close
-  sys.stdout = sys.__stdout__
-  f.close()
+  try:
+    # RUN MAIN CODE
+    main()
+  finally:
+    # Restore original stdout and close the log file
+    sys.stdout = sys.__stdout__
+    f.close()

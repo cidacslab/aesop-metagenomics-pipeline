@@ -28,10 +28,9 @@ echo "Started running job!"
 ######################  SET EXECUTABLES FOR THIS PIPELINE  #####################
 ################################################################################
 # Array of executable names
-executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" \
-  "BASESPACE_CLI_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
-  "FASTP_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" "SPADES_EXECUTABLE" \
-  "KRAKEN2_EXECUTABLE" "BRACKEN_EXECUTABLE" "BLASTN_EXECUTABLE" \
+executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
+  "FASTP_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
+  "SPADES_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "BLASTN_EXECUTABLE" \
   "DIAMOND_EXECUTABLE" )
 
 ################################################################################
@@ -71,15 +70,6 @@ done
 ################################################################################
 ##################################  PIPELINE  ##################################
 ################################################################################
-# rm -r ${base_dataset_path}
-# cp -vr /opt/storage/shared/aesop/metagenomica/biome/dataset_mock_viral/ ${base_dataset_path}
-
-## DOWNLOAD 
-run_pipeline_step "download" "$dataset_name" "$base_dataset_path" \
-  "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
-  "${args_dict[download_basespace_access_token]}" \
-  "$basespace_project_id"
-
 
 ## BOWTIE2 PHIX
 run_pipeline_step "bowtie2_phix" "$dataset_name" "$base_dataset_path" \
@@ -128,7 +118,7 @@ run_pipeline_step "kraken2" "$dataset_name" "$base_dataset_path" \
   "${args_dict[kraken2_database]}" \
   "${args_dict[kraken2_confidence]}" \
   "${args_dict[kraken2_keep_output]}"
-
+# k2 clean --stop-daemon
 
 ##  EXTRACT READS 
 run_pipeline_step "extract_reads" "$dataset_name" "$base_dataset_path" \
@@ -159,7 +149,8 @@ run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_blastn" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "${args_dict[tabulate_blastn_align_coverage]}" \
   "${args_dict[tabulate_blastn_align_identity]}" \
   "${args_dict[tabulate_blastn_align_length]}" \
   "${args_dict[tabulate_blastn_align_evalue]}" \
@@ -174,7 +165,7 @@ run_pipeline_step "tabulate_blastn" "$dataset_name" "$base_dataset_path" \
 
 ## FILTER CONTIGS NOT CLASSIFIED
 run_pipeline_step "filter_contigs_blastn" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/5-filter_fasta_by_accessions.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-filter_fasta_by_accessions.py" \
   "$base_dataset_path/${args_dict[filter_contigs_blastn_contigs_folder]}" \
   "${args_dict[filter_contigs_blastn_contigs_extension]}"
 
@@ -189,7 +180,7 @@ run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
   "${args_dict[tabulate_diamond_fast_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_align_length]}" \
   "${args_dict[tabulate_diamond_fast_align_evalue]}" \
@@ -202,7 +193,7 @@ run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast_sensitive" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python -u $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_length]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_evalue]}" \

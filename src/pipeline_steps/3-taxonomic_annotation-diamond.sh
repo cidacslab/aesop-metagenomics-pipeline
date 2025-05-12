@@ -61,11 +61,11 @@ echo "Started task Input: $2 Count: $1"
 echo "Running diamond command: "
 echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
     "--max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file " \
-    "--outfmt 6 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
+    "--outfmt 6 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
 
 $diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
     --max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file \
-    --outfmt 6 qseqid sseqid pident length mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
+    --outfmt 6 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
 
 
 # Finish script profile

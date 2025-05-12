@@ -1,0 +1,297 @@
+{
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // SET THE EXECUTION COMMAND IN SINGULARITY DOCKER OR LOCAL
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // Template: singularity exec [SINGULARITY_OPTIONS] <sif> [COMMAND_OPTIONS]
+  // command="singularity exec /opt/images/cidacs/biome.sif"
+  // command="singularity exec /opt/images/cidacs/cidacs-jupyter-datascience-v1-r2.sif"
+  // Local execution
+  "command": "",
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE DATASETS TO EXECUTE THE PIPELINE
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // List all datasets and their basepace project ID
+  // Format MUST BE: [DATASET_NAME]:[BASEPACE_ID] or [DATASET_NAME]
+  // If dataset is not from basespace you dont need to include the ID
+  // If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
+  // You can execute mutiple datasets at once, commented lines will not be executed  
+  "sample_datasets": [
+    // "mock150",
+    // "cst1",
+    "sim"
+  ],
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE PIPELINE STEPS TO BE EXECUTED
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE EXECUTION STEPS
+  // "execute_bowtie2_phix": 1,
+  // "execute_bowtie2_ercc": 1,
+  // "execute_fastp": 1,
+  // "execute_hisat2_human": 1,
+  // "execute_bowtie2_human": 1,
+  // "execute_kraken2": 1,
+  // "execute_extract_reads": 1,
+  // "execute_assembly_metaspades": 1,
+  // "execute_mapping_metaspades": 1,
+  // "execute_blastn": 1,
+  "execute_tabulate_blastn": 1,
+  // "execute_filter_contigs_blastn": 1,
+  // "execute_diamond": 1,
+  // "execute_tabulate_diamond_fast": 1,
+  // "execute_tabulate_diamond_fast_sensitive": 1,
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE DATABASE PATHS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "repository_src": "/home/pedro/aesop/github/aesop-metagenomics-pipeline/src",
+  "base_dataset_path": "/home/pedro/aesop/pipeline/results/viral_discovery_v1",  
+  "bowtie2_phix_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index",
+  "bowtie2_ercc_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index",
+  "hisat2_human_index": "/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2",
+  "bowtie2_human_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full",
+  "kraken2_database": "/home/pedro/pablo/aesop/database_files/custom_kraken_db/k2db_20250207_without_alphainfluenza",
+  "taxonomy_database": "/home/pedro/aesop/pipeline/databases/taxdump",
+  "blastn_database": "/home/pedro/aesop/pipeline/databases/blastn_db/nt_viruses/nt_viruses",
+  "diamond_database": "/home/pedro/aesop/pipeline/databases/blastp_db/ncbi_nr_20250205/nr.dmnd",
+  // k2db_20250207_without_betacoronavirus | k2db_20250207_without_alphainfluenza | k2db_20250207_without_enterovirus
+  // no_betacov_database | no_alphaflu_database | no_enterov_database
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE EXECUTABLES PATHS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "BASESPACE_CLI_EXECUTABLE": "bs",
+  "FASTP_EXECUTABLE": "fastp",
+  "HISAT2_EXECUTABLE": "hisat2",
+  "BOWTIE2_EXECUTABLE": "bowtie2",
+  "BOWTIE2_BUILD_EXECUTABLE": "bowtie2-build",
+  "SAMTOOLS_EXECUTABLE": "samtools",
+  "KRAKEN2_EXECUTABLE": "kraken2",
+  "EXTRACT_READS_EXECUTABLE": "extract_kraken_reads.py",
+  "SPADES_EXECUTABLE": "spades.py",
+  "BLASTN_EXECUTABLE": "blastn",
+  "DIAMOND_EXECUTABLE": "diamond",
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE PIPELINE STEPS PARAMETERS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "bowtie2_phix": {
+    "nprocesses": 4,
+    "process_nthreads": 15,
+    "input_suffix": "_R1.fastq.gz",
+    "input_folder": "0-raw_samples",
+    "output_folder": "1.1-bowtie_phix_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "1.1-sample_decontamination-bowtie2_remove_phix_reads_logs.tar.gz"
+  },
+  "bowtie2_ercc": {
+    "nprocesses": 4,
+    "process_nthreads": 15,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "1.1-bowtie_phix_output",
+    "output_folder": "1.2-bowtie_ercc_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "1.2-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz"
+  },
+  "fastp": {
+    "nprocesses": 4,
+    "process_nthreads": 8,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "1.2-bowtie_ercc_output",
+    "output_folder": "1.3-fastp_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "1.3-quality_control-fastp_filters_logs.tar.gz",
+    "minimum_quality": 15,
+    "minimum_length": 30,
+    "max_n_count": 2
+  },
+  "hisat2_human": {
+    "nprocesses": 4,
+    "process_nthreads": 15,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "1.3-fastp_output",
+    "output_folder": "2.1-hisat_human_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "2.1-sample_decontamination-hisat2_remove_human_reads_logs.tar.gz"
+  },
+  "bowtie2_human": {
+    "nprocesses": 4,
+    "process_nthreads": 15,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "2.1-hisat_human_output",
+    "output_folder": "2.2-bowtie_human_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "2.2-sample_decontamination-bowtie2_remove_human_reads_logs.tar.gz"
+  },
+  "kraken2": {
+    "nprocesses": 1,
+    "process_nthreads": 4,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "2.2-bowtie_human_output",
+    "output_folder": "no_enterov_database/3-taxonomic_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "3-taxonomic_annotation-kraken_logs.tar.gz",
+    "confidence": 0.1,
+    "keep_output": 1
+  },
+  "extract_reads": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "2.2-bowtie_human_output",
+    "output_folder": "no_enterov_database/4.1-viral_discovery_reads",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "4.1-viral_discovery-extract_reads_logs.tar.gz",
+    "kraken_output": "no_enterov_database/3-taxonomic_output",
+    "filter_taxons": "0,10239"
+  },
+  "assembly_metaspades": {
+    "nprocesses": 3,
+    "process_nthreads": 20,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "no_enterov_database/4.1-viral_discovery_reads",
+    "output_folder": "no_enterov_database/4.3-viral_discovery_contigs_metaspades",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
+  },
+  "mapping_metaspades": {
+    "nprocesses": 3,
+    "process_nthreads": 10,
+    "input_suffix": ".contigs.fa",
+    "input_folder": "no_enterov_database/4.3-viral_discovery_contigs_metaspades",
+    "output_folder": "no_enterov_database/4.3.1-viral_discovery_mapping_metaspades",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "4.3.1-viral_discovery-mapping_metaspades_logs.tar.gz",
+    "origin_input_suffix": "_1.fastq.gz",
+    "origin_input_folder": "no_enterov_database/4.1-viral_discovery_reads"
+  },
+  "blastn": {
+    "nprocesses": 3,
+    "process_nthreads": 12,
+    "input_suffix": ".contigs.fa",
+    "input_folder": "no_enterov_database/4.3-viral_discovery_contigs_metaspades",
+    "output_folder": "no_enterov_database/4.3.2-blastn_contigs_metaspades",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "4.3.2-taxonomic_annotation-blastn_contigs_metaspades_enterov_logs.tar.gz",
+    "task": "megablast",
+    "filter_taxon": "enterovirus.txt" 
+    // "betacoronavirus.txt" | "alphainfluenzavirus.txt" | "enterovirus.txt"
+  },
+  "tabulate_blastn": {
+    "nprocesses": 50,
+    "process_nthreads": 1,
+    "input_suffix": ".txt",
+    "input_folder": "no_enterov_database/4.3.2-blastn_contigs_metaspades",
+    "output_folder": "no_enterov_database/4.3.3-tabulated_result_blastn",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "4.3.3-tabulated_result_blastn_enterov_logs.tar.gz",
+    "metadata_path": "data/viral_discovery/metadata_accession.txt",
+    "count_reads_folder": "2.2-bowtie_human_output",
+    "count_reads_extension": "_1.fastq.gz",
+    "mapping_folder": "no_enterov_database/4.3.1-viral_discovery_mapping_metaspades",
+    "kraken_folder": "no_enterov_database/3-taxonomic_output",
+    "align_coverage": 90,
+    "align_identity": 97,
+    "align_length": 500,
+    "align_evalue": 0.00001
+  },
+  "filter_contigs_blastn": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": "_contig_not_matched_blast.tsv",
+    "input_folder": "no_enterov_database/4.3.3-tabulated_result_blastn",
+    "output_folder": "no_enterov_database/5.1-filtered_contigs_blastn",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.1-filtered_contigs_blastn_not_matched_logs.tar.gz",
+    "contigs_folder": "no_enterov_database/4.3-viral_discovery_contigs_metaspades",
+    "contigs_extension": ".contigs.fa"
+  },
+  "diamond": {
+    "nprocesses": 3,
+    "process_nthreads": 20,
+    "input_suffix": ".contigs.fa",
+    "input_folder": "no_enterov_database/5.1-filtered_contigs_blastn",
+    "output_folder": "no_enterov_database/5.2-diamond_filtered_contigs",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.2-diamond_filtered_contigs_logs.tar.gz",
+    "sensitivity": "--fast",
+    "filter_taxons": "2787823,81077,9606,12059"
+    // unclassified_entries = "2787823"
+    // artificial_sequences = "81077"
+    // Homo sapiens = "9606"
+    // viruses="10239"
+    // coronaviridae = "11118"
+    // betacoronavirus = "694002"
+    // sars_cov2 = "2697049"
+    // alphainfluenzavirus = "197911"
+    // enterovirus = "12059"
+    // orthoflavivirus = "3044782"
+  },
+  "tabulate_diamond_fast": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": ".txt",
+    "input_folder": "no_enterov_database/5.2-diamond_filtered_contigs",
+    "output_folder": "no_enterov_database/5.2.1-tabulated_result_diamond_fast",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.2.1-tabulated_result_diamond_fast_logs.tar.gz",
+    "metadata_path": "data/viral_discovery/metadata_accession.txt",
+    "count_reads_folder": "no_enterov_database/4.3.3-tabulated_result_blastn",
+    "count_reads_extension": "_contig_not_matched_blast.tsv",
+    "align_identity": 90,
+    "align_length": 300,
+    "align_evalue": 0.00001
+  },  
+  "tabulate_diamond_fast_sensitive": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": ".txt",
+    "input_folder": "no_enterov_database/5.2-filtered_contigs_diamond",
+    "output_folder": "no_enterov_database/5.2.2-tabulated_result_diamond_fast_sensitive",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.2.2-tabulated_result_diamond_fast_sensitive_logs.tar.gz",
+    "metadata_path": "data/dataset_mock/metadata",
+    "count_reads_folder": "no_enterov_database/4.3.3-tabulated_result_blastn",
+    "count_reads_extension": "_contig_not_matched_blast.tsv",
+    "align_identity": 50,
+    "align_length": 150,
+    "align_evalue": 0.001
+  },
+  "filter_contigs_diamond": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": "_contig_not_matched_blast.tsv",
+    "input_folder": "no_enterov_database/5.2.1-tabulated_result_diamond_fast",
+    "output_folder": "no_enterov_database/5.3-filtered_contigs_diamond",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5-contigs_not_matched_blast_logs.tar.gz",
+    "folder": "no_enterov_database/4.3-viral_discovery_contigs_metaspades",
+    "extension": ".contigs.fa"
+  },
+  "diamond_sensitive": {
+    "nprocesses": 2,
+    "process_nthreads": 20,
+    "input_suffix": ".contigs.fa",
+    "input_folder": "no_enterov_database/5.3-filtered_contigs_diamond",
+    "output_folder": "no_enterov_database/5.4-filtered_contigs_diamond_sensitive",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.4-filtered_contigs_diamond_sensitive_logs.tar.gz",
+    "sensitivity": "--ultra-sensitive"
+  },
+  "tabulate_diamond_sensitive": {
+    "nprocesses": 1,
+    "process_nthreads": 1,
+    "input_suffix": ".txt",
+    "input_folder": "no_enterov_database/5.2-filtered_contigs_diamond_fast",
+    "output_folder": "no_enterov_database/5.2.1-tabulated_result_diamond_fast",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "5.2.1-tabulated_result_diamond_logs.tar.gz",
+    "metadata_path": "data/dataset_mock/metadata",
+    "count_reads_folder": "no_enterov_database/4.3.3-tabulated_result_blastn",
+    "count_reads_extension": "_contig_not_matched_blast.tsv",
+    "align_identity": 20,
+    "align_length": 10,
+    "align_evalue": 0.001
+  }
+}

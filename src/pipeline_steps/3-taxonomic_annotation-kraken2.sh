@@ -79,11 +79,12 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running kraken command: "
 echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
-  "--report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping "
+  "--report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping"
 
 $kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
-  --report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping 
-  
+  --report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping
+
+# sleep 1
 
 # Finish script profile
 finish=$(date +%s.%N)

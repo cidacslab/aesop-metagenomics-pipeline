@@ -5,6 +5,7 @@ data/taxdump
 results/
 src/databases_setup
 src/utils
+genomes
 venv
 __pycache__/
 *.pyc
