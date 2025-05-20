@@ -18,20 +18,19 @@ class ContigInfo:
     self.reads.add(read_seqid)
 
 
-def count_contig_reads(mapping_file):
+def count_contig_reads(mapping_file, contig_to_reads, mapped_reads):
   # Dictionary to store contig to unique reads mapping
-  contig_to_reads = {}
   # Open the file and read line by line
   with open(mapping_file, 'r') as file:
     reader = csv.reader(file, delimiter='\t')
     for row in reader:
       contig_name = row[0].strip()
       read_mapped_name = row[1].strip()
+      mapped_reads.add(read_mapped_name)
       # Add the read to the set for the given contig
       if contig_name not in contig_to_reads:
         contig_to_reads[contig_name] = ContigInfo()
       contig_to_reads[contig_name].add_read_by_accession(read_mapped_name)
-  return contig_to_reads
 
 
 def get_best_result(input_file, min_coverage=90, min_identity=97, max_evalue=0.00001, min_length=200):
@@ -48,11 +47,14 @@ def get_best_result(input_file, min_coverage=90, min_identity=97, max_evalue=0.0
     
     for row in reader:
       # Store the first occurrence of each query in the dictionary
-      contig_id = row['qseqid']
+      contig_id = row['qseqid'].strip()
       identity = float(row['pident'])
       evalue = float(row['evalue'])
       length = float(row['length'])
-      coverage = float(row['qcovs'])
+      coverage = float(row.get('qcovs', 0))
+      taxids = row['staxids'].strip()
+      if not taxids:
+        continue
       if contig_id not in contig_to_blast_result:
         if ((coverage >= min_coverage and identity >= min_identity and evalue <= max_evalue and length >= min_length) 
             or (coverage >= 90 and identity >= 99 and evalue <= 0.00001 and length >= 100)):

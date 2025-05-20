@@ -149,7 +149,7 @@ run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_blastn" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
   "${args_dict[tabulate_blastn_align_coverage]}" \
   "${args_dict[tabulate_blastn_align_identity]}" \
   "${args_dict[tabulate_blastn_align_length]}" \
@@ -180,7 +180,8 @@ run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
+  "${args_dict[tabulate_diamond_fast_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_align_length]}" \
   "${args_dict[tabulate_diamond_fast_align_evalue]}" \
@@ -193,7 +194,8 @@ run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast_sensitive" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-calculate_confusion_matrix.py" \
+  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
+  "${args_dict[tabulate_diamond_fast_sensitive_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_length]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_evalue]}" \

@@ -3,8 +3,8 @@ complete_viruses*
 data/dataset_mock
 data/taxdump
 results/
-src/databases_setup
-src/utils
+# src/databases_setup
+# src/utils
 genomes
 venv
 __pycache__/
@@ -26,4 +26,4 @@ __pycache__/
 
 # Miscellaneous
 .DS_Store
-data/basespace_access_token.txt
+basespace_access_token.txt

@@ -4,8 +4,7 @@ from datetime import datetime, timezone
 
 def filter_virus_genomes_efficiently(fasta_file, valid_accessions, output_file, buffer_size=100000):
   """
-  Efficiently filters a large FASTA file to exclude genomes from a specific genus.
-  
+  Efficiently filters a large FASTA file to exclude genomes from a specific accessions.  
   Parameters:
   - fasta_path: Path to the input FASTA file.
   - valid_accessions: List of valid accessions to include in the output.
@@ -77,7 +76,7 @@ if __name__ == "__main__":
   pid = os.getpid()
   input_count = sys.argv[1]
   input_file = sys.argv[2]
-  input_id = os.path.basename(input_file).rsplit(".", 1)[0]
+  input_id = os.path.basename(input_file).split(".", 1)[0]
   timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
   
   # # Replace stdout with an unbuffered version

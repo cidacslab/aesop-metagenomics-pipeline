@@ -105,7 +105,7 @@ if __name__ == '__main__':
   pid = os.getpid()
   input_count = sys.argv[1]
   input_file = sys.argv[2]
-  input_id = os.path.basename(input_file).rsplit(".", 1)[0]
+  input_id = os.path.basename(input_file).split(".", 1)[0]
   timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
   
   # # Replace stdout with an unbuffered version
