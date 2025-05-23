@@ -1,6 +1,7 @@
 import os, sys, csv, copy
 from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
 import utilities.taxonomy_tree_parser as TaxonomyParser
 import utilities.calculate_confusion_matrix as CMTrees
@@ -53,7 +54,7 @@ def tabulate_known_viruses(
   # load blast tree
   mapped_reads = CMTrees.load_blast_tree(
     classified_tree, true_positive_tree, accession_taxids, contig_reads,
-    align_filters, blast_file, mapping_file, output_file)    
+    align_filters, blast_file, mapping_file, output_file)
   # Calculate confusion matrix for blast
   output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
   CMTrees.calculate_confusion_matrix(
@@ -61,16 +62,23 @@ def tabulate_known_viruses(
     true_positive_tree, classified_tree, output_file)
   
   #######################################################################################################
-  # SET KRAKEN CONFUSION MATRIX    
+  # SET KRAKEN CONFUSION MATRIX
   if kraken_folder != "":
-    # kraken files
-    kreport_file = os.path.join(input_kraken_path, filename + ".kreport")
+    # get kraken result for unmapped reads (the ones didn't form contigs)
     kout_file = os.path.join(input_kraken_path, filename + ".kout")
-    output_classified_file = os.path.join(output_path, filename + "_classified.csv")
+    k2result_accession_to_taxid = CMTrees.include_k2result_for_unmatched(
+      classified_tree, true_positive_tree, accession_taxids, mapped_reads, kout_file)
+    # Calculate confusion matrix for blast + kraken (all known viruses)
+    output_file = os.path.join(output_path, filename + "_known_viruses_report.csv")
+    CMTrees.calculate_confusion_matrix(
+      accession_taxids, total_abundance, ground_truth_tree,
+      true_positive_tree, classified_tree, output_file)
+      
     # load kraken tree
+    kreport_file = os.path.join(input_kraken_path, filename + ".kreport")
     CMTrees.load_kraken_tree(
       classified_tree, true_positive_tree, accession_taxids,
-      mapped_reads, kreport_file, kout_file, output_classified_file)      
+      kreport_file, k2result_accession_to_taxid)
     # Calculate confusion matrix for kraken
     output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
     CMTrees.calculate_confusion_matrix(

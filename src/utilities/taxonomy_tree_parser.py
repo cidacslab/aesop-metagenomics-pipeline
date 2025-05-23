@@ -110,9 +110,9 @@ class TreeNode:
   def clear_abundance(self):
     self.abundance = 0
     self.acumulated_abundance = 0
-  
-  def set_abundance(self, abundance: int):
-    self.abundance = abundance
+
+  def add_abundance(self, abundance: int):
+    self.abundance += abundance
     self.acumulated_abundance += abundance
     parent_node = self.parent
     while parent_node is not None:

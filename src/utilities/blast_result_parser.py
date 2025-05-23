@@ -26,7 +26,11 @@ def count_contig_reads(mapping_file, contig_to_reads, mapped_reads):
     for row in reader:
       contig_name = row[0].strip()
       read_mapped_name = row[1].strip()
-      mapped_reads.add(read_mapped_name)
+      if read_mapped_name not in mapped_reads:
+        mapped_reads[read_mapped_name] = 0
+      mapped_reads[read_mapped_name] += 1
+      if mapped_reads[read_mapped_name] > 2: 
+        print(f"** MAPPING ERROR: read {read_mapped_name} was mapped to a contig {mapped_reads[read_mapped_name]}x")
       # Add the read to the set for the given contig
       if contig_name not in contig_to_reads:
         contig_to_reads[contig_name] = ContigInfo()

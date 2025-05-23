@@ -46,7 +46,7 @@ def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, gro
   for accession, taxid in accession_taxids.items():
     if accession in accession_abundance:
       abundance = accession_abundance[accession].count
-      ground_truth_tree[taxid].set_abundance(abundance)
+      ground_truth_tree[taxid].add_abundance(abundance)
       output_content += f"{accession},{abundance}\n"
     else:
       print(f"Accession {accession} not present in ground truth.")
@@ -70,7 +70,7 @@ def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tr
   classified_node = true_positive_tree.get(classified_taxid, None)
   while not is_true_positive and classified_node is not None:
     if classified_node.taxid in true_positive_taxids:
-      classified_node.set_abundance(count)
+      classified_node.add_abundance(count)
       is_true_positive = True
     else:
       classified_node = classified_node.parent
@@ -104,7 +104,7 @@ def load_blast_results(
       blast_result = contig_to_blast_result[contig]
       taxid = blast_result['staxids'].strip().split(";")[0]
       for accession, read_count in contig_info.accession_read_count.items():
-        blast_classified_tree[taxid].set_abundance(read_count)
+        blast_classified_tree[taxid].add_abundance(read_count)
         # set true positive tree
         true_taxid = accession_taxids.get(accession, 0)
         blast_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
@@ -122,10 +122,10 @@ def load_blast_results(
 
 #########################################################################################
 ## INCLUDE KRAKEN RESULT
-def get_accession_taxid_abundance(kout_file, output_file, mapped_reads):
+
+def include_k2result_for_unmatched(classified_tree, true_positive_tree, accession_taxids, mapped_reads, kout_file):
   print(f"Get accession taxid abundance from: {kout_file}")
-  accession_results_by_taxid = {}
-  not_mapped_read_classified = {}
+  k2result_accession_to_taxid = {}
   with open(kout_file, "r") as kraken_file:
     for line in kraken_file:
       line = line.strip().split()
@@ -135,34 +135,29 @@ def get_accession_taxid_abundance(kout_file, output_file, mapped_reads):
         taxid = line[2].strip()
         if len(accession_id) == 0 or len(taxid) == 0:
           continue
-        # if read_name not in mapped_reads:
-        #   if read_name not in not_mapped_read_classified:
-        #     not_mapped_read_classified[read_name] = 0
-        #   not_mapped_read_classified[accession_id] += 1
-        if accession_id not in accession_results_by_taxid:
-          accession_results_by_taxid[accession_id] = {}
-        if taxid not in accession_results_by_taxid[accession_id]:
-          accession_results_by_taxid[accession_id][taxid] = 0
-        accession_results_by_taxid[accession_id][taxid] += 1
-  
-  output_content = "read_accession_id,taxid,count\n"
-  for accession_id, taxid_counts in accession_results_by_taxid.items():
-    for taxid, count in taxid_counts.items():
-      output_content += f"{accession_id},{taxid},{count}\n"
-  with open(output_file, "w") as out_file:
-    out_file.write(output_content)
-  
-  return accession_results_by_taxid
+        # get result if unmapped
+        read_unmapped_count = 2 - mapped_reads.get(read_name, 0)
+        if read_unmapped_count > 0:
+          classified_tree[taxid].add_abundance(read_unmapped_count)
+          true_taxid = accession_taxids[accession_id]
+          set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_unmapped_count)
+        # get result by accession
+        if accession_id not in k2result_accession_to_taxid:
+          k2result_accession_to_taxid[accession_id] = {}
+        if taxid not in k2result_accession_to_taxid[accession_id]:
+          k2result_accession_to_taxid[accession_id][taxid] = 0
+        k2result_accession_to_taxid[accession_id][taxid] += 1
+  return k2result_accession_to_taxid
 
 
 ## INCLUDE KRAKEN TRUE POSITIVE RESULT
-def set_true_positive_tree_counts(accession_results_by_taxid, accession_taxids, true_positive_tree):
+def set_true_positive_tree_counts(k2result_accession_to_taxid, accession_taxids, true_positive_tree):
   # loop through all accessions
   for accession, true_taxid in accession_taxids.items():
-    if accession not in accession_results_by_taxid:
+    if accession not in k2result_accession_to_taxid:
       continue
-    for taxid in accession_results_by_taxid[accession]:
-      count = accession_results_by_taxid[accession][taxid]      
+    for taxid in k2result_accession_to_taxid[accession]:
+      count = k2result_accession_to_taxid[accession][taxid]      
       # set true positive tree
       classified_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, count)
       is_true_positive = classified_node is not None
@@ -334,7 +329,7 @@ def load_blast_tree(
   # clean the blast result tree
   TaxonomyParser.clear_abundance_from_tree(classified_tree)
   
-  mapped_reads = set()
+  mapped_reads = {}
   # get blast results for the contigs and the reads mapped to each contig
   contig_to_blast_result = BlastResultParser.get_best_result(
     blast_file, align_filters["coverage"], align_filters["identity"],
@@ -351,7 +346,7 @@ def load_blast_tree(
 
 def load_kraken_tree(
   classified_tree, true_positive_tree, accession_taxids,
-  mapped_reads, kreport_file, kout_file, output_file):
+  kreport_file, k2result_accession_to_taxid):
   """
   Calculate the kraken classified tree and the true positive tree.
   Parameters:
@@ -359,8 +354,7 @@ def load_kraken_tree(
     true_positive_tree (TaxonomyTree): true positive tree
     accession_taxids (dict): mapping of accession to taxid
     kreport_file (str): kraken report file
-    kout_file (str): kraken output file
-    output_file (str): file to write the output to
+    k2result_accession_to_taxid (dict): read accession to kraken result taxid
   """
   # clean the true positive tree
   TaxonomyParser.clear_abundance_from_tree(true_positive_tree)
@@ -374,15 +368,13 @@ def load_kraken_tree(
     if k not in classified_tree:
       print(f"Node not found in taxonomy tree: {node}")
     else:
-      classified_tree[k].set_abundance(node.abundance * 2)
+      classified_tree[k].add_abundance(node.abundance * 2)
   
-  # load the kraken classified count by taxid
-  accession_results_by_taxid = get_accession_taxid_abundance(kout_file, output_file, mapped_reads)
   # double the abundance value to account for each mate from the sequencing
-  for accession in accession_results_by_taxid:
-    for taxid in accession_results_by_taxid[accession]:
-      accession_results_by_taxid[accession][taxid] *= 2
+  for accession in k2result_accession_to_taxid:
+    for taxid in k2result_accession_to_taxid[accession]:
+      k2result_accession_to_taxid[accession][taxid] *= 2
   
   # create the true positive tree adding the abundance only if they are correctly mapped
   set_true_positive_tree_counts(
-    accession_results_by_taxid, accession_taxids, true_positive_tree)
+    k2result_accession_to_taxid, accession_taxids, true_positive_tree)
