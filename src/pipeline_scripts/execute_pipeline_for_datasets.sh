@@ -53,26 +53,24 @@ set_values_in_dict() {
 ################################################################################
 
 # Global variable to track if the step was executed successfully
-step_executed=0  # Default is 0 (Step was not executed)
+declare -g STEP_EXECUTED=0  # Default is 0 (Step was not executed)
 
 # Function to execute each step
 run_pipeline_step() {
   local step_name=$1
-  local dataset_name=$2
-  local base_dataset_path=$3
-  local full_command=$4
-  shift 4 # Shift past the first two arguments (step_name, script_path)
+  local base_dataset_path=$2
+  local full_command=$3
+  shift 3 # Shift past the first two arguments (step_name, script_path)
   
   # Global variable to track if the step was executed successfully
-  step_executed=0  # Default is 0 (Step was not executed)
+  STEP_EXECUTED=0  # Default is 0 (Step was not executed)
   
   # Check if the step should be executed
   if [[ -v args_dict[execute_${step_name}] && ${args_dict[execute_${step_name}]} -eq 1 ]]; then
     # Create default argument list
-    params=("$dataset_name"
-            "${args_dict[${step_name}_nprocesses]}"
+    params=("${args_dict[${step_name}_nprocesses]}"
             "${args_dict[${step_name}_delete_preexisting_output_folder]}"
-            "${dataset_name}_${args_dict[${step_name}_log_file]}"
+            "${args_dict[${step_name}_log_file]}"
             "${args_dict[${step_name}_input_suffix]}"
             "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
             "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"
@@ -95,7 +93,7 @@ run_pipeline_step() {
       "$full_command" "${params[@]}"
     fi
     
-    step_executed=1  # Step executed successfully
+    STEP_EXECUTED=1  # Step executed successfully
   fi
 }
 ################################################################################
@@ -120,13 +118,6 @@ while IFS= read -r dataset_line; do
     echo "######################################################"
     $pipeline_script "$args_str" "$dataset" "$project_id"
 done <<< "$sample_datasets"
-
-# echo ""
-# df
-# du -hd 4 /scratch/pablo.viana | sort -k2
-# find /scratch/pablo.viana | sort
-# du -hd 4 /home/pedro/aesop/pipeline | sort -k2
-# find /home/pedro/aesop/pipeline | sort
 
 #  Finish pipeline profile
 finish=$(date +%s.%N)

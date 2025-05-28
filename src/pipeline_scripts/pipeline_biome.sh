@@ -29,9 +29,8 @@ echo "Started running job!"
 ################################################################################
 
 # Array of executable names
-executables=("BASESPACE_CLI_EXECUTABLE" "FASTP_EXECUTABLE" "HISAT2_EXECUTABLE" \
-  "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" "KRAKEN2_EXECUTABLE" \
-  "BRACKEN_EXECUTABLE")
+executables=("FASTP_EXECUTABLE" "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" 
+  "KRAKEN2_EXECUTABLE" "PRODIGAL_EXECUTABLE" "HMMER_EXECUTABLE")
 
 ################################################################################
 ################################## INPUT ARGS ##################################
@@ -73,25 +72,6 @@ done
 # rm -r ${base_dataset_path}
 # cp -vr /opt/storage/shared/aesop/metagenomica/biome/dataset_mock_viral/ ${base_dataset_path}
 
-## DOWNLOAD 
-run_pipeline_step "download" "$base_dataset_path" \
-  "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
-  "${args_dict[download_basespace_access_token]}" \
-  $basespace_project_id
-
-
-## BOWTIE2 PHIX
-run_pipeline_step "bowtie2_phix" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  "${args_dict[bowtie2_phix_index]}"
-
-
-## BOWTIE2 ERCC
-run_pipeline_step "bowtie2_ercc" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
-  "${args_dict[bowtie2_ercc_index]}"
-
-
 ## FASTP
 run_pipeline_step "fastp" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
@@ -109,12 +89,6 @@ if [ $STEP_EXECUTED -eq 1 ]; then
 fi
 
 
-## HISAT2 HUMAN
-run_pipeline_step "hisat2_human" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
-  "${args_dict[hisat2_human_index]}"
-
-
 ## BOWTIE2 HUMAN
 run_pipeline_step "bowtie2_human" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
@@ -129,19 +103,15 @@ run_pipeline_step "kraken2" "$base_dataset_path" \
   "${args_dict[kraken2_keep_output]}"
 
 
-## BRACKEN
-run_pipeline_step "bracken" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh" \
-  "${args_dict[bracken_database]}" \
-  "${args_dict[bracken_read_length]}" \
-  "${args_dict[bracken_threshold]}"
+## PRODIGAL
+run_pipeline_step "prodigal" "$base_dataset_path" \
+  "$custom_script $repository_src/pipeline_steps/6-functional_annotation-prodigal.sh"
 
 
-## NORMALIZATION
-run_pipeline_step "normalization" "$base_dataset_path" \
-  "python $repository_src/report_results/normalize_abundance_by_species.py" \
-  "${base_dataset_path}" \
-  "${args_dict[normalization_folders]}"
+## HMMER
+run_pipeline_step "hmmer" "$base_dataset_path" \
+  "$custom_script $repository_src/pipeline_steps/6-functional_annotation-hmmer.sh" \
+  "${args_dict[hmmer_profile]}"
 
 
 ################################################################################

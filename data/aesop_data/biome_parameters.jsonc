@@ -1,0 +1,118 @@
+{
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // SET THE EXECUTION COMMAND IN SINGULARITY DOCKER OR LOCAL
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // Template: singularity exec [SINGULARITY_OPTIONS] <sif> [COMMAND_OPTIONS]
+  "command":"singularity exec /opt/images/cidacs/biome.sif",
+  // command="singularity exec /opt/images/cidacs/cidacs-jupyter-datascience-v1-r2.sif"
+  // Local execution
+  // "command": "",
+  // Path to place results
+  "base_dataset_path": "/opt/storage/transient/aesop/metagenomica/results",
+  // "base_dataset_path": "/home/pablo.viana/biome_backup/biome_public_database",
+  // Path to code repository src folder
+  "repository_src": "/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src", 
+  // scripts to execute the pipeline, with path relative to repository_src
+  "script_for_datasets":"pipeline_scripts/execute_pipeline_for_datasets.sh",
+  "pipeline_script":"pipeline_scripts/pipeline_biome.sh",
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE DATASETS TO EXECUTE THE PIPELINE
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // List all datasets and their basepace project ID
+  // Format MUST BE: [DATASET_NAME]:[BASEPACE_ID] or [DATASET_NAME]
+  // If dataset is not from basespace you dont need to include the ID
+  // If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
+  // You can execute mutiple datasets at once, commented lines will not be executed  
+  "sample_datasets": [
+    // "bsb01:422858797",
+    // "rio04:423157194",
+    // "rio05:427570404",
+    // "to01:442690473",
+    // "bsb02:443706623",
+    "biome"
+  ],
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE PIPELINE STEPS TO BE EXECUTED
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE EXECUTION STEPS
+  // "execute_fastp": 1,
+  // "execute_bowtie2": 1,
+  // "execute_kraken2": 1,
+  "execute_prodigal": 1,
+  // "execute_hmmer": 1,
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE DATABASE PATHS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "bowtie2_index": "/home/pablo.viana/biome_backup/0-databases/bowtie2_index/host_genomes_index/all_host_genomes_index",
+  "kraken2_database": "/home/pablo.viana/biome_backup/biome_public_database/4-kraken_taxonomic_annotation/kraken_biome_db_v2",
+  "hmmer_profile": "/home/pablo.viana/biome_backup/0-databases/hmmer_profiles/args/Resfams-full.hmm",
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE EXECUTABLES PATHS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "FASTP_EXECUTABLE": "fastp",
+  "BOWTIE2_EXECUTABLE": "bowtie2",
+  "SAMTOOLS_EXECUTABLE": "samtools",
+  "KRAKEN2_EXECUTABLE": "kraken2",
+  "PRODIGAL_EXECUTABLE": "prodigal",
+  "HMMER_EXECUTABLE": "hmmsearch",
+  
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // DEFINE THE PIPELINE STEPS PARAMETERS
+  ///////////////////////////////////////////////////////////////////////////////////////
+  "fastp": {
+    "nprocesses": 4,
+    "process_nthreads": 8,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "0-raw_samples",
+    "output_folder": "1-fastp_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "1-quality_control-fastp_filters_logs.tar.gz",
+    "minimum_quality": 20,
+    "minimum_length": 50,
+    "max_n_count": 2
+  },
+  "bowtie2": {
+    "nprocesses": 4,
+    "process_nthreads": 15,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "1-fastp_output",
+    "output_folder": "2-bowtie_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "2-sample_decontamination-bowtie2_remove_contaminant_reads_logs.tar.gz"
+  },
+  "kraken2": {
+    "nprocesses": 1,
+    "process_nthreads": 4,
+    "input_suffix": "_1.fastq.gz",
+    "input_folder": "2-bowtie_output",
+    "output_folder": "3-taxonomic_output",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "3-taxonomic_annotation-kraken_logs.tar.gz",
+    "confidence": 0.1,
+    "keep_output": 1
+  },
+  "prodigal": {
+    "nprocesses": 5,
+    "process_nthreads": 1,
+    "input_suffix": ".fasta.gz",
+    "input_folder": "2-bowtie2_decontaminated",
+    "output_folder": "3.1-prodigal_genes_discovered",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "0"
+    // "log_file": "4-prodigal_genes_discovered-logs.tar.gz"
+  },
+  "hmmer": {
+    "nprocesses": 5,
+    "process_nthreads": 1,
+    "input_suffix": ".faa",
+    "input_folder": "3.1-prodigal_genes_discovered",
+    "output_folder": "3.2-hmmer_args_discovered",
+    "delete_preexisting_output_folder": 1,
+    "log_file": "0"
+    // "log_file": "5-hmmer_args_discovered-resfams_full_logs.tar.gz"
+  }
+}

@@ -23,27 +23,24 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 ############################ PARAMETERS VALIDATION ############################
 ###############################################################################
 
-
-# Dataset name
-dataset_name="$1"
 # Extract the number of proccesses to be run in parallel
-num_processes="$2"
+num_processes="$1"
 # Delete preexisting output directory
-delete_output_dir="$3"
+delete_output_dir="$2"
 # Tar Log file name
-log_file="$4"
+log_file="$3"
 # Suffix of the input files
-input_suffix="$5"
+input_suffix="$4"
 # Download folder
-download_dir="$6"
+download_dir="$5"
 # Destination folder
-output_dir="$7"
+output_dir="$6"
 # Number of parallel threads to be run in each process
-nthreads="$8"
+nthreads="$7"
 # Basespace access token
-basespace_access_token="$9"
+basespace_access_token="$8"
 # Basespace project ID
-basespace_project_id="${10}"
+basespace_project_id="$9"
 
 
 ################################################################################

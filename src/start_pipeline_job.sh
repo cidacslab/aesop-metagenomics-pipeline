@@ -20,7 +20,7 @@ DOC
 
 ################################################################################
 # Path to the JSON file containing the parameters
-default_json_file="/data/aesop/github/aesop-metagenomics-pipeline/data/viral_discovery/pipeline_viruses.jsonc"
+default_json_file="/data/aesop/github/aesop-metagenomics-pipeline/data/aesop_data/biome_parameters.jsonc"
 # Check if the JSON file is provided as an argument
 json_file="${1:-$default_json_file}"
 

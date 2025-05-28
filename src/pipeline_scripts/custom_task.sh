@@ -27,41 +27,31 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 ###############################################################################
 
 # Check if the correct number of arguments is provided
-if [ "$#" -lt 6 ]; then
+if [ "$#" -lt 8 ]; then
     echo "Error! Usage: $0 <script_file> [parameters...]"
     exit 1
 fi
 
+echo "Parameters: $@"
 # Extract the script file path (second argument)
 task_script="$1"
-
-# Check if the script file exists
-# if [ ! -f "$task_script" ]; then
-#     echo "Error: Script file '$task_script' not found." >&2
-#     exit 1
-# fi
-# script_name=$(basename "$task_script")
-# script_name=${script_name%.*}
 script_name=$task_script
-
-# Dataset name
-dataset_name="$2"
 # Extract the number of proccesses to be run in parallel
-num_processes="$3"
+num_processes="$2"
 # Delete preexisting output directory
-delete_output_dir="$4"
+delete_output_dir="$3"
 # Tar Log file name
-tar_log_file="$5"
+tar_log_file="$4"
 # Suffix of the input files
-input_suffix="$6"
+input_suffix="$5"
 # Path containing the input files
-input_dir="$7"
+input_dir="$6"
 # Destination folder for the output files
-output_dir="$8"
+output_dir="$7"
 # Number of parallel threads to be run in each process
-nthreads="$9"
+nthreads="$8"
 
-shift 5 # Remove the first 5 arguments from the list
+shift 4 # Remove the first 4 arguments from the list
 
 ###############################################################################
 ############################## SCRIPT EXECUTION ###############################
@@ -73,7 +63,7 @@ echo "Started Executing $script_name"
 
 args=($@)
 args_str=$(printf '%s ' "${args[@]}")
-echo "Parameters: $args_str"
+echo "Parameters filtered: $args_str"
 
 if [ $delete_output_dir -eq 1 ]; then
   echo "rm -rf $output_dir"
@@ -83,16 +73,23 @@ fi
 echo "mkdir -p $output_dir"
 mkdir -p $output_dir
 
-find "$input_dir" -type f -name "*${input_suffix}" | \
-  # head -n 1 | \
+find -L "$input_dir" -type f -name "*${input_suffix}" | \
+  # sort | \
+  sort -r | \
+  # head -n 5 | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 
-echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${tar_log_file}"
-find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${tar_log_file}"
+# Check if has to compress the log files
+if [[ "$tar_log_file" == *.tar.gz ]]; then
+  echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${tar_log_file}"
+  find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${tar_log_file}"
 
-echo "Removing log files: rm -rf [0-9]*.log"
-rm -rf [0-9]*.log
+  echo "Removing log files: rm -rf [0-9]*.log"
+  rm -rf [0-9]*.log
+else
+  echo "Didnt zip any log files."
+fi
 
 #  Finish task profile
 end=$(date +%s.%N)
