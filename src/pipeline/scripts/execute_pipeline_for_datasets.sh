@@ -1,16 +1,21 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/03/16
+Created: 2024/09/10
 
-Template script used to run a script over the biome metagenomic samples.
+Script used to run the pipeline for each sample dataset.
 
-params $1 - Number os parallel processes to be executed
+params $1 - Pipeline script to be executed
+params $2 - Argument string comprising the complete list of arguments
+params $3 - Dataset list
+
+This files contains the functions to parse the argument string to a dictionary,
+and to execute each pipeline step.
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -23,7 +28,7 @@ bash --version
 
 # Start job profile
 start=$(date +%s.%N)
-echo "Started running job for all datasets!"
+echo "Started running pipeline for all datasets!"
 
 
 ################################################################################
@@ -110,13 +115,13 @@ sample_datasets=$3
 
 # Loop throught all datasets
 while IFS= read -r dataset_line; do
-    IFS=":" read -r dataset project_id <<< "$dataset_line"
-    echo "######################################################"
-    echo "######################################################"
-    echo "Executing script: $pipeline_script"
-    echo "     For dataset: $dataset : $project_id"
-    echo "######################################################"
-    $pipeline_script "$args_str" "$dataset" "$project_id"
+  IFS=":" read -r dataset project_id <<< "$dataset_line"
+  echo "######################################################"
+  echo "######################################################"
+  echo "Executing script: $pipeline_script"
+  echo "     For dataset: $dataset : $project_id"
+  echo "######################################################"
+  $pipeline_script "$args_str" "$dataset" "$project_id"
 done <<< "$sample_datasets"
 
 #  Finish pipeline profile

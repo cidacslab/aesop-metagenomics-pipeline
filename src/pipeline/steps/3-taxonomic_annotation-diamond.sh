@@ -3,19 +3,23 @@
 Author: Pablo Viana
 Created: 2023/04/19
 
-Script used to run blastn taxonomic classification.
+Script used to run diamond taxonomic classification.
 
-params $1 - Line number
-params $2 - Input id
-params $3 - Input suffix
-params $4 - Input directory
-params $5 - Output directory
-params $6 - Number of parallel threads
+params $1 - Sample number, representing its order in input list
+params $2 - Input sample file path
+params $3 - Suffix of the input file
+params $4 - Input sample directory
+params $5 - Output directory where to place the output files
+params $6 - Number of threads to use in this process
+params $7 - diamond database path
+params $8 - diamond task parameter
+params $9 - diamond taxon-exclude parameter listing taxa to exclude from analysis
 DOC
+
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -45,6 +49,12 @@ output_file="${output_dir}/${input_id}.txt"
 
 diamond_script=$DIAMOND_EXECUTABLE
 
+# if exists output
+if [ -f $output_file ]; then
+  echo "Output file already exists: $output_file" >&2
+  exit 0
+fi
+
 if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
   exit 1
@@ -66,12 +76,12 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running diamond command: "
 echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
-    "--max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file " \
-    "--outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
+  "--max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file " \
+  "--outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
 
 $diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
-    --max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file \
-    --outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
+  --max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file \
+  --outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
 
 
 # Finish script profile

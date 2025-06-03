@@ -16,11 +16,15 @@ Author: Pablo Viana
 Created: 2024/07/06
 
 Template script used to start the pipeline on SLURM JOB or locally.
+
+params $1 - JSON file path (OPTIONAL)
+
+Define default value for json file if not provided
 DOC
 
 ################################################################################
 # Path to the JSON file containing the parameters
-default_json_file="/data/aesop/github/aesop-metagenomics-pipeline/data/aesop_data/biome_parameters.jsonc"
+default_json_file="/data/aesop/github/aesop-metagenomics-pipeline/data/viral_discovery/pipeline_validation.jsonc"
 # Check if the JSON file is provided as an argument
 json_file="${1:-$default_json_file}"
 

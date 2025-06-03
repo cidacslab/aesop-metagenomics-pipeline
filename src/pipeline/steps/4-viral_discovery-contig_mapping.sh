@@ -1,21 +1,23 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/04/19
+Created: 2024/10/30
 
 Script used to run megahit assembly.
 
-params $1 - Line number
-params $2 - Input id
-params $3 - Input suffix
-params $4 - Input directory
-params $5 - Output directory
-params $6 - Number of parallel threads
+params $1 - Sample number, representing its order in input list
+params $2 - Input sample file path
+params $3 - Suffix of the input file
+params $4 - Input sample directory
+params $5 - Output directory where to place the output files
+params $6 - Number of threads to use in this process
+params $7 - Input mapping file suffix
+params $8 - Input mapping file directory
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -27,7 +29,7 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
-input_id=$2
+input_file=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
@@ -35,7 +37,7 @@ nthreads=$6
 input_mapping_suffix=$7
 input_mapping_dir=$8
 
-input_id=$(basename $input_id $input_suffix)
+input_id=$(basename $input_file $input_suffix)
 
 input_suffix1=$input_mapping_suffix
 input_suffix2=${input_suffix1/_R1_/_R2_}
@@ -99,7 +101,7 @@ printf "Contig\tReference_Length\tTotal_Reads\tCoverage\n" > "${output_prefix}_c
 while read -r contig; do
   # Extract the number of reads that mapped to the current contig
   reference_length=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.tsv" | cut -f2)
-
+  
   # Extract the number of reads that mapped to the current contig
   reads_mapped=$(grep "^$contig\s" "${output_prefix}_contig_read_counts.tsv" | cut -f3)
   
@@ -108,7 +110,7 @@ while read -r contig; do
   
   # Output the results (use 0 for coverage if it's not found)
   printf "${contig}\t${reference_length}\t${reads_mapped}\t${total_coverage:-0}\n" >> "${output_prefix}_contig_stats.tsv"
-
+  
   # Step 6: Extract reads mapped to the current contig
   echo "Extracting reads mapped to $contig..."
   

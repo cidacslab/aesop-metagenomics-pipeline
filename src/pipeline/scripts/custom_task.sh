@@ -1,18 +1,26 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/03/16
+Created: 2024/09/10
 
 Template script used to run a task script over the input samples.
 
-params $1 - Number os parallel processes to be executed
-params $2 - Script to be executed
-params $3 - Script parameters
+params $1 - Script to be executed
+params $2 - Number of parallel processes to run this script
+params $3 - Flag to delete the contents of the output directory before start execution
+params $4 - Name of the tar log file to be created compressing all log files of the execution
+params $5 - Suffix of the files to be used as inputs
+params $6 - Input directory where to look for the input files
+params $7 - Output directory where to place the output files
+params $8 - Number of threads that each process should use
+params $@ - Any extra parameters that may be added
+
+All these parameters, except the first 4, are passed down to be used by the script in each process.
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -28,8 +36,8 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 
 # Check if the correct number of arguments is provided
 if [ "$#" -lt 8 ]; then
-    echo "Error! Usage: $0 <script_file> [parameters...]"
-    exit 1
+  echo "Error! Usage: $0 <script_file> [parameters...]"
+  exit 1
 fi
 
 echo "Parameters: $@"
@@ -73,9 +81,7 @@ fi
 echo "mkdir -p $output_dir"
 mkdir -p $output_dir
 
-find -L "$input_dir" -type f -name "*${input_suffix}" | \
-  # sort | \
-  sort -r | \
+find -L "$input_dir" -type f -name "*${input_suffix}" | sort -r | \
   # head -n 5 | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"

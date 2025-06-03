@@ -1,11 +1,21 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/03/16
+Created: 2023/04/19
 
-Template script used to run a script over the biome metagenomic samples.
+Template script used to download input samples.
 
-params $1 - Number os parallel processes to be executed
+params $1 - Script to be executed
+params $2 - Number of parallel processes to run this script
+params $3 - Flag to delete the contents of the output directory before start execution
+params $4 - Name of the tar log file to be created compressing all log files of the execution
+params $5 - Suffix of the files to be used as inputs
+params $6 - Input directory where to look for the input files
+params $7 - Output directory where to place the output files
+params $8 - Number of threads that each process should use
+params $@ - Any extra parameters that may be added
+
+All these parameters, except the first 4, are passed down to be used by the script in each process.
 DOC
 
 # create alias to echo command to log time at each call
@@ -19,10 +29,18 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 
+
 ###############################################################################
 ############################ PARAMETERS VALIDATION ############################
 ###############################################################################
 
+# Check if the correct number of arguments is provided
+if [ "$#" -lt 8 ]; then
+    echo "Error! Usage: $0 <script_file> [parameters...]"
+    exit 1
+fi
+
+echo "Parameters: $@"
 # Extract the number of proccesses to be run in parallel
 num_processes="$1"
 # Delete preexisting output directory

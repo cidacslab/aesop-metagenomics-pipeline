@@ -95,4 +95,3 @@ if __name__ == "__main__":
     # Restore original stdout and close the log file
     sys.stdout = sys.__stdout__
     f.close()
-    

@@ -1,16 +1,23 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/03/16
+Created: 2025/05/23
 
-Template script used to run a script over the biome metagenomic samples.
+Template script used to define a pipeline run over a sample dataset.
 
-params $1 - Number os parallel processes to be executed
+params $1 - Argument string comprising the complete list of arguments
+params $2 - Dataset name
+params $3 - Dataset basespace project id (OPTIONAL)
+
+First define the Software Executables to be used by the steps scripts.
+The Input Args section creates the parameters dictionary and exports the 
+executables to be used by the child processes. 
+The pipeline section must define each step to be executed by the pipeline.
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -21,7 +28,7 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 
 # Start job profile
 start=$(date +%s.%N)
-echo "Started running job!"
+echo "Started running pipeline script!"
 
 
 ################################################################################
@@ -59,7 +66,7 @@ repository_src=${args_dict["repository_src"]}
 # Location of the dataset data
 base_dataset_path=${args_dict["base_dataset_path"]}/${dataset_name}
 # Script to execute the tasks
-custom_script="$repository_src/pipeline_scripts/custom_task.sh"
+custom_script="$repository_src/${args_dict[custom_task_script]}"
 
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
@@ -74,19 +81,19 @@ done
 
 ## BOWTIE2 PHIX
 run_pipeline_step "bowtie2_phix" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_phix_index]}"
 
 
 ## BOWTIE2 ERCC
 run_pipeline_step "bowtie2_ercc" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_ercc_index]}"
 
 
 ## FASTP
 run_pipeline_step "fastp" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
+  "$custom_script $repository_src/pipeline/steps/1-quality_control-fastp_filters.sh" \
   "${args_dict[fastp_minimum_quality]}" \
   "${args_dict[fastp_minimum_length]}" \
   "${args_dict[fastp_max_n_count]}"
@@ -103,19 +110,19 @@ fi
 
 ## HISAT2 HUMAN
 run_pipeline_step "hisat2_human" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-hisat2_remove.sh" \
   "${args_dict[hisat2_human_index]}"
 
 
 ## BOWTIE2 HUMAN
 run_pipeline_step "bowtie2_human" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
 run_pipeline_step "kraken2" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
+  "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-kraken2.sh" \
   "${args_dict[kraken2_database]}" \
   "${args_dict[kraken2_confidence]}" \
   "${args_dict[kraken2_keep_output]}"
@@ -123,7 +130,7 @@ run_pipeline_step "kraken2" "$base_dataset_path" \
 
 ##  EXTRACT READS 
 run_pipeline_step "extract_reads" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-extract_reads.sh" \
+  "$custom_script $repository_src/pipeline/steps/4-viral_discovery-extract_reads.sh" \
   "$base_dataset_path/${args_dict[extract_reads_kraken_output]}" \
   "${args_dict[extract_reads_filter_taxons]}"
 
@@ -135,14 +142,14 @@ run_pipeline_step "assembly_metaspades" "$base_dataset_path" \
 
 ##  MAPPING METASPADES
 run_pipeline_step "mapping_metaspades" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-contig_mapping.sh" \
+  "$custom_script $repository_src/pipeline/steps/4-viral_discovery-contig_mapping.sh" \
   "${args_dict[mapping_metaspades_origin_input_suffix]}" \
   "$base_dataset_path/${args_dict[mapping_metaspades_origin_input_folder]}"
 
 
 ## BLASTN ON CONTIGS
 run_pipeline_step "blastn" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-blastn.sh" \
+  "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-blastn.sh" \
   "${args_dict[blastn_database]}" \
   "${args_dict[blastn_task]}" \
   "${args_dict[taxonomy_database]}/taxids_by_taxons/${args_dict[blastn_filter_taxon]}" 
@@ -150,7 +157,7 @@ run_pipeline_step "blastn" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_blastn" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
   "${args_dict[tabulate_blastn_align_coverage]}" \
   "${args_dict[tabulate_blastn_align_identity]}" \
   "${args_dict[tabulate_blastn_align_length]}" \
@@ -166,14 +173,14 @@ run_pipeline_step "tabulate_blastn" "$base_dataset_path" \
 
 ## FILTER CONTIGS NOT CLASSIFIED
 run_pipeline_step "filter_contigs_blastn" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-filter_fasta_by_accessions.py" \
+  "$custom_script python $repository_src/pipeline/steps/5-filter_fasta_by_accessions.py" \
   "$base_dataset_path/${args_dict[filter_contigs_blastn_contigs_folder]}" \
   "${args_dict[filter_contigs_blastn_contigs_extension]}"
 
 
 ## DIAMOND ON CONTIGS
 run_pipeline_step "diamond" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-diamond.sh" \
+  "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-diamond.sh" \
   "${args_dict[diamond_database]}" \
   "${args_dict[diamond_sensitivity]}" \
   "${args_dict[diamond_filter_taxon]}"
@@ -181,7 +188,7 @@ run_pipeline_step "diamond" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
   "${args_dict[tabulate_diamond_fast_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_align_length]}" \
@@ -195,7 +202,7 @@ run_pipeline_step "tabulate_diamond_fast" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast_sensitive" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline_steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_length]}" \

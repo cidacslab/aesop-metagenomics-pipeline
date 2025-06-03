@@ -58,7 +58,7 @@ repository_src=${args_dict["repository_src"]}
 # Location of the dataset data
 base_dataset_path=${args_dict["base_dataset_path"]}/${dataset_name}
 # Script to execute the tasks
-custom_script="$repository_src/pipeline_scripts/custom_task.sh"
+custom_script="$repository_src/${args_dict[custom_task_script]}"
 
 # Loop through each executable exporting to child scripts
 for executable in "${executables[@]}"; do
@@ -70,31 +70,29 @@ done
 ################################################################################
 ##################################  PIPELINE  ##################################
 ################################################################################
-# rm -r ${base_dataset_path}
-# cp -vr /opt/storage/shared/aesop/metagenomica/biome/dataset_mock_viral/ ${base_dataset_path}
 
 ## DOWNLOAD 
 run_pipeline_step "download" "$base_dataset_path" \
-  "$repository_src/pipeline_steps/0-raw_sample_basespace_download.sh" \
+  "$repository_src/pipeline/steps/0-raw_sample_basespace_download.sh" \
   "${args_dict[download_basespace_access_token]}" \
   $basespace_project_id
 
 
 ## BOWTIE2 PHIX
 run_pipeline_step "bowtie2_phix" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_phix_index]}"
 
 
 ## BOWTIE2 ERCC
 run_pipeline_step "bowtie2_ercc" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_ercc_index]}"
 
 
 ## FASTP
 run_pipeline_step "fastp" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/1-quality_control-fastp_filters.sh" \
+  "$custom_script $repository_src/pipeline/steps/1-quality_control-fastp_filters.sh" \
   "${args_dict[fastp_minimum_quality]}" \
   "${args_dict[fastp_minimum_length]}" \
   "${args_dict[fastp_max_n_count]}"
@@ -111,19 +109,19 @@ fi
 
 ## HISAT2 HUMAN
 run_pipeline_step "hisat2_human" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-hisat2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-hisat2_remove.sh" \
   "${args_dict[hisat2_human_index]}"
 
 
 ## BOWTIE2 HUMAN
 run_pipeline_step "bowtie2_human" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/2-sample_decontamination-bowtie2_remove.sh" \
+  "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
 run_pipeline_step "kraken2" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-kraken2.sh" \
+  "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-kraken2.sh" \
   "${args_dict[kraken2_database]}" \
   "${args_dict[kraken2_confidence]}" \
   "${args_dict[kraken2_keep_output]}"
@@ -131,7 +129,7 @@ run_pipeline_step "kraken2" "$base_dataset_path" \
 
 ## BRACKEN
 run_pipeline_step "bracken" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/3-taxonomic_annotation-bracken.sh" \
+  "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-bracken.sh" \
   "${args_dict[bracken_database]}" \
   "${args_dict[bracken_read_length]}" \
   "${args_dict[bracken_threshold]}"

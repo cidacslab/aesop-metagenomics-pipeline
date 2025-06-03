@@ -1,21 +1,21 @@
 #!/bin/bash
 :<<DOC
 Author: Pablo Viana
-Created: 2023/04/19
+Created: 2024/10/30
 
-Script used to run megahit assembly.
+Script used to run metaspades assembly.
 
-params $1 - Line number
-params $2 - Input id
-params $3 - Input suffix
-params $4 - Input directory
-params $5 - Output directory
-params $6 - Number of parallel threads
+params $1 - Sample number, representing its order in input list
+params $2 - Input sample file path
+params $3 - Suffix of the input file
+params $4 - Input sample directory
+params $5 - Output directory where to place the output files
+params $6 - Number of threads to use in this process
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -27,13 +27,13 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
-input_id=$2
+input_file=$2
 input_suffix=$3
 input_dir=$4
 output_dir=$5
 nthreads=$6 
 
-input_id=$(basename $input_id $input_suffix)
+input_id=$(basename $input_file $input_suffix)
 
 input_suffix1=$input_suffix
 input_suffix2=${input_suffix1/_R1_/_R2_}

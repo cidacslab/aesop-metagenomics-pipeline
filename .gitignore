@@ -6,7 +6,8 @@ results/
 databases_setup/
 utils/
 OLD/
-rscripts_discovery/
+rscripts_discovery
+rscripts_viral
 genomes
 venv
 __pycache__/

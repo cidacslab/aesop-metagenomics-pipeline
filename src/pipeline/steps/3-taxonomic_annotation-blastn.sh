@@ -5,17 +5,20 @@ Created: 2023/04/19
 
 Script used to run blastn taxonomic classification.
 
-params $1 - Line number
-params $2 - Input id
-params $3 - Input suffix
-params $4 - Input directory
-params $5 - Output directory
-params $6 - Number of parallel threads
+params $1 - Sample number, representing its order in input list
+params $2 - Input sample file path
+params $3 - Suffix of the input file
+params $4 - Input sample directory
+params $5 - Output directory where to place the output files
+params $6 - Number of threads to use in this process
+params $7 - blastn database path
+params $8 - blastn task parameter
+params $9 - blastn negative_taxidlist parameter listing taxa to exclude from analysis
 DOC
 
 # create alias to echo command to log time at each call
 echo() {
-    command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
+  command echo "B_PID: $BASHPID [$(date +"%Y-%m-%dT%H:%M:%S%z")]: $@"
 }
 # exit when any command fails
 set -e
@@ -43,6 +46,12 @@ output_file="${output_dir}/${input_id}.txt"
 
 blastn_script=$BLASTN_EXECUTABLE
 
+# if exists output
+if [ -f $output_file ]; then
+  echo "Output file already exists: $output_file" >&2
+  exit 0
+fi
+
 if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
   exit 1
@@ -61,15 +70,15 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running blastn command: "
 echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blastn_filter_taxon"  \
-    "-outfmt '7 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles'" \
-    "-max_target_seqs 100 -num_threads $nthreads -out $output_file"
+  "-outfmt '7 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles'" \
+  "-max_target_seqs 100 -num_threads $nthreads -out $output_file"
 
 # $blastn_script -db $path_to_db -query $input_file -task $blastn_task \
 #     -outfmt "7 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
 #     -max_target_seqs 5 -word_size 7 -gapopen 5 -gapextend 2 -penalty '-1' -reward 1 -perc_identity 50 -evalue 10 -num_threads $nthreads -out $output_file
 $blastn_script -db $path_to_db -query $input_file -task $blastn_task $blastn_filter_taxon \
-    -outfmt "7 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
-    -max_target_seqs 100 -num_threads $nthreads -out $output_file
+  -outfmt "7 qseqid sseqid pident length qcovs qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
+  -max_target_seqs 100 -num_threads $nthreads -out $output_file
 
 
 # Finish script profile
