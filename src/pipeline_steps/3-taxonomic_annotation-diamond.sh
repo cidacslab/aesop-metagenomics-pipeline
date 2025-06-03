@@ -49,6 +49,10 @@ if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
   exit 1
 fi
+if [ ! -s $input_file ]; then
+  echo "Input file is empty: $input_file" >&2
+  exit 0
+fi
 
 if [ -n "$diamond_filter_taxon" ]; then
   diamond_filter_taxon="--taxon-exclude ${diamond_filter_taxon}"
