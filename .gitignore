@@ -3,8 +3,10 @@ complete_viruses*
 data/dataset_mock
 data/taxdump
 results/
-# src/databases_setup
-# src/utils
+databases_setup/
+utils/
+OLD/
+rscripts_discovery/
 genomes
 venv
 __pycache__/
