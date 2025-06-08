@@ -18,6 +18,56 @@ class ContigInfo:
     self.reads.add(read_seqid)
 
 
+@dataclass
+class ResultInfo:
+  contig_length: int = 0
+  contig_coverage: list[int] = None
+  hits_pident: list[int] = field(default_factory=list)
+
+  def add_result(self, result_row):
+    length = int(result_row['qlen'])
+    identity = float(result_row['pident'])
+    qstart = int(result_row['qstart'])
+    qend = int(result_row['qend'])
+    # init attributes when adding first result
+    if self.contig_length == 0:
+      self.contig_length = length
+      self.contig_coverage = [0] * length
+    elif self.contig_length != length:
+      raise ValueError("Trying to include invalid result: " +
+        f"{self.contig_length}/{result_row}")
+    # update coverage with best identity for position
+    for i in range(qstart-1, qend):
+      if identity > self.contig_coverage[i]:
+        self.contig_coverage[i] = identity
+    # add hit identity
+    self.hits_pident.append(identity)
+
+  def include_result_info(self, result_info):
+    if self.contig_length != result_info.contig_length:
+      raise ValueError("Trying to include invalid result: " + 
+        f"{self.contig_length}/{result_info.contig_length}")
+    for i in range(0, self.contig_length):      
+      if result_info.contig_coverage[i] > self.contig_coverage[i]:
+        self.contig_coverage[i] = result_info.contig_coverage[i]
+    self.hits_pident.extend(result_info.hits_pident)
+
+  def get_stats_per_identity(self, min_identity):    
+    values = [idt for idt in self.contig_coverage if idt >= min_identity]
+    identity_hits = sum([1 for idt in self.hits_pident if idt >= min_identity])
+    identity_coverage = len(values)
+    mean_identity = sum(values) / len(values)
+    return (mean_identity, identity_coverage, identity_hits)
+
+
+def get_taxid_result_info(result_rows, min_identity=90):
+  result = ResultInfo()
+  for row in result_rows:    
+    identity = int(result_row['pidentity'])
+    if(identity >=min_identity):
+      result.add_result(r)
+
+
 def count_contig_reads(mapping_file, contig_to_reads, mapped_reads):
   # Dictionary to store contig to unique reads mapping
   # Open the file and read line by line
@@ -67,6 +117,37 @@ def get_best_result(input_file, min_coverage=90, min_identity=97, max_evalue=0.0
           # print(f"Query didn't meet the filter criteria: {row}")
           print(f"Query didn't meet the filter criteria: {row['qseqid']}:{row['sseqid']}")
   return contig_to_blast_result
+
+
+def get_all_results(input_file, max_evalue=0.00001, min_length=200):
+  # Dictionary to store each query ID and its corresponding row
+  contig_to_result_info = {}
+  # Open the BLAST output file and use csv.DictReader to read it
+  with open(input_file, 'r') as infile:
+    filtered_lines = (line for line in infile if not line.startswith('#'))
+    # Use DictReader to automatically map columns to fieldnames
+    reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=['qseqid', 'sseqid', 
+      'pident', 'length', 'qlen', 'slen', 'mismatch', 'gapopen', 'gaps', 'qstart', 'qend',
+      'sstart', 'send', 'evalue', 'bitscore', 'staxids', 'salltitles'])
+    
+    for row in reader:
+      # Store the first occurrence of each query in the dictionary
+      contig_id = row['qseqid'].strip()
+      evalue = float(row['evalue'])
+      length = float(row['length'])
+      taxids = row['staxids'].strip().split(';')
+
+      if contig_id not in contig_to_result_info:
+        contig_to_result_info[contig_id] = dict()      
+      if (evalue <= max_evalue and length >= min_length)
+        for taxid: in taxids:
+          if taxid not in contig_to_result_info[contig_id]:
+            contig_to_result_info[contig_id][taxid] = ResultInfo()
+          contig_to_result_info[contig_id][taxid].add_result(row)
+      else:
+        # print(f"Query didn't meet the filter criteria: {row}")
+        print(f"Query didn't meet the filter criteria: {row['qseqid']}:{row['sseqid']}")
+  return contig_to_result_info
 
 
 def results_as_accession_to_taxid(contig_reads, query_to_row):

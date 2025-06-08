@@ -78,8 +78,7 @@ def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tr
   return classified_node if is_true_positive else None
 
 
-def load_blast_results(
-  contig_reads, contig_to_blast_result, accession_taxids,
+def load_blast_results(contig_reads, contig_to_blast_result, accession_taxids,
   blast_classified_tree, true_positive_tree, output_no_matched_contig_file):
   """
   Process BLAST results and update the classification and true positive trees.
@@ -118,6 +117,98 @@ def load_blast_results(
   
   with open(output_no_matched_contig_file, "w") as out_file:
     out_file.write(output_content)
+
+
+def get_blast_result_per_level(contig_results, blast_classified_tree):
+  result_per_level_taxid = [{}] * 10      
+  for taxid, result_info in contig_results.items():
+    node = blast_classified_tree[taxid]
+    last_result = result_info
+    for level in range(9, 1, -1):
+      level_enum = TaxonomyParser.Level(level)
+      level_node = node.get_parent_by_level(level_enum)
+      if level_node is None:
+        continue
+      level_results = result_per_level_taxid[level]
+      if level_node.taxid not in level_results:
+        level_results[level_node.taxid] = result_info
+      else:
+        level_results[level_node.taxid].include_result_info(result_info)
+      last_result = level_results[level_node.taxid]
+  return result_per_level_taxid
+
+
+def get_best_result_by_level(result_per_level_taxid, level, min_coverage, min_identity):
+  best_taxid, best_identity, best_identity_coverage = 0, 0, 0
+
+  for taxid, result in result_per_level_taxid[level].items():
+    result_identity,result_coverage,_ = result.get_stats_per_identity(min_identity)
+    if result_coverage >= min_coverage and result_identity >= min_identity:
+      if   result_identity > best_identity or 
+          (result_identity == best_identity and result_coverage > best_identity_coverage):
+        best_identity_coverage = result_coverage
+        best_identity = result_identity
+        best_taxid = taxid
+  return best_taxid
+
+
+def load_best_blast_results(contig_reads, contig_to_blast_result, align_filters, accession_taxids, 
+  blast_classified_tree, true_positive_tree, output_unmatches_file, output_matches_file):
+  """
+  Process BLAST results and update the classification and true positive trees.
+  Parameters:
+    contig_reads (dict): Mapping of contig to its read information.
+    contig_to_blast_result (dict): Mapping of contig to its BLAST result.
+    accession_taxids (dict): Mapping of accession to taxid.
+    blast_classified_tree (TaxonomyTree): Tree representing classified results from BLAST.
+    true_positive_tree (TaxonomyTree): Tree representing true positive results.
+    output_no_matched_contig_file (str): File path to output contigs with no matches.
+  
+  The function iterates over contigs, updating the blast classified and true positive trees
+  based on BLAST results. It writes contigs with no BLAST matches to a specified output file.
+  """
+  # initialize output content
+  output_not_match = "contig\tread_count\n"
+  output_matches = "contig,level,taxid,identity_threshold,mean_identity,identity_coverage,identity_hits\n"
+  identity_thresholds = [99, 98, 97, 95, 92, 90, 85, 80, 70, 60, 50, 40, 30]  
+  # identity_thresholds = [97, 90, 70, 50, 30]
+
+  for contig, contig_info in contig_reads.items():
+    if contig in contig_to_blast_result:
+      print(f"{contig}: {contig_info.accession_read_count}")
+      contig_results = contig_to_blast_result[contig]
+
+      result_per_level_taxid = get_blast_result_per_level(contig_results, blast_classified_tree)
+      for level in result_per_level_taxid:
+        for taxid, result in result_per_level_taxid[level].items():
+          for min_identity in identity_thresholds:
+            idt,cov,hits = result.get_stats_per_identity(min_identity)
+            output_matches += f"{contig},{level},{taxid},{min_identity},{idt},{cov},{hits}\n"
+
+      taxid = get_best_result_by_level(
+        result_per_level_taxid, 9, align_filters.coverage, align_filters.identity)
+      if taxid == 0:
+        output_not_match += f"{contig}\t{str(contig_info.accession_read_count)}\n"
+        continue
+
+      for accession, read_count in contig_info.accession_read_count.items():
+        blast_classified_tree[taxid].add_abundance(read_count)
+        # set true positive tree
+        true_taxid = accession_taxids.get(accession, 0)
+        blast_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
+        is_true_positive = blast_node is not None
+        #if not is_true_positive:
+        print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
+              f"from {accession}:{true_taxid}:{blast_node}.")
+    else:
+      # print(f"Contig {contig} had no read mapped!")
+      output_not_match += f"{contig}\t{str(contig_info.accession_read_count)}\n"
+  
+  with open(output_unmatches_file, "w") as out_file:
+    out_file.write(output_not_match)
+  
+  with open(output_matches_file, "w") as contig_file:
+    contig_file.write(output_matches)
 
 
 #########################################################################################
@@ -197,7 +288,7 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mappe
 
 
 def get_output_for_confusion_matrix(
-  node, included_taxids, sample_total_reads,
+  node, parent_taxid, included_taxids, sample_total_reads,
   ground_truth_tree, true_positive_tree, classified_tree):
   """
   Get the output for a single node in the confusion matrix.
@@ -218,7 +309,7 @@ def get_output_for_confusion_matrix(
     total_classified = classified_tree[node.taxid].acumulated_abundance
     #print(f"{node.taxid}, {node.name}, {total_reads}, {correct_reads}, {total_classified}")
     metrics = get_confusion_matrix_values(sample_total_reads, total_reads, total_classified, correct_reads)
-    output_content += f"{node.level_enum},{node.taxid},{node.name},{sample_total_reads},"
+    output_content += f"{node.level_enum},{parent_taxid},{node.taxid},{node.name},{sample_total_reads},"
     output_content += f"{total_reads},{total_classified},{correct_reads},"
     output_content += f"{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]}\n"
     included_taxids.add(node.taxid)
@@ -239,7 +330,7 @@ def calculate_confusion_matrix(
     output_file (str): file to write the output to
   """
   print(f"Calculating confusion matrix: {output_file}")
-  output_content = "level,taxid,name,sample_total_reads,level_total_reads,"
+  output_content = "level,parent_taxid,taxid,name,sample_total_reads,level_total_reads,"
   output_content += "level_total_classified,level_correct_reads,"
   output_content += "true_positive,true_negative,false_positive,false_negative\n"
   included_taxids = set()
@@ -255,13 +346,18 @@ def calculate_confusion_matrix(
         ground_truth_tree, true_positive_tree, classified_tree)  
       continue
     
+    nodes_by_level = []
     for level in range(9, 1, -1):
       level_enum = TaxonomyParser.Level(level)
       level_node = node.get_parent_by_level(level_enum)
-      if level_node is None:
-        continue
+      if level_node is not None:
+        nodes_by_level.append(level_node)
+
+    for i in range(len(nodes_by_level)):
+      level_node = nodes_by_level[i]
+      parent_taxid = nodes_by_level[i+1].taxid if i+1 < len(nodes_by_level) else 0
       output_content += get_output_for_confusion_matrix(
-        level_node, included_taxids, sample_total_reads,
+        level_node, parent_taxid, included_taxids, sample_total_reads,
         ground_truth_tree, true_positive_tree, classified_tree)
   
   with open(output_file, "w") as out_file:
@@ -309,9 +405,8 @@ def load_ground_truth_tree(
   return accession_abundance
 
 
-def load_blast_tree(
-  classified_tree, true_positive_tree, accession_taxids, contig_reads,
-  align_filters, blast_file, mapping_file, output_file):  
+def load_blast_tree(classified_tree, true_positive_tree, accession_taxids, contig_reads,
+  align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file):  
   """
   Calculate the blast classified tree and the true positive tree.
   Parameters:
@@ -331,16 +426,15 @@ def load_blast_tree(
   
   mapped_reads = {}
   # get blast results for the contigs and the reads mapped to each contig
-  contig_to_blast_result = BlastResultParser.get_best_result(
-    blast_file, align_filters["coverage"], align_filters["identity"],
+  contig_to_blast_result = BlastResultParser.get_all_results(blast_file,
     align_filters["evalue"], align_filters["length"])  
+    # align_filters["coverage"], align_filters["identity"],
   if len(contig_reads) == 0:
     BlastResultParser.count_contig_reads(mapping_file, contig_reads, mapped_reads)
   
   # Set blast classified tree and the true positive
-  load_blast_results(
-    contig_reads, contig_to_blast_result, accession_taxids,
-    classified_tree, true_positive_tree, output_file)
+  load_best_blast_results(contig_reads, contig_to_blast_result, accession_taxids,
+    classified_tree, true_positive_tree, output_unmatches_file, output_matches_file)
   return mapped_reads
 
 

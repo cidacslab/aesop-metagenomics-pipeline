@@ -50,16 +50,15 @@ def tabulate_known_viruses(
   # blast files
   blast_file = os.path.join(input_blast_path, filename + ".txt")
   mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
-  output_file = os.path.join(output_path, filename + "_contig_not_matched_blast.tsv")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.tsv")
+  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.tsv")
   # load blast tree
-  mapped_reads = CMTrees.load_blast_tree(
-    classified_tree, true_positive_tree, accession_taxids, contig_reads,
-    align_filters, blast_file, mapping_file, output_file)
+  mapped_reads = CMTrees.load_blast_tree(classified_tree, true_positive_tree, accession_taxids,
+    contig_reads, align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file)
   # Calculate confusion matrix for blast
   output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
-  CMTrees.calculate_confusion_matrix(
-    accession_taxids, total_abundance, ground_truth_tree,
-    true_positive_tree, classified_tree, output_file)
+  CMTrees.calculate_confusion_matrix(accession_taxids, total_abundance,
+    ground_truth_tree, true_positive_tree, classified_tree, output_file)
   
   #######################################################################################################
   # SET KRAKEN CONFUSION MATRIX
@@ -154,6 +153,7 @@ def main():
       ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
       input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
       input_blast_path, input_kraken_path, kraken_folder, filename, output_path)
+    break
   
   # Print end message
   print("Finished!")
