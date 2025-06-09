@@ -7,6 +7,14 @@
   // command="singularity exec /opt/images/cidacs/cidacs-jupyter-datascience-v1-r2.sif"
   // Local execution
   "command": "",
+  // Path to place results 
+  "base_dataset_path": "/home/pedro/aesop/pipeline/results/viral_discovery_v1",
+  // Path to code repository src folder
+  "repository_src": "/home/pedro/aesop/github/aesop-metagenomics-pipeline/src",
+  // scripts to execute the pipeline, with path relative to repository_src
+  "pipeline_script":"pipeline/scripts/pipeline_viruses.sh",
+  "script_for_datasets":"pipeline/scripts/execute_pipeline_for_datasets.sh",
+  "custom_task_script":"pipeline/scripts/custom_task.sh",
   
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE DATASETS TO EXECUTE THE PIPELINE
@@ -36,26 +44,24 @@
   // "execute_assembly_metaspades": 1,
   // "execute_mapping_metaspades": 1,
   // "execute_blastn": 1,
-  // "execute_tabulate_blastn": 1,
+  "execute_tabulate_blastn": 1,
   // "execute_filter_contigs_blastn": 1,
-  "execute_diamond": 1,
+  // "execute_diamond": 1,
   // "execute_tabulate_diamond_fast": 1,
   // "execute_tabulate_diamond_fast_sensitive": 1,
   
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE DATABASE PATHS
   ///////////////////////////////////////////////////////////////////////////////////////
-  "repository_src": "/home/pedro/aesop/github/aesop-metagenomics-pipeline/src",
-  "base_dataset_path": "/home/pedro/aesop/pipeline/results/viral_discovery_v1",  
   "bowtie2_phix_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/phix_viralproj14015/phix174_index",
   "bowtie2_ercc_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/ercc92/ercc_index",
   "hisat2_human_index": "/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2",
   "bowtie2_human_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full",
-  "kraken2_database": "/home/pedro/aesop/pipeline/databases/kraken2_db/k2db_20250207_without_all3",
+  "kraken2_database": "/home/pedro/aesop/pipeline/databases/kraken2_db/k2db_20250207_complete",
   "taxonomy_database": "/home/pedro/aesop/pipeline/databases/taxdump",
   "blastn_database": "/home/pedro/aesop/pipeline/databases/blastn_db/nt_viruses/nt_viruses",
   "diamond_database": "/home/pedro/aesop/pipeline/databases/blastp_db/ncbi_nr_20250205/nr.dmnd",
-  // k2db_20250207_without_betacoronavirus | k2db_20250207_without_alphainfluenza | k2db_20250207_without_all3
+  // k2db_20250207_without_betacoronavirus | k2db_20250207_without_alphainfluenza | k2db_20250207_without_all3 | k2db_20250207_complete
   // no_betacov_database | no_alphaflu_database | no_enterov_database | no_all3_database
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -173,9 +179,9 @@
     "input_folder": "no_betacov_database/4.3-viral_discovery_contigs_metaspades",
     "output_folder": "no_betacov_database/4.3.2-blastn_contigs_metaspades",
     "delete_preexisting_output_folder": 1,
-    "log_file": "4.3.2-taxonomic_annotation-blastn_contigs_metaspades_all3_logs.tar.gz",
+    "log_file": "4.3.2-taxonomic_annotation-blastn_contigs_metaspades_logs.tar.gz",
     "task": "megablast",
-    "filter_taxon": "all_removes.txt" 
+    "filter_taxon": "betacoronavirus.txt"
     // "betacoronavirus.txt" | "alphainfluenzavirus.txt" | "enterovirus.txt" | "all_removes.txt"
   },
   "tabulate_blastn": {
@@ -193,7 +199,7 @@
     "kraken_folder": "no_betacov_database/3-taxonomic_output",
     "align_coverage": 95,
     "align_identity": 97,
-    "align_length": 500,
+    "align_length": 200,
     "align_evalue": 0.00001
   },
   "filter_contigs_blastn": {

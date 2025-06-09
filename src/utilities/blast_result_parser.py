@@ -1,4 +1,4 @@
-import csv
+import csv, math
 from dataclasses import dataclass, field
 
 #########################################################################################
@@ -42,7 +42,7 @@ class ResultInfo:
         self.contig_coverage[i] = identity
     # add hit identity
     self.hits_pident.append(identity)
-
+  
   def include_result_info(self, result_info):
     if self.contig_length != result_info.contig_length:
       raise ValueError("Trying to include invalid result: " + 
@@ -51,13 +51,14 @@ class ResultInfo:
       if result_info.contig_coverage[i] > self.contig_coverage[i]:
         self.contig_coverage[i] = result_info.contig_coverage[i]
     self.hits_pident.extend(result_info.hits_pident)
-
+  
   def get_stats_per_identity(self, min_identity):    
     values = [idt for idt in self.contig_coverage if idt >= min_identity]
+    mean_identity = sum(values) / len(values) if len(values) > 0 else 0
+    identity_coverage = len(values) * 100.0 / self.contig_length
     identity_hits = sum([1 for idt in self.hits_pident if idt >= min_identity])
-    identity_coverage = len(values)
-    mean_identity = sum(values) / len(values)
-    return (mean_identity, identity_coverage, identity_hits)
+    coverage_lenght = len(values)
+    return (mean_identity, identity_coverage, coverage_lenght, identity_hits)
 
 
 def get_taxid_result_info(result_rows, min_identity=90):
@@ -119,9 +120,9 @@ def get_best_result(input_file, min_coverage=90, min_identity=97, max_evalue=0.0
   return contig_to_blast_result
 
 
-def get_all_results(input_file, max_evalue=0.00001, min_length=200):
+def get_blast_results(input_file):  
   # Dictionary to store each query ID and its corresponding row
-  contig_to_result_info = {}
+  blast_results = []
   # Open the BLAST output file and use csv.DictReader to read it
   with open(input_file, 'r') as infile:
     filtered_lines = (line for line in infile if not line.startswith('#'))
@@ -129,25 +130,50 @@ def get_all_results(input_file, max_evalue=0.00001, min_length=200):
     reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=['qseqid', 'sseqid', 
       'pident', 'length', 'qlen', 'slen', 'mismatch', 'gapopen', 'gaps', 'qstart', 'qend',
       'sstart', 'send', 'evalue', 'bitscore', 'staxids', 'salltitles'])
-    
     for row in reader:
-      # Store the first occurrence of each query in the dictionary
-      contig_id = row['qseqid'].strip()
-      evalue = float(row['evalue'])
-      length = float(row['length'])
-      taxids = row['staxids'].strip().split(';')
+      blast_results.append(row)
+  return blast_results
 
-      if contig_id not in contig_to_result_info:
-        contig_to_result_info[contig_id] = dict()      
-      if (evalue <= max_evalue and length >= min_length)
-        for taxid: in taxids:
-          if taxid not in contig_to_result_info[contig_id]:
-            contig_to_result_info[contig_id][taxid] = ResultInfo()
-          contig_to_result_info[contig_id][taxid].add_result(row)
-      else:
-        # print(f"Query didn't meet the filter criteria: {row}")
-        print(f"Query didn't meet the filter criteria: {row['qseqid']}:{row['sseqid']}")
-  return contig_to_result_info
+
+def get_contig_results(blast_results, contig, max_evalue=0.00001, min_length=200):
+  # Dictionary to store each contig ResultInfo()
+  contig_results = {}
+  
+  for row in blast_results:
+    # Store the first occurrence of each query in the dictionary
+    contig_id = row['qseqid'].strip()
+    evalue = float(row['evalue'])
+    length = float(row['length'])
+    taxids = row['staxids'].strip().split(';')   
+    if contig_id != contig:
+      continue
+    
+    if (evalue <= max_evalue and length >= min_length):
+      for taxid in taxids:
+        if taxid not in contig_results:
+          contig_results[taxid] = ResultInfo()
+        contig_results[taxid].add_result(row)
+    else:
+      print(f"Query didn't meet the filter criteria: {row}")
+  return contig_results
+
+
+def get_best_result(results, min_identity=97, min_coverage=95):
+  best_taxids, best_identity, best_coverage = [], 0, 0
+  
+  for taxid, result_info in results.items():
+    result_identity,result_coverage,_,_ = result_info.get_stats_per_identity(min_identity)
+    if result_coverage >= min_coverage and result_identity >= min_identity:
+      if (result_identity > best_identity or 
+          (math.isclose(result_identity, best_identity, rel_tol=1e-3) and
+          result_coverage > best_coverage)):
+        best_coverage = result_coverage
+        best_identity = result_identity
+        best_taxids = [taxid]
+      elif (math.isclose(result_identity, best_identity, rel_tol=1e-3) and 
+            math.isclose(result_coverage, best_coverage, rel_tol=1e-3)):
+        best_taxids.append(taxid)
+  return best_taxids
 
 
 def results_as_accession_to_taxid(contig_reads, query_to_row):

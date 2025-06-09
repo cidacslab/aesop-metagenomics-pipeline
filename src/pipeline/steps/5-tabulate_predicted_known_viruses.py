@@ -33,6 +33,19 @@ def tabulate_known_viruses(
   3. If provided, sets up the Kraken confusion matrix by loading the Kraken result tree and calculating metrics.
   """
   #######################################################################################################
+  # GROUND TRUTH
+  # contig to reads files  
+  contig_reads = {}
+  count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
+  output_file = os.path.join(output_path, filename + "_ground_truth.csv")
+  # create the ground truth tree with the real taxa from the mocks and the number of reads from each one    
+  accession_abundance = CMTrees.load_ground_truth_tree(
+    ground_truth_tree, accession_taxids, count_reads_file,
+    count_reads_extension, contig_reads, filename, output_file)    
+  # calculate total abundance
+  total_abundance = sum([accession_abundance[acc].count for acc in accession_abundance])
+  
+  #######################################################################################################
   # SET BLAST CONFUSION MATRIX
   # blast files
   blast_file = os.path.join(input_blast_path, filename + ".txt")
@@ -42,7 +55,11 @@ def tabulate_known_viruses(
   # load blast tree
   mapped_reads = CMTrees.load_blast_tree(classified_tree, true_positive_tree, accession_taxids,
     contig_reads, align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file)
-
+  # Calculate confusion matrix for blast
+  output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
+  CMTrees.calculate_confusion_matrix(accession_taxids, total_abundance,
+    ground_truth_tree, true_positive_tree, classified_tree, output_file)
+  
   #######################################################################################################
   # SET KRAKEN CONFUSION MATRIX
   if kraken_folder != "":
@@ -61,6 +78,11 @@ def tabulate_known_viruses(
     CMTrees.load_kraken_tree(
       classified_tree, true_positive_tree, accession_taxids,
       kreport_file, k2result_accession_to_taxid)
+    # Calculate confusion matrix for kraken
+    output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
+    CMTrees.calculate_confusion_matrix(
+      accession_taxids, total_abundance, ground_truth_tree,
+      true_positive_tree, classified_tree, output_file)
 
 
 
@@ -102,9 +124,18 @@ def main():
   nodes_file = os.path.join(taxonomy_database, "nodes.dmp")
   _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
   TaxonomyParser.clear_abundance_from_tree(taxonomy_tree)
- classified_tree = copy.deepcopy(taxonomy_tree)
- 
+  # create a copy of the taxonomy tree for the confusion matrix calculation
+  ground_truth_tree = taxonomy_tree
+  true_positive_tree = copy.deepcopy(taxonomy_tree)
+  classified_tree = copy.deepcopy(taxonomy_tree)
+  
   ########################################################################################################  
+  # collect the expected taxid from accessions of the mock
+  metadata_file = metadata_path
+  # meta_filename = filename.rsplit("_", 1)[0]
+  # metadata_file = os.path.join(metadata_path, meta_filename + ".txt")
+  accession_taxids = CMTrees.load_accession_metadata(metadata_file)
+  
   # USE "FOR" IF MULTIPLE FILES
   for i in range(1, 11):
     # Print start message
@@ -119,7 +150,7 @@ def main():
     # filename = os.path.basename(input_file).split(".")[0]
     
     tabulate_known_viruses(
-      taxonomy_tree, 
+      ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
       input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
       input_blast_path, input_kraken_path, kraken_folder, filename, output_path)
     # break

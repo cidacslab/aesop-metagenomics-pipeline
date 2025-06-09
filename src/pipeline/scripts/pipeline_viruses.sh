@@ -157,7 +157,7 @@ run_pipeline_step "blastn" "$base_dataset_path" \
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_blastn" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/pipeline/steps/5-tabulate_predicted_known_viruses.py" \
   "${args_dict[tabulate_blastn_align_coverage]}" \
   "${args_dict[tabulate_blastn_align_identity]}" \
   "${args_dict[tabulate_blastn_align_length]}" \
