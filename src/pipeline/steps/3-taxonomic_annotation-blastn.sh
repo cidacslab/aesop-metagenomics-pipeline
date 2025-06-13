@@ -57,8 +57,9 @@ if [ ! -f $input_file ]; then
   exit 1
 fi
 
-if [ -n "$blastn_filter_taxon" ]; then
-  blastn_filter_taxon="-negative_taxidlist ${blastn_filter_taxon}"
+blast_filter=""
+if [ -f "$blastn_filter_taxon" ]; then
+  blast_filter="-negative_taxidlist ${blastn_filter_taxon}"
   # blastn_filter_taxon="-negative_taxids ${blastn_filter_taxon}"
 fi
 
@@ -69,14 +70,11 @@ start=$(date +%s.%N)
 echo "Started task Input: $2 Count: $1"
 
 echo "Running blastn command: "
-echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blastn_filter_taxon"  \
+echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter"  \
   "-outfmt '7 qseqid sseqid pident length qlen slen mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles'" \
   "-max_target_seqs 100 -num_threads $nthreads -out $output_file"
 
-# $blastn_script -db $path_to_db -query $input_file -task $blastn_task \
-#     -outfmt "7 qseqid sseqid pident length  qcovs qcovhsp mismatch gapopen qstart qend sstart send evalue bitscore staxids salltitles" \
-#     -max_target_seqs 5 -word_size 7 -gapopen 5 -gapextend 2 -penalty '-1' -reward 1 -perc_identity 50 -evalue 10 -num_threads $nthreads -out $output_file
-$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blastn_filter_taxon \
+$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter \
   -outfmt "7 qseqid sseqid pident length qlen slen mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
   -max_target_seqs 100 -num_threads $nthreads -out $output_file
 

@@ -1,8 +1,6 @@
 import os, sys, csv, gzip
-sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
-
-import utilities.taxonomy_tree_parser as TaxonomyParser
-import utilities.get_fastq_read_info import FastqReads
+from . import taxonomy_tree_parser as TaxonomyParser
+from . import get_fastq_read_info import FastqReads
 
 
 
@@ -10,9 +8,8 @@ def list_files(directory_path, extension):
   # Get all entries in the directory
   entries = os.listdir(directory_path)    
   # Filter out and list only the .fastq files
-  fastq_files = [ entry for entry in entries \
-                  if entry.endswith(extension) or \
-                  entry.endswith(extension + ".gz")]
+  fastq_files = [ entry for entry in entries
+    if entry.endswith(extension) or entry.endswith(extension + ".gz")]
   return fastq_files
 
 
@@ -163,10 +160,11 @@ def main():
       write_kraken_report_summary(report_files, folder_path, output_file)  
   
   # Folders to put in the summary
-  fastq_folders = [ "0-raw_samples", "1.1-bowtie_phix_output", \
-                    "1.2-bowtie_ercc_output", "1.3-fastp_output", \
-                    "2.1-hisat_human_output", "2.2-bowtie_human_output", \
-                    "4.1-viral_discovery_reads"  ]
+  fastq_folders = [ 
+    "0-raw_samples", "1.1-bowtie_phix_output",
+    "1.2-bowtie_ercc_output", "1.3-fastp_output",
+    "2.1-hisat_human_output", "2.2-bowtie_human_output",
+    "4.1-viral_discovery_reads"  ]
   # define complete summary output filename  
   write_complete_summary(input_path, summary_name, fastq_folders)
 

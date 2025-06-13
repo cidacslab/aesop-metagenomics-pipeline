@@ -64,8 +64,9 @@ if [ ! -s $input_file ]; then
   exit 0
 fi
 
+diamond_filter=""
 if [ -n "$diamond_filter_taxon" ]; then
-  diamond_filter_taxon="--taxon-exclude ${diamond_filter_taxon}"
+  diamond_filter="--taxon-exclude ${diamond_filter_taxon}"
 fi
 
 {
@@ -76,11 +77,11 @@ echo "Started task Input: $2 Count: $1"
 
 echo "Running diamond command: "
 echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
-  "--max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file " \
+  "--max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file " \
   "--outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
 
 $diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
-  --max-target-seqs 100 $diamond_sensitivity $diamond_filter_taxon --out $output_file \
+  --max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file \
   --outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
 
 

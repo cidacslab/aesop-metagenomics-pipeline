@@ -137,7 +137,7 @@ run_pipeline_step "extract_reads" "$base_dataset_path" \
 
 ##  ASSEMBLY METASPADES
 run_pipeline_step "assembly_metaspades" "$base_dataset_path" \
-  "$custom_script $repository_src/pipeline_steps/4-viral_discovery-assembly_metaspades.sh"
+  "$custom_script $repository_src/pipeline/steps/4-viral_discovery-assembly_metaspades.sh"
 
 
 ##  MAPPING METASPADES
@@ -198,7 +198,7 @@ run_pipeline_step "tabulate_diamond_fast" "$base_dataset_path" \
   "$repository_src/../${args_dict[tabulate_diamond_fast_metadata_path]}" \
   "${args_dict[tabulate_diamond_fast_count_reads_folder]}" \
   "${args_dict[tabulate_diamond_fast_count_reads_extension]}"
-  
+
 
 ## CALCULATE CONFUSION MATRIX
 run_pipeline_step "tabulate_diamond_fast_sensitive" "$base_dataset_path" \
