@@ -63,9 +63,10 @@ declare -g STEP_EXECUTED=0  # Default is 0 (Step was not executed)
 # Function to execute each step
 run_pipeline_step() {
   local step_name=$1
-  local base_dataset_path=$2
-  local full_command=$3
-  shift 3 # Shift past the first two arguments (step_name, script_path)
+  local dataset_name=$2
+  local base_dataset_path=$3
+  local full_command=$4
+  shift 4 # Shift past the first four arguments (step_name, script_path)
   
   # Global variable to track if the step was executed successfully
   STEP_EXECUTED=0  # Default is 0 (Step was not executed)
@@ -75,7 +76,7 @@ run_pipeline_step() {
     # Create default argument list
     params=("${args_dict[${step_name}_nprocesses]}"
             "${args_dict[${step_name}_delete_preexisting_output_folder]}"
-            "${args_dict[${step_name}_log_file]}"
+            "${dataset_name}_${args_dict[${step_name}_log_file]}"
             "${args_dict[${step_name}_input_suffix]}"
             "${base_dataset_path}/${args_dict[${step_name}_input_folder]}"
             "${base_dataset_path}/${args_dict[${step_name}_output_folder]}"

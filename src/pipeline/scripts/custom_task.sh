@@ -81,8 +81,8 @@ fi
 echo "mkdir -p $output_dir"
 mkdir -p $output_dir
 
-find -L "$input_dir" -type f -name "*${input_suffix}" | sort -r | \
-  # head -n 5 | \
+find -L "$input_dir" -type f -name "*${input_suffix}" | sort | \
+  # head -n 1 | \
   awk '{printf("%d \"%s\"\n", NR, $1)}' | \
   xargs -I {} -P $num_processes sh -c "$task_script {} $args_str"
 

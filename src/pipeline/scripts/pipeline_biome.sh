@@ -78,7 +78,7 @@ done
 ################################################################################
 
 ## FASTP
-run_pipeline_step "fastp" "$base_dataset_path" \
+run_pipeline_step "fastp" "dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/1-quality_control-fastp_filters.sh" \
   "${args_dict[fastp_minimum_quality]}" \
   "${args_dict[fastp_minimum_length]}" \
@@ -95,13 +95,13 @@ fi
 
 
 ## BOWTIE2 HUMAN
-run_pipeline_step "bowtie2_human" "$base_dataset_path" \
+run_pipeline_step "bowtie2_human" "dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/2-sample_decontamination-bowtie2_remove.sh" \
   "${args_dict[bowtie2_human_index]}"
 
 
 ## KRAKEN2
-run_pipeline_step "kraken2" "$base_dataset_path" \
+run_pipeline_step "kraken2" "dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-kraken2.sh" \
   "${args_dict[kraken2_database]}" \
   "${args_dict[kraken2_confidence]}" \
@@ -109,12 +109,12 @@ run_pipeline_step "kraken2" "$base_dataset_path" \
 
 
 ## PRODIGAL
-run_pipeline_step "prodigal" "$base_dataset_path" \
+run_pipeline_step "prodigal" "dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/6-functional_annotation-prodigal.sh"
 
 
 ## HMMER
-run_pipeline_step "hmmer" "$base_dataset_path" \
+run_pipeline_step "hmmer" "dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/6-functional_annotation-hmmer.sh" \
   "${args_dict[hmmer_profile]}"
 

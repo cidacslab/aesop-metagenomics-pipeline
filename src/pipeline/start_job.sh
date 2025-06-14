@@ -2,10 +2,10 @@
 ################################################################################
 #################################  BEGIN JOB  ##################################
 ################################################################################
-#SBATCH --job-name='AESOP JOB'                        # Job name
+#SBATCH --job-name='AESOP METAGENOMIC'                # Job name
 #SBATCH --partition=cpu_iterativo                     # CPU batch queue
 #SBATCH --nodes=1                                     # Maxinum amount of nodes
-#SBATCH --cpus-per-task=40                            # Maxinum amount of cores
+#SBATCH --cpus-per-task=64                            # Maxinum amount of cores
 #SBATCH --mem=1024GB                                  # Maxinum amount of memory
 #SBATCH --time=99:00:00                               # Time limit hrs:min:sec
 #SBATCH --output=aesop_%j.log                         # Standard output log
@@ -24,7 +24,7 @@ DOC
 
 ################################################################################
 # Path to the JSON file containing the parameters
-# default_json_file="/data/aesop/github/aesop-metagenomics-pipeline/data/viral_discovery/pipeline_validation.jsonc"
+default_json_file="pipeline_parameters.jsonc"
 # Check if the JSON file is provided as an argument
 json_file="${1:-$default_json_file}"
 
@@ -59,6 +59,9 @@ done < <(jq -r 'paths(scalars) | join(".")' "$cleaned_json")
 # SAMPLE DATASETS
 # Retrieve the sample_datasets array
 sample_datasets=$(jq -r '.sample_datasets[]' "$cleaned_json")
+# Get execution command in singularity docker or local
+command="${params[command]}"
+unset params[command] # Remove command from params to avoid passing it as a parameter
 
 # CONVERTING PARAMETERS TO A STRING 
 # Initialize an empty string to hold the parameters as a string
@@ -79,8 +82,6 @@ params_str=${params_str%|}
 script_for_datasets="${params[repository_src]}/${params[script_for_datasets]}"
 # Pipeline script to be executed
 pipeline_script="${params[repository_src]}/${params[pipeline_script]}"
-# Get execution command in singularity docker or local
-command="${params[command]}"
 
 echo "Execution command:" 
 echo "    $command $script_for_datasets $pipeline_script"
