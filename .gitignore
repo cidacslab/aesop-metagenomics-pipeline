@@ -1,11 +1,4 @@
 # Python files
-complete_viruses*
-databases_setup
-utils/
-OLD/
-src/rscripts_discovery
-src/rscripts_viral
-genomes
 venv
 __pycache__/
 *.pyc

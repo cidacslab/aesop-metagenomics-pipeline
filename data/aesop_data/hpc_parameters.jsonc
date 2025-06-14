@@ -25,20 +25,20 @@
   // If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
   // You can execute mutiple datasets at once, commented lines will not be executed
   "sample_datasets": [
-    // "mao01:123456789",
-    "ssa01:393298912",
-    // "ssa01_wgs:412407112",
-    "aju01:398485813",
-    "rio01:394153669",
-    // "rio02:403173828",
-    // "rio03:414143602",
-    "poa01:420835421",
-    "poa02:417421287",
-    "poa03:419098942",
-    "bsb01:422858797",
-    "rio04:423157194",
-    "rio05:427570404"
-    // "pmw01:442690473"
+    "mao01:123456789"
+    // "ssa01:393298912",
+    // // "ssa01_wgs:412407112",
+    // "aju01:398485813",
+    // "rio01:394153669",
+    // // "rio02:403173828",
+    // // "rio03:414143602",
+    // "poa01:420835421",
+    // "poa02:417421287",
+    // "poa03:419098942",
+    // "bsb01:422858797",
+    // "rio04:423157194",
+    // "rio05:427570404"
+    // "pmw01:442690473",
     // "bsb02:443706623"
   ],
   
@@ -46,7 +46,7 @@
   // DEFINE THE PIPELINE STEPS TO BE EXECUTED
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE EXECUTION STEPS
-  "execute_download": 1,
+  // "execute_download": 1,
   "execute_bowtie2_phix": 1,
   "execute_bowtie2_ercc": 1,
   "execute_fastp": 1,
