@@ -1,13 +1,10 @@
 # Python files
 complete_viruses*
-data/dataset_mock
-data/taxdump
-results/
-databases_setup/
+databases_setup
 utils/
 OLD/
-rscripts_discovery
-rscripts_viral
+src/rscripts_discovery
+src/rscripts_viral
 genomes
 venv
 __pycache__/
