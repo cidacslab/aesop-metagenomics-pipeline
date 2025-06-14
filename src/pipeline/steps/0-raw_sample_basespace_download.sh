@@ -36,8 +36,8 @@ trap 'echo "\"${last_command}\" command ended with exit code $?." >&2' EXIT
 
 # Check if the correct number of arguments is provided
 if [ "$#" -lt 8 ]; then
-    echo "Error! Usage: $0 <script_file> [parameters...]"
-    exit 1
+  echo "Error! Usage: $0 <script_file> [parameters...]"
+  exit 1
 fi
 
 echo "Parameters: $@"
@@ -57,8 +57,10 @@ output_dir="$6"
 nthreads="$7"
 # Basespace access token
 basespace_access_token="$8"
+# Basespace API SERVER
+basespace_api_server="$9"
 # Basespace project ID
-basespace_project_id="$9"
+basespace_project_id="${10}"
 
 
 ################################################################################
@@ -73,13 +75,6 @@ args=($@)
 args_str=$(printf '%s ' "${args[@]}")
 echo "Parameters: $args_str"
 
-export BASESPACE_API_SERVER="https://api.basespace.illumina.com"
-export BASESPACE_ACCESS_TOKEN=$basespace_access_token
-
-# Script to be executed for task
-task_script=$BASESPACE_CLI_EXECUTABLE
-
-{
 if [ $delete_output_dir -eq 1 ]; then
   echo "rm -rf $output_dir"
   rm -rf $output_dir
@@ -90,11 +85,24 @@ fi
 mkdir -p $output_dir
 mkdir -p $download_dir
 
+export BASESPACE_API_SERVER=$basespace_api_server
+export BASESPACE_ACCESS_TOKEN=$basespace_access_token
+
+# Script to be executed for task
+task_script=$BASESPACE_CLI_EXECUTABLE
+
+{
+echo "Started Executing DOWNLOAD"
+
+args=($@)
+args_str=$(printf '%s ' "${args[@]}")
+echo "Parameters: $args_str"
+
 echo "$task_script list projects"
 $task_script list projects
 
-echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension='fastq.gz' --exclude='*unmapped*' --exclude='*deter*'"
-$task_script download project -v -i $basespace_project_id -o $download_dir --extension='fastq.gz' --exclude='*unmapped*' --exclude='*deter*'
+echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension='$input_suffix' --exclude='*unmapped*' --exclude='*deter*'"
+$task_script download project -v -i $basespace_project_id -o $download_dir --extension="$input_suffix" --exclude='*unmapped*' --exclude='*deter*'
 
 echo "ls -la $download_dir"
 ls -la $download_dir
@@ -106,9 +114,6 @@ echo "ls -la $output_dir:"
 ls -la $output_dir
 
 } &> ${log_file}
-
-# echo "Gziping log file: gzip ${BASHPID}_${log_file}"
-# gzip ${BASHPID}_${log_file}
 
 #  Finish task profile
 end=$(date +%s.%N)

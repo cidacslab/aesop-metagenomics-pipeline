@@ -65,7 +65,7 @@ shift 4 # Remove the first 4 arguments from the list
 ############################## SCRIPT EXECUTION ###############################
 ###############################################################################
 
-#Start timing profile
+# Start timing profile
 ini=$(date +%s.%N)
 echo "Started Executing $script_name"
 

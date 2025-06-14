@@ -38,7 +38,7 @@ nthreads=$6
 cut_window_size=$7
 minimum_quality=$8
 minimum_length=$9
-max_n_count=$10
+max_n_count=${10}
 
 input_id=$(basename $input_file $input_suffix)
 

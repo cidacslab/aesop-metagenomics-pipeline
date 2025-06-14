@@ -34,10 +34,21 @@ json_file="${1:-$default_json_file}"
 # Define the dictionary variable for the parameters
 declare -A params
 
-# Remove everything after //
-# This approach assumes // does not appear inside quoted strings
+# Remove everything after // except when inside ""
 cleaned_json=$(mktemp)
-sed 's/\/\/.*$//' "$json_file" > "$cleaned_json"
+awk '
+{
+  out = ""; inq = 0; prev = ""
+  for (i = 1; i <= length($0); i++) {
+    c   = substr($0, i, 1)
+    nxt = substr($0, i, 2)
+    if (c == "\"" && prev != "\\") inq = !inq          # toggle on un-escaped "
+    if (nxt == "//" && !inq) { print out; next }       # cut rest of line
+    out = out c
+    prev = c
+  }
+  print out
+}' "$json_file" > "$cleaned_json"
 
 # 1) Generate all scalar paths (including nested objects and arrays)
 #    Then flatten each path into a dot-notation string, e.g. "nested1.sub1.key1"
@@ -61,7 +72,8 @@ done < <(jq -r 'paths(scalars) | join(".")' "$cleaned_json")
 sample_datasets=$(jq -r '.sample_datasets[]' "$cleaned_json")
 # Get execution command in singularity docker or local
 command="${params[command]}"
-unset params[command] # Remove command from params to avoid passing it as a parameter
+# Remove command from params to avoid passing it as a parameter
+unset params[command] 
 
 # CONVERTING PARAMETERS TO A STRING 
 # Initialize an empty string to hold the parameters as a string

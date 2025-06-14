@@ -12,8 +12,8 @@
   // Path to code repository src folder
   "repository_src": "/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src",
   // scripts to execute the pipeline, with path relative to repository_src
-  "script_for_datasets":"pipeline_scripts/execute_pipeline_for_datasets.sh",
-  "pipeline_script":"pipeline_scripts/pipeline_aesop.sh",
+  "script_for_datasets":"pipeline/scripts/execute_pipeline_for_datasets.sh",
+  "pipeline_script":"pipeline/scripts/pipeline_aesop.sh",
   "custom_task_script":"pipeline/scripts/custom_task.sh",
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -25,34 +25,34 @@
   // If using Illumina basespace EDIT CREDENTIALS in download parameters bellow
   // You can execute mutiple datasets at once, commented lines will not be executed
   "sample_datasets": [
-    "mao01:123456789",
+    // "mao01:123456789",
     "ssa01:393298912",
-    // // "ssa01_wgs:412407112",
+    // "ssa01_wgs:412407112",
     "aju01:398485813",
     "rio01:394153669",
-    // // "rio02:403173828",
-    // // "rio03:414143602",
-    "rgs01:420835421",
-    "rgs02:417421287",
-    "rgs03:419098942",
+    // "rio02:403173828",
+    // "rio03:414143602",
+    "poa01:420835421",
+    "poa02:417421287",
+    "poa03:419098942",
     "bsb01:422858797",
     "rio04:423157194",
-    "rio05:427570404",
-    "to01:442690473",
-    "bsb02:443706623"
+    "rio05:427570404"
+    // "pmw01:442690473"
+    // "bsb02:443706623"
   ],
   
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE PIPELINE STEPS TO BE EXECUTED
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE EXECUTION STEPS
-  // "execute_download": 1,
-  // "execute_bowtie2_phix": 1,
-  // "execute_bowtie2_ercc": 1,
-  // "execute_fastp": 1,
-  // "execute_hisat2_human": 1,
-  // "execute_bowtie2_human": 1,
-  // "execute_kraken2": 1,
+  "execute_download": 1,
+  "execute_bowtie2_phix": 1,
+  "execute_bowtie2_ercc": 1,
+  "execute_fastp": 1,
+  "execute_hisat2_human": 1,
+  "execute_bowtie2_human": 1,
+  "execute_kraken2": 1,
   "execute_bracken": 1,
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -94,9 +94,9 @@
     "input_folder": "0-download",
     "output_folder": "0-raw_samples",
     "delete_preexisting_output_folder": 1,
-    "log_file": "0-raw_samples_download_logs.tar.gz",
-    // "download_basespace_access_token": "xxxxx",
-    "download_basespace_access_token": "../data/aesop_data/basespace_access_token.txt"
+    "log_file": "0-raw_samples_download.log",
+    "basespace_api_server": "https://api.basespace.illumina.com",
+    "basespace_access_token": "../data/aesop_data/basespace_access_token.txt"
   },
   "bowtie2_phix": {
     "nprocesses": 4,

@@ -13,8 +13,8 @@
   // Path to code repository src folder
   "repository_src": "/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src", 
   // scripts to execute the pipeline, with path relative to repository_src
-  "script_for_datasets":"pipeline_scripts/execute_pipeline_for_datasets.sh",
-  "pipeline_script":"pipeline_scripts/pipeline_biome.sh",
+  "script_for_datasets":"pipeline/scripts/execute_pipeline_for_datasets.sh",
+  "pipeline_script":"pipeline/scripts/pipeline_biome.sh",
   
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE DATASETS TO EXECUTE THE PIPELINE
@@ -71,6 +71,7 @@
     "output_folder": "1-fastp_output",
     "delete_preexisting_output_folder": 1,
     "log_file": "1-quality_control-fastp_filters_logs.tar.gz",
+    "cut_window_size": 1,
     "minimum_quality": 20,
     "minimum_length": 50,
     "max_n_count": 2
