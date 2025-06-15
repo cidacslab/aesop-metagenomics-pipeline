@@ -42,13 +42,13 @@ def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_
   # GET ALIGNMENT NORMALIZATION
   # alignment files
   alignment_file = os.path.join(input_blast_path, filename + ".txt")
-  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.csv")
-  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.csv")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_alignment.csv")
+  output_matches_file = os.path.join(output_path, filename + "_contig_matched_alignment.csv")
   # load alignment tree
   ClassifiedMatches.load_alignment_tree(classified_tree, contig_read_count, 
     alignment_file, align_filters, output_unmatches_file, output_matches_file)
   # Calculate normalization for alignment results
-  output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
+  output_file = os.path.join(output_path, filename + "_alignment_report.csv")
   ClassifiedMatches.normalize_classified_matches(total_abundance, classified_tree, output_file)
   
   #######################################################################################################
@@ -65,7 +65,7 @@ def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_
     kreport_file = os.path.join(input_kraken_path, filename + ".kreport")
     ClassifiedMatches.load_kraken_tree(classified_tree, kreport_file)
     # Calculate normalization for kraken results
-    output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
+    output_file = os.path.join(output_path, filename + "_kraken_report.csv")
     ClassifiedMatches.normalize_classified_matches(total_abundance, classified_tree, output_file)
 
 

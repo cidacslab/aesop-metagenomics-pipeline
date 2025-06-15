@@ -12,8 +12,8 @@
   // Path to code repository src folder
   "repository_src": "/home/pedro/aesop/github/aesop-metagenomics-pipeline/src",
   // scripts to execute the pipeline, with path relative to repository_src
-  "pipeline_script":"pipeline/scripts/pipeline_viruses.sh",
   "script_for_datasets":"pipeline/scripts/execute_pipeline_for_datasets.sh",
+  "pipeline_script":"pipeline/scripts/pipeline_viruses.sh",
   "custom_task_script":"pipeline/scripts/custom_task.sh",
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +184,7 @@
     "filter_taxon": ""
   },
   "tabulate_blastn": {
+    "script": "pipeline/steps/5-tabulate_normalized_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": ".txt",
@@ -224,6 +225,7 @@
     "filter_taxon": ""
   },
   "tabulate_diamond_fast": {
+    "script": "pipeline/steps/5-tabulate_normalized_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": ".txt",
@@ -240,6 +242,7 @@
     "align_evalue": 0.00001
   },  
   "tabulate_diamond_fast_sensitive": {
+    "script": "pipeline/steps/5-tabulate_normalized_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": ".txt",

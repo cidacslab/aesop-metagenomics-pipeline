@@ -156,9 +156,9 @@ run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
   "${args_dict[taxonomy_database]}/taxids_by_taxons/${args_dict[blastn_filter_taxon]}" 
 
 
-## CALCULATE CONFUSION MATRIX
+## TABULATE RESULTS
 run_pipeline_step "tabulate_blastn" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline/steps/5-tabulate_predicted_known_viruses.py" \
+  "$custom_script python $repository_src/${args_dict[tabulate_blastn_script]}" \
   "${args_dict[tabulate_blastn_align_coverage]}" \
   "${args_dict[tabulate_blastn_align_identity]}" \
   "${args_dict[tabulate_blastn_align_length]}" \
@@ -187,9 +187,9 @@ run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
   "${args_dict[diamond_filter_taxon]}"
 
 
-## CALCULATE CONFUSION MATRIX
+## TABULATE RESULTS
 run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/${args_dict[tabulate_diamond_fast_script]}" \
   "${args_dict[tabulate_diamond_fast_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_align_length]}" \
@@ -201,9 +201,9 @@ run_pipeline_step "tabulate_diamond_fast" "$dataset_name" "$base_dataset_path" \
   "${args_dict[tabulate_diamond_fast_count_reads_extension]}"
 
 
-## CALCULATE CONFUSION MATRIX
+## TABULATE RESULTS
 run_pipeline_step "tabulate_diamond_fast_sensitive" "$dataset_name" "$base_dataset_path" \
-  "$custom_script python $repository_src/pipeline/steps/5-tabulate_known_viruses.py" \
+  "$custom_script python $repository_src/${args_dict[tabulate_diamond_fast_sensitive_script]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_coverage]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_identity]}" \
   "${args_dict[tabulate_diamond_fast_sensitive_align_length]}" \

@@ -185,6 +185,7 @@
     // "betacoronavirus.txt" | "alphainfluenzavirus.txt" | "enterovirus.txt" | "all_removes.txt"
   },
   "tabulate_blastn": {
+    "script": "pipeline/steps/5-tabulate_predicted_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": "_1.txt",
@@ -235,6 +236,7 @@
     // orthoflavivirus = "3044782"
   },
   "tabulate_diamond_fast": {
+    "script": "pipeline/steps/5-tabulate_predicted_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": ".txt",
@@ -251,6 +253,7 @@
     "align_evalue": 0.00001
   },  
   "tabulate_diamond_fast_sensitive": {
+    "script": "pipeline/steps/5-tabulate_predicted_viruses.py",
     "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": ".txt",
@@ -265,41 +268,5 @@
     "align_identity": 50,
     "align_length": 30,
     "align_evalue": 0.001
-  // },
-  // "filter_contigs_diamond": {
-  //   "nprocesses": 1,
-  //   "process_nthreads": 1,
-  //   "input_suffix": "_contig_not_matched_blast.tsv",
-  //   "input_folder": "no_betacov_database/5.2.1-tabulated_result_diamond_fast",
-  //   "output_folder": "no_betacov_database/5.3-filtered_contigs_diamond",
-  //   "delete_preexisting_output_folder": 1,
-  //   "log_file": "5-contigs_not_matched_blast_logs.tar.gz",
-  //   "folder": "no_betacov_database/4.3-viral_discovery_contigs_metaspades",
-  //   "extension": ".contigs.fa"
-  // },
-  // "diamond_sensitive": {
-  //   "nprocesses": 2,
-  //   "process_nthreads": 20,
-  //   "input_suffix": ".contigs.fa",
-  //   "input_folder": "no_betacov_database/5.3-filtered_contigs_diamond",
-  //   "output_folder": "no_betacov_database/5.4-filtered_contigs_diamond_sensitive",
-  //   "delete_preexisting_output_folder": 1,
-  //   "log_file": "5.4-filtered_contigs_diamond_sensitive_logs.tar.gz",
-  //   "sensitivity": "--ultra-sensitive"
-  // },
-  // "tabulate_diamond_sensitive": {
-  //   "nprocesses": 1,
-  //   "process_nthreads": 1,
-  //   "input_suffix": ".txt",
-  //   "input_folder": "no_betacov_database/5.2-filtered_contigs_diamond_fast",
-  //   "output_folder": "no_betacov_database/5.2.1-tabulated_result_diamond_fast",
-  //   "delete_preexisting_output_folder": 1,
-  //   "log_file": "5.2.1-tabulated_result_diamond_logs.tar.gz",
-  //   "metadata_path": "data/dataset_mock/metadata",
-  //   "count_reads_folder": "no_betacov_database/4.3.3-tabulated_result_blastn",
-  //   "count_reads_extension": "_contig_not_matched_blast.tsv",
-  //   "align_identity": 20,
-  //   "align_length": 10,
-  //   "align_evalue": 0.001
   }
 }
