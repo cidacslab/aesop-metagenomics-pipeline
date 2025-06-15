@@ -100,7 +100,7 @@
     "log_file": "1.2-sample_decontamination-bowtie2_remove_ercc_reads_logs.tar.gz"
   },
   "fastp": {
-    "nprocesses": 4,
+    "nprocesses": 8,
     "process_nthreads": 8,
     "input_suffix": "_1.fastq.gz",
     "input_folder": "1.2-bowtie_ercc_output",
@@ -153,8 +153,8 @@
     "filter_taxons": "0,10239"
   },
   "assembly_metaspades": {
-    "nprocesses": 3,
-    "process_nthreads": 20,
+    "nprocesses": 4,
+    "process_nthreads": 15,
     "input_suffix": "_1.fastq.gz",
     "input_folder": "no_betacov_database/4.1-viral_discovery_reads",
     "output_folder": "no_betacov_database/4.3-viral_discovery_contigs_metaspades",
@@ -162,8 +162,8 @@
     "log_file": "4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
   },
   "mapping_metaspades": {
-    "nprocesses": 3,
-    "process_nthreads": 10,
+    "nprocesses": 4,
+    "process_nthreads": 15,
     "input_suffix": ".contigs.fa",
     "input_folder": "no_betacov_database/4.3-viral_discovery_contigs_metaspades",
     "output_folder": "no_betacov_database/4.3.1-viral_discovery_mapping_metaspades",
@@ -173,8 +173,8 @@
     "origin_input_folder": "no_betacov_database/4.1-viral_discovery_reads"
   },
   "blastn": {
-    "nprocesses": 3,
-    "process_nthreads": 12,
+    "nprocesses": 4,
+    "process_nthreads": 15,
     "input_suffix": ".contigs.fa",
     "input_folder": "no_betacov_database/4.3-viral_discovery_contigs_metaspades",
     "output_folder": "no_betacov_database/4.3.2-blastn_contigs_metaspades",
@@ -203,7 +203,7 @@
     "align_evalue": 0.00001
   },
   "filter_contigs_blastn": {
-    "nprocesses": 1,
+    "nprocesses": 30,
     "process_nthreads": 1,
     "input_suffix": "_contig_not_matched_blast.tsv",
     "input_folder": "no_betacov_database/4.3.3-tabulated_result_blastn",

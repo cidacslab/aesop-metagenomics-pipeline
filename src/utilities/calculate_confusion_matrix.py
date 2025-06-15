@@ -1,12 +1,14 @@
-import csv, copy
-from . import taxonomy_tree_parser as TaxonomyParser
-from . import blast_result_parser as BlastResultParser
+import csv
+from collections import defaultdict
+from dataclasses import dataclass, field
 from . import get_fastq_read_info as FastqReadInfo
+from . import taxonomy_tree_parser as TaxonomyParser
+from . import alignment_result_parser as AlignmentResultParser
 
 
 #########################################################################################
 #### INCLUDE SAMPLES METADATA
-def load_accession_metadata(metadata_file):  
+def load_accession_metadata(metadata_file):
   accession_taxids = {}  
   with open(metadata_file, "r") as file:
     for line in file:
@@ -17,32 +19,68 @@ def load_accession_metadata(metadata_file):
       accession_taxids[accession] = taxid
   return accession_taxids
 
+
+#########################################################################################
+#### CONTIG TO READ DATA FUNCTIONS
+@dataclass
+class ContigInfo:
+  reads: set = field(default_factory=set)
+  accession_read_count: dict = field(default_factory=dict)
+  
+  def add_read_by_accession(self, read_seqid: str):
+    # if read_seqid not in self.reads:
+    accession = read_seqid.rsplit('_', 2)[0]
+    if accession not in self.accession_read_count:
+      self.accession_read_count[accession] = 0
+    self.accession_read_count[accession] += 1
+    self.reads.add(read_seqid)
+  
+  def __str__(self):
+    return str(self.accession_read_count)
+
+
 #########################################################################################
 ## SET GROUND TRUTH
-def count_remaining_contigs_to_reads(remaining_contigs_file, contig_to_reads):
-  accession_read_abundance = {}
+def count_contig_reads(mapping_file):
+  # Dictionary to store contig to unique reads mapping
+  # Open the file and read line by line
+  contig_reads = defaultdict(ContigInfo)
+  mapped_reads = defaultdict(int)
+  with open(mapping_file, 'r') as file:
+    reader = csv.reader(file, delimiter='\t')
+    for row in reader:
+      contig_name = row[0].strip()
+      read_mapped_name = row[1].strip()
+      mapped_reads[read_mapped_name] += 1
+      if mapped_reads[read_mapped_name] > 2: 
+        print(f"** MAPPING ERROR: read {read_mapped_name} was mapped to a contig " +
+          f"{mapped_reads[read_mapped_name]} times")
+      # Add the read to the set for the given contig
+      contig_reads[contig_name].add_read_by_accession(read_mapped_name)
+  return contig_reads, mapped_reads
+
+
+def count_remaining_contigs_reads(remaining_contigs_file):
+  accession_abundance = defaultdict(FastqReadInfo.ReadInfo)
+  contig_reads = defaultdict(ContigInfo)
   with open(remaining_contigs_file, "r") as file:
     reader = csv.reader(file, delimiter="\t")
     next(reader) # remove reader
     for row in reader:
       contig_name = row[0].strip()
       accessions = row[1].strip()[1:-1].split(",")
-      if contig_name not in contig_to_reads:
-        contig_to_reads[contig_name] = BlastResultParser.ContigInfo()
       for accession_count in accessions:
         count_splits = accession_count.split(":")
         accession = count_splits[0].strip().replace("'", "")
         abundance = int(count_splits[1].strip())
-        if accession not in accession_read_abundance:
-          accession_read_abundance[accession] = FastqReadInfo.ReadInfo()
-        accession_read_abundance[accession].count += abundance
-        contig_to_reads[contig_name].accession_read_count[accession] = abundance
-  return accession_read_abundance
+        accession_abundance[accession].count += abundance
+        contig_reads[contig_name].accession_read_count[accession] = abundance
+  return accession_abundance, contig_reads
 
 
 def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, ground_truth_tree, output_file):
   output_content = "read_accession_id,count\n"
-  
+  # include the number of reads of each accession as the abundance of each taxa
   for accession, taxid in accession_taxids.items():
     if accession in accession_abundance:
       abundance = accession_abundance[accession].count
@@ -50,16 +88,16 @@ def set_ground_truth_tree_real_counts(accession_abundance, accession_taxids, gro
       output_content += f"{accession},{abundance}\n"
     else:
       print(f"Accession {accession} not present in ground truth.")
-  
+  # write output
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
 
 
 #########################################################################################
-#### INCLUDE BLAST RESULT
+#### SET CLASSIFIED TRUE POSITIVE TREE
 def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tree, count):
   # get taxids of the correct accession full taxonomy
-  true_positive_taxids = set()
+  true_positive_taxids = set()  
   true_node = true_positive_tree.get(true_taxid, None)
   while true_node is not None:
     true_positive_taxids.add(true_node.taxid)
@@ -78,154 +116,51 @@ def set_true_positive_in_taxonomy(true_taxid, classified_taxid, true_positive_tr
   return classified_node if is_true_positive else None
 
 
-def load_blast_results(contig_reads, contig_to_blast_result, accession_taxids,
-  blast_classified_tree, true_positive_tree, output_no_matched_contig_file):
+#########################################################################################
+#### SET ALIGNMENT CLASSIFIED TREE
+def set_alignment_best_species_hit_in_trees(contig_reads, contig_species_taxids,
+  accession_taxids, alignment_classified_tree, true_positive_tree):
   """
-  Process BLAST results and update the classification and true positive trees.
+  Process alignment results and update the classification and true positive trees.
   Parameters:
     contig_reads (dict): Mapping of contig to its read information.
-    contig_to_blast_result (dict): Mapping of contig to its BLAST result.
+    contig_species_taxids (dict): Mapping of contig to species taxids with best hit.
     accession_taxids (dict): Mapping of accession to taxid.
-    blast_classified_tree (TaxonomyTree): Tree representing classified results from BLAST.
+    alignment_classified_tree (TaxonomyTree): Tree representing classified results from alignment.
     true_positive_tree (TaxonomyTree): Tree representing true positive results.
-    output_no_matched_contig_file (str): File path to output contigs with no matches.
   
-  The function iterates over contigs, updating the blast classified and true positive trees
-  based on BLAST results. It writes contigs with no BLAST matches to a specified output file.
+  The function iterates over contigs, updating the alignment classified and true positive trees
+  based on alignment results.
   """
-  # initialize output content
-  output_content = "contig\tread_count\n"
-  
-  for contig, contig_info in contig_reads.items():
-    if contig in contig_to_blast_result:
-      print(f"{contig}: {contig_info.accession_read_count}")
-      # contig_info = contig_reads[contig]
-      blast_result = contig_to_blast_result[contig]
-      taxid = blast_result['staxids'].strip().split(";")[0]
-      for accession, read_count in contig_info.accession_read_count.items():
-        blast_classified_tree[taxid].add_abundance(read_count)
-        # set true positive tree
-        true_taxid = accession_taxids.get(accession, 0)
-        blast_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
-        is_true_positive = blast_node is not None
-        #if not is_true_positive:
-        print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
-              f"from {accession}:{true_taxid}:{blast_node}.")
-    else:
-      # print(f"Contig {contig} had no read mapped!")
-      output_content += f"{contig}\t{str(contig_info.accession_read_count)}\n"
-  
-  with open(output_no_matched_contig_file, "w") as out_file:
-    out_file.write(output_content)
-
-
-def include_results_in_level(previous_results, level_results, included_taxids, level, taxonomic_tree):
-  for taxid, result_info in previous_results.items():
-    node = taxonomic_tree[taxid]  
-    level_enum = TaxonomyParser.Level(level)
-    level_node = node.get_parent_by_level(level_enum)
-    if level_node is not None:
-      if level_node.taxid not in level_results:
-        level_results[level_node.taxid] = result_info
-      else:
-        level_results[level_node.taxid].include_result_info(result_info)
-      included_taxids.append(taxid)
-
-
-def get_blast_result_per_level(contig_results, level, previous_results, taxonomic_tree):
-  level_results, included_taxids = {}, []
-  # Try to include previous results in current level
-  include_results_in_level(previous_results, level_results, included_taxids, level, taxonomic_tree)
-  include_results_in_level(contig_results, level_results, included_taxids, level, taxonomic_tree)
-  # Remove the included taxids from previous results
-  for taxid in included_taxids:
-    contig_results.pop(taxid, None)
-    previous_results.pop(taxid, None)
-  # Keep the unused results in contig_results dict
-  for taxid in previous_results:
-    contig_results[taxid] = previous_results[taxid]
-  
-  return level_results
-
-
-def load_best_blast_results(contig_reads, blast_results, align_filters, accession_taxids, 
-  blast_classified_tree, true_positive_tree, output_unmatches_file, output_matches_file):
-  """
-  Process BLAST results and update the classification and true positive trees.
-  Parameters:
-    contig_reads (dict): Mapping of contig to its read information.
-    contig_to_blast_result (dict): Mapping of contig to its BLAST result.
-    accession_taxids (dict): Mapping of accession to taxid.
-    blast_classified_tree (TaxonomyTree): Tree representing classified results from BLAST.
-    true_positive_tree (TaxonomyTree): Tree representing true positive results.
-    output_no_matched_contig_file (str): File path to output contigs with no matches.
-  
-  The function iterates over contigs, updating the blast classified and true positive trees
-  based on BLAST results. It writes contigs with no BLAST matches to a specified output file.
-  """
-  # initialize output content
-  output_not_match = "contig\tread_count\n"
-  output_matches = "contig,level,taxid,name,identity_threshold,mean_identity,identity_coverage,coverage_lenght,identity_hits\n"
-  identity_thresholds = [99, 98, 97, 95, 92, 90, 85, 80, 70, 60, 50, 40, 30]  
-  # identity_thresholds = [97, 90, 70, 50, 30]
-  
-  for contig, contig_info in contig_reads.items():    
-    contig_results = BlastResultParser.get_contig_results(
-      blast_results, contig, align_filters['evalue'], align_filters['length'])
-    if len(contig_results) == 0:
-      output_not_match += f"{contig}\t{str(contig_info.accession_read_count)}\n"
-      continue    
-    print(f"{contig}: {contig_info.accession_read_count}")
-    
-    level_results = {}
-    species_results = {}
-    for level in range(9, 1, -1):
-      level_results = get_blast_result_per_level(
-        contig_results, level, level_results, blast_classified_tree)
-      if level == 9:
-        species_results = copy.deepcopy(level_results) # save species level_results
-      for taxid, result_info in level_results.items():
-        for min_identity in identity_thresholds:
-          idt,cov,hits,length = result_info.get_stats_per_identity(min_identity)
-          name = blast_classified_tree[taxid].name
-          output_matches += f"{contig},{level},{taxid},{name},{min_identity},{idt},{cov},{length},{hits}\n"
-    
-    print(f"{contig}: matched with species: {species_results.keys()}")
-    best_taxids = BlastResultParser.get_best_result(
-      species_results, align_filters["identity"], align_filters["coverage"])
-    if len(best_taxids) == 0:
-      output_not_match += f"{contig}\t{str(contig_info.accession_read_count)}\n"
+  for contig in contig_species_taxids:
+    species_best_taxids = contig_species_taxids[contig]
+    if contig not in contig_reads or len(species_best_taxids) == 0:
+      print(f"Didn't find best hit for species in {contig}")
       continue
     
+    contig_info = contig_reads[contig]
     for accession, read_count in contig_info.accession_read_count.items():
       true_taxid = accession_taxids.get(accession, 0)
       true_node = true_positive_tree.get(true_taxid, None)
-      true_species = true_node.get_parent_by_level(TaxonomyParser.Level.S) if true_node is not None else None
+      true_species = true_node.get_highest_node_at_level(TaxonomyParser.Level.S) if true_node is not None else None
       # get true tax id at species level
       true_species_taxid = true_species.taxid if true_species is not None else 0
-      taxid = best_taxids[0]
+      taxid = species_best_taxids[0]
       # check if true species taxid is in best taxids
-      for taxid in best_taxids:
+      for taxid in species_best_taxids:
         if taxid == true_species_taxid:
           break
       # set classified tree for chosen taxid
-      blast_classified_tree[taxid].add_abundance(read_count)
+      alignment_classified_tree[taxid].add_abundance(read_count)
       # set true positive tree
-      blast_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
-      is_true_positive = blast_node is not None
+      alignment_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
+      is_true_positive = alignment_node is not None
       print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
-            f"from {accession}:{true_taxid}:{blast_node}.")
-  
-  with open(output_unmatches_file, "w") as out_file:
-    out_file.write(output_not_match)
-  
-  with open(output_matches_file, "w") as contig_file:
-    contig_file.write(output_matches)
+            f"from {accession}:{true_taxid}:{alignment_node}.")
 
 
 #########################################################################################
-## INCLUDE KRAKEN RESULT
-
+## SET KRAKEN CLASSIFIED TREE
 def include_k2result_for_unmatched(classified_tree, true_positive_tree, accession_taxids, mapped_reads, kout_file):
   print(f"Get accession taxid abundance from: {kout_file}")
   k2result_accession_to_taxid = {}
@@ -246,15 +181,12 @@ def include_k2result_for_unmatched(classified_tree, true_positive_tree, accessio
           set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_unmapped_count)
         # get result by accession
         if accession_id not in k2result_accession_to_taxid:
-          k2result_accession_to_taxid[accession_id] = {}
-        if taxid not in k2result_accession_to_taxid[accession_id]:
-          k2result_accession_to_taxid[accession_id][taxid] = 0
+          k2result_accession_to_taxid[accession_id] = defaultdict(int)
         k2result_accession_to_taxid[accession_id][taxid] += 1
   return k2result_accession_to_taxid
 
-
 ## INCLUDE KRAKEN TRUE POSITIVE RESULT
-def set_true_positive_tree_counts(k2result_accession_to_taxid, accession_taxids, true_positive_tree):
+def set_kraken_true_positive_tree_counts(k2result_accession_to_taxid, accession_taxids, true_positive_tree):
   # loop through all accessions
   for accession, true_taxid in accession_taxids.items():
     if accession not in k2result_accession_to_taxid:
@@ -271,7 +203,8 @@ def set_true_positive_tree_counts(k2result_accession_to_taxid, accession_taxids,
 
 #########################################################################################
 #### CALCULATE CONFUSION MATRIX
-def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mapped_to_tax, correct_tax_reads):
+def get_confusion_matrix_values(sample_total_reads, total_tax_reads,
+  total_mapped_to_tax, correct_tax_reads):
   """
   Calculate the values for a single node in the confusion matrix.
   Parameters:
@@ -299,9 +232,8 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads, total_mappe
   return (true_positive, true_negative, false_positive, false_negative)
 
 
-def get_output_for_confusion_matrix(
-  node, parent_taxid, included_taxids, sample_total_reads,
-  ground_truth_tree, true_positive_tree, classified_tree):
+def get_output_for_confusion_matrix(node, parent_taxid, included_taxids,
+  sample_total_reads, ground_truth_tree, true_positive_tree, classified_tree):
   """
   Get the output for a single node in the confusion matrix.
   Parameters:
@@ -328,9 +260,8 @@ def get_output_for_confusion_matrix(
   return output_content
 
 
-def calculate_confusion_matrix(
-  accession_taxids, sample_total_reads, ground_truth_tree,
-  true_positive_tree, classified_tree, output_file):
+def calculate_confusion_matrix(accession_taxids, sample_total_reads,
+  ground_truth_tree, true_positive_tree, classified_tree, output_file):
   """
   Calculate the confusion matrix for the given accession-taxid mapping.
   Parameters:
@@ -352,7 +283,7 @@ def calculate_confusion_matrix(
     node = ground_truth_tree[taxid]
     accession_total_reads = node.acumulated_abundance
     
-    domain_node = node.get_parent_by_level(TaxonomyParser.Level.D)
+    domain_node = node.get_highest_node_at_level(TaxonomyParser.Level.D)
     if domain_node.name.lower() != "viruses":
       output_content += get_output_for_confusion_matrix(
         domain_node, parent_taxid, included_taxids, sample_total_reads,
@@ -360,9 +291,8 @@ def calculate_confusion_matrix(
       continue
     
     nodes_by_level = []
-    for level in range(9, 1, -1):
-      level_enum = TaxonomyParser.Level(level)
-      level_node = node.get_parent_by_level(level_enum)
+    for level in reverse(TaxonomyParser.level_list(above_level=1)):
+      level_node = node.get_highest_node_at_level(level)
       if level_node is not None:
         nodes_by_level.append(level_node)
     
@@ -376,12 +306,12 @@ def calculate_confusion_matrix(
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
 
+
 #########################################################################################
 #### LOAD TAXONOMY TREES
 #########################################################################################
-def load_ground_truth_tree(
-  ground_truth_tree, accession_taxids, count_reads_file,
-  count_reads_extension, contig_reads, filename, output_file):
+def load_ground_truth_tree(ground_truth_tree, accession_taxids,
+  count_reads_file, count_reads_extension, mapping_file, filename, output_file):
   """
   Create the ground truth tree with the real taxa from the mocks and the number of reads from each one.
   Parameters:
@@ -389,7 +319,7 @@ def load_ground_truth_tree(
     accession_taxids (dict): mapping of accession to taxid
     count_reads_file (str): file to read the number of reads from each accession
     count_reads_extension (str): file extension for the type of count read function to use
-    contig_reads (dict): mapping of contig to reads
+    mapping_file (str): file to map read name to contigs
     filename (str): filename to use for the output
     output_file (str): file to write the output to  
   Returns:
@@ -399,59 +329,60 @@ def load_ground_truth_tree(
   TaxonomyParser.clear_abundance_from_tree(ground_truth_tree)
   
   # include the number of reads of each accession as the abundance of each taxa species
-  accession_abundance = {}
+  accession_abundance, contig_reads, mapped_reads = {}, {}, {}
   if count_reads_extension.endswith(".fastq.gz"):
     accession_abundance = FastqReadInfo.count_reads_by_sequence_id(count_reads_file)
+    contig_reads, mapped_reads = count_contig_reads(mapping_file)
     # double the abundance value to account for each mate from the sequencing
     for acc in accession_abundance:
       accession_abundance[acc].count *= 2
-  elif count_reads_extension.endswith("_contig_not_matched_blast.tsv"):
-    accession_abundance = count_remaining_contigs_to_reads(count_reads_file, contig_reads)
+  elif "_contig_unmatched_" in count_reads_extension:
+    accession_abundance, contig_reads = count_remaining_contigs_reads(count_reads_file)
   else:
     print(f"Count read function doesn't exist for extension: {count_reads_extension}")
-    return  
+    return accession_abundance, contig_reads
+  
+  # calculate total abundance
+  total_abundance = sum([accession_abundance[acc].count for acc in accession_abundance])
   
   # set counts on the ground_truth_tree
-  set_ground_truth_tree_real_counts(
-    accession_abundance, accession_taxids, ground_truth_tree, output_file)
+  set_ground_truth_tree_real_counts(accession_abundance,
+    accession_taxids, ground_truth_tree, output_file)
   
-  return accession_abundance
+  return total_abundance, contig_reads, mapped_reads
 
 
-def load_blast_tree(classified_tree, true_positive_tree, accession_taxids, contig_reads,
-  align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file):  
+def load_alignment_tree(classified_tree, true_positive_tree, accession_taxids, contig_reads,
+  align_filters, alignment_file, output_unmatches_file, output_matches_file):  
   """
-  Calculate the blast classified tree and the true positive tree.
+  Calculate the alignment classified tree and the true positive tree.
   Parameters:
-    classified_tree (TaxonomyTree): blast classified tree
+    classified_tree (TaxonomyTree): alignment classified tree
     true_positive_tree (TaxonomyTree): true positive tree
     accession_taxids (dict): mapping of accession to taxid
     contig_reads (dict): mapping of contig to reads
     align_filters (AlignmentFilters): alignment filters
-    blast_file (str): blast output file
-    mapping_file (str): file to map reads to contigs
-    output_file (str): file to write the output to
+    alignment_file (str): alignment output file
+    output_unmatches_file (str): file to write the alignment unmatched contigs
+    output_matches_file (str): file to write the output the alignment matches
   """
   # clean the true positive tree
   TaxonomyParser.clear_abundance_from_tree(true_positive_tree)
-  # clean the blast result tree
+  # clean the alignment result tree
   TaxonomyParser.clear_abundance_from_tree(classified_tree)
   
-  mapped_reads = {}
-  # get blast results for the contigs and the reads mapped to each contig
-  blast_result = BlastResultParser.get_blast_results(blast_file)
-  if len(contig_reads) == 0:
-    BlastResultParser.count_contig_reads(mapping_file, contig_reads, mapped_reads)
+  # get the best species hit for each contig from alignment results
+  _, contig_species_taxids = AlignmentResultParser.load_alignment_results(
+    contig_reads, alignment_file, align_filters, classified_tree,
+    output_unmatches_file, output_matches_file)
   
-  # Set blast classified tree and the true positive
-  load_best_blast_results(contig_reads, blast_result, align_filters, accession_taxids,
-    classified_tree, true_positive_tree, output_unmatches_file, output_matches_file)
-  return mapped_reads
+  # Set alignment classified tree and the true positive
+  set_alignment_best_species_hit_in_trees(contig_reads, contig_species_taxids,
+    accession_taxids, classified_tree, true_positive_tree)
 
 
-def load_kraken_tree(
-  classified_tree, true_positive_tree, accession_taxids,
-  kreport_file, k2result_accession_to_taxid):
+def load_kraken_tree(classified_tree, true_positive_tree,
+  accession_taxids, kreport_file, k2result_accession_to_taxid):
   """
   Calculate the kraken classified tree and the true positive tree.
   Parameters:
@@ -472,7 +403,7 @@ def load_kraken_tree(
   for k,node in report_tree.items():
     if k not in classified_tree:
       print(f"Node not found in taxonomy tree: {node}")
-    else:
+    elif node.abundance > 0:
       classified_tree[k].add_abundance(node.abundance * 2)
   
   # double the abundance value to account for each mate from the sequencing
@@ -481,5 +412,5 @@ def load_kraken_tree(
       k2result_accession_to_taxid[accession][taxid] *= 2
   
   # create the true positive tree adding the abundance only if they are correctly mapped
-  set_true_positive_tree_counts(
+  set_kraken_true_positive_tree_counts(
     k2result_accession_to_taxid, accession_taxids, true_positive_tree)

@@ -4,13 +4,13 @@ sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
 sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
 import utilities.taxonomy_tree_parser as TaxonomyParser
-import utilities.calculate_confusion_matrix as CMTrees
+import utilities.calculate_confusion_matrix as ConfusionMatrix
 
 
 def tabulate_known_viruses(
   ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
   input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
-  input_blast_path, input_kraken_path, kraken_folder, filename, output_path):
+  input_alignment_path, input_kraken_path, kraken_folder, filename, output_path):
   """
   Tabulates known viruses by creating a ground truth tree from mock data, setting up
   confusion matrices for BLAST and Kraken classification results.
@@ -22,67 +22,63 @@ def tabulate_known_viruses(
     input_count_reads_path: Path to the directory containing count reads files.
     count_reads_extension: File extension for count reads files.
     input_mapping_path: Path to the directory containing mapping files.
-    align_filters: Alignment filters for BLAST results (e.g., coverage, identity).
-    input_blast_path: Path to the directory containing BLAST result files.
+    align_filters: Filters for alignment results (e.g., coverage, identity).
+    input_alignment_path: Path to the directory containing alignment result files.
     input_kraken_path: Path to the directory containing Kraken result files.
+    kraken_folder: The folder containing Kraken results.
     filename: The base filename for input and output files.
     output_path: Path to the directory where output files will be saved.
   Processes:
   1. Loads and processes the ground truth tree using mock data to determine the real taxa and their abundance.
-  2. Sets up the BLAST confusion matrix by loading the BLAST result tree, applying alignment filters, and calculating metrics.
-  3. If provided, sets up the Kraken confusion matrix by loading the Kraken result tree and calculating metrics.
+  2. Sets up the alignment confusion matrix by loading the alignment result file, applying alignment filters, and calculating metrics.
+  3. If provided, sets up the Kraken confusion matrix by loading the Kraken result and calculating metrics.
   """
   #######################################################################################################
   # GROUND TRUTH
   # contig to reads files  
-  contig_reads = {}
   count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
   output_file = os.path.join(output_path, filename + "_ground_truth.csv")
+  mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
   # create the ground truth tree with the real taxa from the mocks and the number of reads from each one    
-  accession_abundance = CMTrees.load_ground_truth_tree(
-    ground_truth_tree, accession_taxids, count_reads_file,
-    count_reads_extension, contig_reads, filename, output_file)    
-  # calculate total abundance
-  total_abundance = sum([accession_abundance[acc].count for acc in accession_abundance])
+  total_abundance, contig_reads, mapped_reads = ConfusionMatrix.load_ground_truth_tree(
+    ground_truth_tree, accession_taxids, count_reads_file, count_reads_extension,
+    mapping_file, filename, output_file)
   
   #######################################################################################################
-  # SET BLAST CONFUSION MATRIX
-  # blast files
-  blast_file = os.path.join(input_blast_path, filename + ".txt")
-  mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
-  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.tsv")
-  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.tsv")
-  # load blast tree
-  mapped_reads = CMTrees.load_blast_tree(classified_tree, true_positive_tree, accession_taxids,
-    contig_reads, align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file)
-  # Calculate confusion matrix for blast
+  # SET ALIGNMENT CONFUSION MATRIX
+  # alignment files
+  alignment_file = os.path.join(input_alignment_path, filename + ".txt")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.csv")
+  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.csv")
+  # load alignment tree
+  ConfusionMatrix.load_alignment_tree(classified_tree, true_positive_tree,
+    accession_taxids, contig_reads, align_filters, alignment_file, mapping_file,
+    output_unmatches_file, output_matches_file)
+  # Calculate confusion matrix for alignment
   output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
-  CMTrees.calculate_confusion_matrix(accession_taxids, total_abundance,
+  ConfusionMatrix.calculate_confusion_matrix(accession_taxids, total_abundance,
     ground_truth_tree, true_positive_tree, classified_tree, output_file)
   
   #######################################################################################################
   # SET KRAKEN CONFUSION MATRIX
-  if kraken_folder != "":
+  if kraken_folder:
     # get kraken result for unmapped reads (the ones didn't form contigs)
     kout_file = os.path.join(input_kraken_path, filename + ".kout")
-    k2result_accession_to_taxid = CMTrees.include_k2result_for_unmatched(
+    k2result_accession_to_taxid = ConfusionMatrix.include_k2result_for_unmatched(
       classified_tree, true_positive_tree, accession_taxids, mapped_reads, kout_file)
     # Calculate confusion matrix for blast + kraken (all known viruses)
     output_file = os.path.join(output_path, filename + "_known_viruses_report.csv")
-    CMTrees.calculate_confusion_matrix(
-      accession_taxids, total_abundance, ground_truth_tree,
-      true_positive_tree, classified_tree, output_file)
+    ConfusionMatrix.calculate_confusion_matrix(accession_taxids, total_abundance,
+      ground_truth_tree, true_positive_tree, classified_tree, output_file)
     
     # load kraken tree
     kreport_file = os.path.join(input_kraken_path, filename + ".kreport")
-    CMTrees.load_kraken_tree(
-      classified_tree, true_positive_tree, accession_taxids,
-      kreport_file, k2result_accession_to_taxid)
+    ConfusionMatrix.load_kraken_tree(classified_tree, true_positive_tree,
+      accession_taxids, kreport_file, k2result_accession_to_taxid)
     # Calculate confusion matrix for kraken
     output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
-    CMTrees.calculate_confusion_matrix(
-      accession_taxids, total_abundance, ground_truth_tree,
-      true_positive_tree, classified_tree, output_file)
+    ConfusionMatrix.calculate_confusion_matrix(accession_taxids, total_abundance,
+      ground_truth_tree, true_positive_tree, classified_tree, output_file)
 
 
 
@@ -109,7 +105,7 @@ def main():
   input_count_reads_path = os.path.join(base_path, count_reads_folder)
   input_mapping_path = os.path.join(base_path, mapping_folder)
   input_kraken_path = os.path.join(base_path, kraken_folder)
-  input_blast_path = input_dir
+  input_alignment_path = input_dir
   align_filters = {
     "length": align_length, "identity": align_identity, 
     "coverage": align_coverage, "evalue": align_evalue }
@@ -134,7 +130,7 @@ def main():
   metadata_file = metadata_path
   # meta_filename = filename.rsplit("_", 1)[0]
   # metadata_file = os.path.join(metadata_path, meta_filename + ".txt")
-  accession_taxids = CMTrees.load_accession_metadata(metadata_file)
+  accession_taxids = ConfusionMatrix.load_accession_metadata(metadata_file)
   
   # USE "FOR" IF MULTIPLE FILES
   for i in range(1, 11):
@@ -142,8 +138,6 @@ def main():
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
     filename = f"{os.path.basename(input_file).rsplit('_', maxsplit=1)[0]}_{i}"
     print(f"\n\nB_PID: {pid} [{timestamp}]: Started task Input: {filename}")
-    # print(f"Analyzing file: {input_file}")
-    # filename = os.path.basename(input_file).split(".")[0]  
     
     ## REMOVE "FOR" IF SINGLE FILE
     # print(f"Analyzing file: {input_file}")
@@ -152,7 +146,7 @@ def main():
     tabulate_known_viruses(
       ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
       input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
-      input_blast_path, input_kraken_path, kraken_folder, filename, output_path)
+      input_alignment_path, input_kraken_path, kraken_folder, filename, output_path)
     # break
   
   # Print end message

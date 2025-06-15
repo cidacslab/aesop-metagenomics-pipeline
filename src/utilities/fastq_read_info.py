@@ -3,20 +3,21 @@ from Bio import SeqIO
 from dataclasses import dataclass
 
 
-def get_read_abundance(input_file):
-  line_counter = 0
-  if input_file.endswith(".gz"):
-    with gzip.open(input_file, 'rt') as fastq_file:
-      for line in fastq_file:
-        line = line.strip()
-        if len(line) > 0:
-          line_counter += 1
+def get_total_abundance(fastq_file):
+  # Check if the file is gzipped
+  if fastq_file.endswith(".fastq.gz"):
+    file_handle = gzip.open
+  elif fastq_file.endswith(".fastq"):
+    file_handle = open
   else:
-    with open(input_file, 'rt') as fastq_file:
-      for line in fastq_file:
-        line = line.strip()
-        if len(line) > 0:
-          line_counter += 1
+    raise ValueError(f"Trying to read invalid fastq file: {fastq_file}")
+  # Count reads in the FASTQ file
+  line_counter = 0
+  with file_handle(fastq_file, "rt") as file:
+    for line in file:
+      line = line.strip()
+      if len(line) > 0:
+        line_counter += 1
   return int(line_counter/4)
 
 
@@ -31,18 +32,18 @@ class ReadInfo:
 
 
 def count_reads_by_sequence_id(fastq_file):
-  reads = {}
-  total_read_count = 0
-  
   # Check if the file is gzipped
-  if fastq_file.endswith("gz"):
-    handle = gzip.open(fastq_file, "rt")
+  if fastq_file.endswith(".fastq.gz"):
+    file_handle = gzip.open
+  elif fastq_file.endswith(".fastq"):
+    file_handle = open
   else:
-    handle = open(fastq_file, "rt")
-  
-  with handle:
-    # Parse the FASTQ file
-    for record in SeqIO.parse(handle, "fastq"):
+    raise ValueError(f"Trying to read invalid fastq file: {fastq_file}")  
+  # Parse the FASTQ file
+  reads = {}
+  total_read_count = 0  
+  with file_handle(fastq_file, "rt") as file:
+    for record in SeqIO.parse(file, "fastq"):
       # Increment the count for this sequence ID
       record_id = record.id.rsplit('_', 2)[0]
       if record_id not in reads:

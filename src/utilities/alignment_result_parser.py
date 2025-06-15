@@ -1,0 +1,236 @@
+import csv, math
+from collections import defaultdict
+from dataclasses import dataclass, field
+from .utility_functions import is_equal, bigger_or_equal
+from . import taxonomy_tree_parser as TaxonomyParser
+
+
+#########################################################################################
+#### ALIGNMENT DATA FUNCTIONS
+
+@dataclass
+class ResultInfo:
+  contig_length: int = 0
+  contig_coverage: list[int] = field(default_factory=list)
+  hits_pident: list[int] = field(default_factory=list)
+  
+  def add_alignment_result(self, result_row):
+    length = int(result_row['qlen'])
+    identity = float(result_row['pident'])
+    qstart = int(result_row['qstart'])
+    qend = int(result_row['qend'])
+    # init attributes when adding first result
+    if self.contig_length == 0:
+      self.contig_length = length
+      self.contig_coverage = [0] * length
+    elif self.contig_length != length:
+      raise ValueError("Trying to include invalid result: " +
+        f"contig legth: {self.contig_length} / result: {result_row}")
+    # update coverage with best identity for position
+    for i in range(qstart-1, qend):
+      if identity > self.contig_coverage[i]:
+        self.contig_coverage[i] = identity
+    # add hit identity
+    self.hits_pident.append(identity)
+  
+  def include_result_info(self, result_info):
+    if self.contig_length != result_info.contig_length:
+      raise ValueError("Trying to include invalid result: " +
+        f"contig legth: {self.contig_length} / result: {result_row}")
+    for i in range(self.contig_length):      
+      if result_info.contig_coverage[i] > self.contig_coverage[i]:
+        self.contig_coverage[i] = result_info.contig_coverage[i]
+    self.hits_pident.extend(result_info.hits_pident)
+  
+  def get_stats_per_identity(self, min_identity):    
+    values = [idt for idt in self.contig_coverage if bigger_or_equal(idt, min_identity)]
+    mean_identity = sum(values) / len(values) if len(values) > 0 else 0
+    identity_coverage = len(values) * 100.0 / self.contig_length if self.contig_length > 0 else 0
+    identity_hits = sum([1 for idt in self.hits_pident if bigger_or_equal(idt, min_identity)])
+    coverage_lenght = len(values)
+    return (mean_identity, identity_coverage, coverage_lenght, identity_hits)
+
+
+#########################################################################################
+#### GET RESULTS FROM ALIGNMENT FILE
+
+def get_alignment_results(input_file):  
+  # Dictionary to store each query ID and its corresponding row
+  alignment_results = []
+  # Open the alignment output file and use csv.DictReader to read it
+  with open(input_file, 'r') as infile:
+    filtered_lines = (line for line in infile if not line.startswith('#'))
+    # Use DictReader to automatically map columns to fieldnames
+    reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=['qseqid', 'sseqid', 
+      'pident', 'length', 'qlen', 'slen', 'mismatch', 'gapopen', 'gaps', 'qstart', 'qend',
+      'sstart', 'send', 'evalue', 'bitscore', 'staxids', 'salltitles'])
+    for row in reader:
+      alignment_results.append(row)
+  return alignment_results
+
+
+def get_contig_result_infos(alignment_results, contig, max_evalue=0.00001, min_length=200):
+  # Dictionary to store each contig ResultInfo()
+  contig_result_infos = defaultdict(ResultInfo)
+  
+  for row in alignment_results:
+    # Store the first occurrence of each query in the dictionary
+    contig_id = row['qseqid'].strip()
+    evalue = float(row['evalue'])
+    length = int(row['length'])
+    taxids = row['staxids'].strip().split(';')   
+    if contig_id != contig:
+      continue
+    
+    if (bigger_or_equal(max_evalue, evalue) and length >= min_length):
+      for taxid in taxids:
+        contig_result_infos[taxid].add_alignment_result(row)
+    else:
+      print(f"Query didn't meet the filter criteria: {row}")
+  return contig_result_infos
+
+
+def get_best_hit_taxids(results, min_identity=97.0, min_coverage=95.0):
+  best_taxids, best_coverage = [], 0
+  # get result info stats with specified thresholds for each taxid
+  for taxid, result_info in results.items():
+    result_identity,result_coverage,_,_ = result_info.get_stats_per_identity(min_identity)
+    if  bigger_or_equal(result_identity, min_identity) and
+        bigger_or_equal(result_coverage, min_coverage):
+      # if identity is bigger than threshold the best hit is the best coverage
+      if bigger_or_equal(result_coverage, best_coverage):
+        if is_equal(result_coverage, best_coverage):
+          best_coverage = math.min(best_coverage, result_coverage)
+          best_taxids.append(taxid)
+        else: # else if coverage is bigger
+          best_coverage = result_coverage
+          best_taxids = [taxid]
+  return best_taxids
+
+
+#########################################################################################
+#### CALCULATE ALIGNMENT RESULTS PER LEVEL
+def include_results_in_level(previous_results, level_results, included_taxids, level, taxonomy_tree):
+  for taxid, result_info in previous_results.items():
+    node = taxonomy_tree[taxid]
+    level_node = node.get_highest_node_at_level(level)
+    if level_node is not None:
+      if level_node.taxid not in level_results:
+        level_results[level_node.taxid] = result_info
+      else:
+        level_results[level_node.taxid].include_result_info(result_info)
+      included_taxids.append(taxid)
+
+
+def get_alignment_result_per_level(contig_results, level, previous_results, taxonomy_tree):
+  level_results, included_taxids = {}, []
+  # Try to include previous results in current level
+  include_results_in_level(previous_results, level_results, included_taxids, level, taxonomy_tree)
+  include_results_in_level(contig_results, level_results, included_taxids, level, taxonomy_tree)
+  # Remove the included taxids from previous results
+  for taxid in included_taxids:
+    contig_results.pop(taxid, None)
+    previous_results.pop(taxid, None)
+  # Keep the unused results in contig_results dict
+  for taxid in previous_results:
+    contig_results[taxid] = previous_results[taxid]
+  # Return the level results
+  return level_results
+
+
+def load_alignment_results(contig_reads, alignment_file, align_filters,
+  taxonomy_tree, output_unmatches_file, output_matches_file):
+  """
+  Load alignment results from alignment results file, filter the results
+  by given filters, and write the unmatched contigs and matched contigs
+  to different files.
+  
+  Parameters:
+    contig_reads (dict): mapping of contigs
+    alignment_file (str): alignment output file
+    align_filters (dict): alignment filters
+    taxonomy_tree (TaxonomyTree): taxonomy tree
+    output_unmatches_file (str): file to write the unmatched contigs
+    output_matches_file (str): file to write the matched contigs
+  
+  Returns:
+    contig_results_by_level (dict): mapping of contig to alignment results by level
+    contig_species_taxids (dict): mapping of contig to best hit taxids at species level
+  """
+  # initialize output content
+  output_not_match = "contig,read_count\n"
+  output_matches = "contig,level,taxid,name,identity_threshold," +
+    "mean_identity,coverage_perc,coverage_lenght,hits\n"
+  identity_thresholds = [99, 98, 97, 95, 92, 90, 85, 80, 70, 60, 50, 40, 30]
+  # identity_thresholds = [97, 90, 70, 50, 30]
+  
+  # get alignment results from file
+  alignment_result = get_alignment_results(alignment_file)
+  
+  contig_results_by_level, contig_species_taxids = {}, {}  
+  # get alignment results for the contigs
+  for contig in contig_reads:
+    # get contig alignment results
+    print(f"Getting alignment results for contig {contig}: {contig_reads[contig]}")    
+    contig_results = get_contig_result_infos(alignment_results, contig,
+      align_filters['evalue'], align_filters['length'])
+    # write unmatched contigs with alignment results
+    if len(contig_results) == 0:
+      output_not_match += f"{contig},{str(contig_reads[contig])}\n"
+      continue
+    
+    level_results = {}
+    # get result info per level
+    for level in reverse(TaxonomyParser.level_list(above_level=1)):
+      level_results = get_alignment_result_per_level(
+        contig_results, level, level_results, taxonomy_tree)
+      # collect matches by identity threshold
+      for taxid, result_info in level_results.items():
+        for min_identity in identity_thresholds:
+          name = taxonomy_tree[taxid].name
+          idt,cov,length,hits = result_info.get_stats_per_identity(min_identity)
+          # write matches by identity threshold
+          output_matches += f"{contig},{level},{taxid},{name}," +
+            f"{min_identity},{idt},{cov},{length},{hits}\n"
+      # save level_results in contig_results_by_level
+      contig_results_by_level[contig][level] = copy.deepcopy(level_results)
+    
+    # get species result info
+    species_results = contig_results_by_level[contig][TaxonomyParser.Level.S]
+    print(f"{contig}: matched with species: {species_results.keys()}")
+    # collect species taxids of best hits
+    species_best_hit_taxids = get_best_hit_taxids(species_results,
+      align_filters["identity"], align_filters["coverage"])
+    contig_species_taxids[contig] = species_taxids
+    # write unmatched contigs at species level
+    if len(species_taxids) == 0:
+      output_not_match += f"{contig},{str(contig_reads[contig])}\n"
+  
+  # write unmatched contigs to results
+  with open(output_unmatches_file, "w") as unmatched_file:
+    unmatched_file.write(output_not_match)
+  # write matched contigs to results in different identity thresholds and levels
+  with open(output_matches_file, "w") as matched_file:
+    matched_file.write(output_matches)
+  
+  return contig_results_by_level, contig_species_taxids
+
+
+#########################################################################################
+#### MAIN TEST
+
+def main():
+  # File paths
+  # Replace with your input BLAST output file path
+  blast_file = "/home/pedro/aesop/pipeline/results/viral_discovery_v1/dataset_mock/4.3.2-blastn_contigs_metaspades/SI035_1.txt"
+  alignment_results = get_alignment_results(blast_file)
+  mapping_file = "/home/pedro/aesop/pipeline/results/viral_discovery_v1/dataset_mock/4.3.1-viral_discovery_mapping_metaspades/SI035_1_contig_reads.tsv"
+  contig_reads, mapped_reads = count_contig_reads(mapping_file)
+  for contig in contig_reads:
+    contig_results = get_contig_results(alignment_results, contig)
+    # accession_taxid = results_as_accession_to_taxid(contig_reads, query_to_row)
+    # print(f"{accession_taxid}")
+
+
+if __name__ == '__main__':
+    main()

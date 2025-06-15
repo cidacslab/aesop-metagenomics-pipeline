@@ -3,7 +3,7 @@ Author: Pablo Viana
 Version: 1.0
 Created: 2023/08/21
 
- Utility class used to load the taxonomic tree from a kraken report file.
+  Utility class used to load the taxonomic tree from a kraken report file.
 """
 from dataclasses import dataclass
 from typing import List
@@ -27,7 +27,9 @@ class Level(IntEnum):
   F = 7  # Family
   G = 8  # Genus
   S = 9  # Species
-
+  
+def level_list(above_level=0):
+  return [i for i in list(Level) if i.value > above_level]
 
 @dataclass
 class TreeNode:
@@ -87,25 +89,21 @@ class TreeNode:
     node = last_node
     # look for parent       
     while node is not None:
-      if (node.level_enum < self.level_enum) or \
-        (node.level_name_spaces < self.level_name_spaces):
+      if ((node.level_enum < self.level_enum) or
+          (node.level_name_spaces < self.level_name_spaces)):
         # set children and parent attributes
         self.set_parent_node(node)
         return True
       node = node.parent
     return False
   
-  def get_parent_by_level(self, level: Level):
-    parent_in_level, parent_node = None, self
-    while parent_node is not None:
-      if parent_node.level_enum == level:
-        parent_in_level = parent_node
-      # elif parent_in_level is None:
-      #   if Level.N < parent_node.level_enum and parent_node.level_enum < level:
-      #     parent_in_level = parent_node
-      #     break
-      parent_node = parent_node.parent
-    return parent_in_level
+  def get_highest_node_at_level(self, level: Level):
+    node_in_level, current_node = None, self
+    while current_node is not None:
+      if current_node.level_enum == level:
+        node_in_level = current_node
+      current_node = current_node.parent
+    return node_in_level
   
   def clear_abundance(self):
     self.abundance = 0
@@ -129,31 +127,33 @@ class TreeNode:
       nodes_from.extend(nodes)
     return nodes_from  
   
-  def get_all_nodes_from_level(self, level: Level, higher_rank_dict = None):
+  def get_nodes_from_level(self, level: Level, higher_rank_dict = None):
     nodes_from_level = []
     if self.level_enum == level:
       nodes_from_level.append(self)
     for child_node in self.children:
-      nodes = child_node.get_all_nodes_from_level(level, higher_rank_dict)
+      nodes = child_node.get_nodes_from_level(level, higher_rank_dict)
       nodes_from_level.extend(nodes)
     if higher_rank_dict is not None and self.level_enum < level:
       higher_rank_dict[self] = nodes_from_level
     return nodes_from_level 
 
-def get_self_and_all_parents(node: TreeNode):
+
+def get_hierarchy_nodes(node: TreeNode):
   all_parents = set()
   while node is not None:
     all_parents.add(node)
     node = node.parent
   return all_parents
 
-def clear_abundance_from_tree(tree_by_taxid):
+
+def clear_abundance_from_tree(tree_by_taxid: dict):
   # Loop throught all tree nodes and clear it
   for value in tree_by_taxid.values():
     value.clear_abundance()
 
 
-def get_abundance(tree_by_taxid, taxid):
+def get_abundance(tree_by_taxid: dict, taxid: int):
   abundance = 0
   if taxid in tree_by_taxid:
     abundance = tree_by_taxid[taxid].acumulated_abundance

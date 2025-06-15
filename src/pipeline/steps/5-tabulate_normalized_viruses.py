@@ -3,64 +3,70 @@ from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
 sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
+import utilities.normalize_classified_matches as ClassifiedMatches
 import utilities.taxonomy_tree_parser as TaxonomyParser
-import utilities.calculate_confusion_matrix as CMTrees
 
 
-def tabulate_known_viruses(
-  ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
-  input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
-  input_blast_path, input_kraken_path, kraken_folder, filename, output_path):
+def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_extension,
+      input_mapping_path, align_filters, input_alignment_path, input_kraken_path,
+      kraken_folder, filename, output_path):
   """
   Tabulates known viruses by creating a ground truth tree from mock data, setting up
   confusion matrices for BLAST and Kraken classification results.
   Parameters:
-    ground_truth_tree: The taxonomy tree representing the true taxonomic structure.
     classified_tree: The taxonomy tree used for classification results.
-    true_positive_tree: The taxonomy tree used to track true positive classifications.
-    accession_taxids: A mapping of accession numbers to taxonomic IDs.
     input_count_reads_path: Path to the directory containing count reads files.
     count_reads_extension: File extension for count reads files.
     input_mapping_path: Path to the directory containing mapping files.
-    align_filters: Alignment filters for BLAST results (e.g., coverage, identity).
-    input_blast_path: Path to the directory containing BLAST result files.
+    align_filters: Filters for alignment results (e.g., coverage, identity).
+    input_alignment_path: Path to the directory containing alignment result files.
     input_kraken_path: Path to the directory containing Kraken result files.
+    kraken_folder: The folder containing Kraken results.
     filename: The base filename for input and output files.
     output_path: Path to the directory where output files will be saved.
   Processes:
-  1. Loads and processes the ground truth tree using mock data to determine the real taxa and their abundance.
-  2. Sets up the BLAST confusion matrix by loading the BLAST result tree, applying alignment filters, and calculating metrics.
-  3. If provided, sets up the Kraken confusion matrix by loading the Kraken result tree and calculating metrics.
+  1. Loads the count read file to determine read abudance and contig abundance.
+  2. Sets up the alignment normalization by loading the alignment result, applying alignment filters, and performing the calculation.
+  3. If provided, sets up the Kraken normalization by loading the Kraken result and performing the calculation.
   """
   #######################################################################################################
-  # SET BLAST CONFUSION MATRIX
-  # blast files
-  blast_file = os.path.join(input_blast_path, filename + ".txt")
+  # GET READ COUNTS
+  # contig to reads files  
+  count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
   mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
-  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.tsv")
-  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.tsv")
-  # load blast tree
-  mapped_reads = CMTrees.load_blast_tree(classified_tree, true_positive_tree, accession_taxids,
-    contig_reads, align_filters, blast_file, mapping_file, output_unmatches_file, output_matches_file)
-
+  # create the ground truth tree with the real taxa from the mocks and the number of reads from each one
+  total_abundance, contig_read_count, mapped_reads = ClassifiedMatches.load_read_count( 
+    count_reads_file, count_reads_extension, mapping_file)
+  
   #######################################################################################################
-  # SET KRAKEN CONFUSION MATRIX
+  # GET ALIGNMENT NORMALIZATION
+  # alignment files
+  alignment_file = os.path.join(input_blast_path, filename + ".txt")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.csv")
+  output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.csv")
+  # load alignment tree
+  ClassifiedMatches.load_alignment_tree(classified_tree, contig_read_count, 
+    alignment_file, align_filters, output_unmatches_file, output_matches_file)
+  # Calculate normalization for alignment results
+  output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
+  ClassifiedMatches.normalize_classified_matches(total_abundance, classified_tree, output_file)
+  
+  #######################################################################################################
+  # GET KRAKEN NORMALIZATION
   if kraken_folder != "":
     # get kraken result for unmapped reads (the ones didn't form contigs)
     kout_file = os.path.join(input_kraken_path, filename + ".kout")
-    k2result_accession_to_taxid = CMTrees.include_k2result_for_unmatched(
-      classified_tree, true_positive_tree, accession_taxids, mapped_reads, kout_file)
-    # Calculate confusion matrix for blast + kraken (all known viruses)
+    ClassifiedMatches.include_k2result_for_unmatched(classified_tree, mapped_reads, kout_file)
+    # Calculate normalization for alignment + kraken unmatched results (all known viruses)
     output_file = os.path.join(output_path, filename + "_known_viruses_report.csv")
-    CMTrees.calculate_confusion_matrix(
-      accession_taxids, total_abundance, ground_truth_tree,
-      true_positive_tree, classified_tree, output_file)
+    ClassifiedMatches.normalize_classified_matches(total_abundance, classified_tree, output_file)
     
     # load kraken tree
     kreport_file = os.path.join(input_kraken_path, filename + ".kreport")
-    CMTrees.load_kraken_tree(
-      classified_tree, true_positive_tree, accession_taxids,
-      kreport_file, k2result_accession_to_taxid)
+    ClassifiedMatches.load_kraken_tree(classified_tree, kreport_file)
+    # Calculate normalization for kraken results
+    output_file = os.path.join(output_path, filename + "_kraken_metrics.csv")
+    ClassifiedMatches.normalize_classified_matches(total_abundance, classified_tree, output_file)
 
 
 
@@ -102,27 +108,16 @@ def main():
   nodes_file = os.path.join(taxonomy_database, "nodes.dmp")
   _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
   TaxonomyParser.clear_abundance_from_tree(taxonomy_tree)
- classified_tree = copy.deepcopy(taxonomy_tree)
- 
+  
   ########################################################################################################  
-  # USE "FOR" IF MULTIPLE FILES
-  for i in range(1, 11):
-    # Print start message
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
-    filename = f"{os.path.basename(input_file).rsplit('_', maxsplit=1)[0]}_{i}"
-    print(f"\n\nB_PID: {pid} [{timestamp}]: Started task Input: {filename}")
-    # print(f"Analyzing file: {input_file}")
-    # filename = os.path.basename(input_file).split(".")[0]  
-    
-    ## REMOVE "FOR" IF SINGLE FILE
-    # print(f"Analyzing file: {input_file}")
-    # filename = os.path.basename(input_file).split(".")[0]
-    
-    tabulate_known_viruses(
-      taxonomy_tree, 
-      input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
-      input_blast_path, input_kraken_path, kraken_folder, filename, output_path)
-    # break
+  # Print start message
+  timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
+  filename = os.path.basename(input_file).split(".")[0]  
+  print(f"\n\nB_PID: {pid} [{timestamp}]: Started task Input: {filename}")
+  
+  tabulate_known_viruses(taxonomy_tree, input_count_reads_path, count_reads_extension,
+    input_mapping_path, align_filters, input_alignment_path, input_kraken_path,
+    kraken_folder, filename, output_path)
   
   # Print end message
   print("Finished!")
