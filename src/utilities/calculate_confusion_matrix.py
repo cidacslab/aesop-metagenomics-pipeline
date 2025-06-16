@@ -1,7 +1,7 @@
 import csv
 from collections import defaultdict
 from dataclasses import dataclass, field
-from . import get_fastq_read_info as FastqReadInfo
+from . import fastq_read_info as FastqReadInfo
 from . import taxonomy_tree_parser as TaxonomyParser
 from . import alignment_result_parser as AlignmentResultParser
 
@@ -37,6 +37,9 @@ class ContigInfo:
   
   def __str__(self):
     return str(self.accession_read_count)
+  
+  def __repr__(self):
+    return self.__str__()
 
 
 #########################################################################################
@@ -155,7 +158,7 @@ def set_alignment_best_species_hit_in_trees(contig_reads, contig_species_taxids,
       # set true positive tree
       alignment_node = set_true_positive_in_taxonomy(true_taxid, taxid, true_positive_tree, read_count)
       is_true_positive = alignment_node is not None
-      print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads " + \
+      print(f"{is_true_positive} positive for contig {contig}:{taxid} mapped {read_count} reads "
             f"from {accession}:{true_taxid}:{alignment_node}.")
 
 
@@ -291,7 +294,7 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
       continue
     
     nodes_by_level = []
-    for level in reverse(TaxonomyParser.level_list(above_level=1)):
+    for level in reversed(TaxonomyParser.level_list(above_level=1)):
       level_node = node.get_highest_node_at_level(level)
       if level_node is not None:
         nodes_by_level.append(level_node)
@@ -353,7 +356,7 @@ def load_ground_truth_tree(ground_truth_tree, accession_taxids,
 
 
 def load_alignment_tree(classified_tree, true_positive_tree, accession_taxids, contig_reads,
-  align_filters, alignment_file, output_unmatches_file, output_matches_file):  
+  alignment_file, align_filters, output_unmatches_file, output_matches_file):  
   """
   Calculate the alignment classified tree and the true positive tree.
   Parameters:
@@ -361,8 +364,8 @@ def load_alignment_tree(classified_tree, true_positive_tree, accession_taxids, c
     true_positive_tree (TaxonomyTree): true positive tree
     accession_taxids (dict): mapping of accession to taxid
     contig_reads (dict): mapping of contig to reads
-    align_filters (AlignmentFilters): alignment filters
     alignment_file (str): alignment output file
+    align_filters (AlignmentFilters): alignment filters
     output_unmatches_file (str): file to write the alignment unmatched contigs
     output_matches_file (str): file to write the output the alignment matches
   """

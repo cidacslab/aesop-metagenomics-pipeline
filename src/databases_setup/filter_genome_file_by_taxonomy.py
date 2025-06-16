@@ -134,7 +134,7 @@ def main_create_valid_taxons_list():
   # Start the timer
   start_time = time.time()
   
-  taxdump_dir = "/home/pedro/aesop/pipeline/databases/taxdump"
+  taxdump_dir = "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250616"
   names_file = os.path.join(taxdump_dir, "names.dmp")
   nodes_file = os.path.join(taxdump_dir, "nodes.dmp")
   root_node,taxid_tree = load_tree_from_taxonomy_files(names_file, nodes_file)
@@ -149,7 +149,7 @@ def main_create_valid_taxons_list():
   viruses_taxid = "10239"
   coronaviridae_taxid = "11118"
   betacoronavirus_taxid = "694002"
-  sars_cov_taxid = "694009"
+  sars_cov2_species_taxid = "3418604"
   alphainfluenzavirus_taxid = "197911"
   enterovirus_taxid = "12059"
   orthoflavivirus_taxid = "3044782"
@@ -177,8 +177,8 @@ def main_create_valid_taxons_list():
   acc_list = create_valid_taxid_list(taxid_tree, output_file, betacoronavirus_taxid, none_taxid)
   print(f"Found {len(acc_list)} betacoronavirus_taxid.")
   
-  output_file = os.path.join(taxdump_dir, "sars_cov.txt")
-  acc_list = create_valid_taxid_list(taxid_tree, output_file, sars_cov_taxid, none_taxid)
+  output_file = os.path.join(taxdump_dir, "sars_cov2_species.txt")
+  acc_list = create_valid_taxid_list(taxid_tree, output_file, sars_cov2_species_taxid, none_taxid)
   print(f"Found {len(acc_list)} sars_cov_taxid.")
   
   output_file = os.path.join(taxdump_dir, "alphainfluenzavirus.txt")

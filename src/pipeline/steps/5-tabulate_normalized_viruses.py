@@ -1,10 +1,10 @@
-import os, sys, csv, copy
+import os, sys, csv
 from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
 sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
-import utilities.normalize_classified_matches as ClassifiedMatches
 import utilities.taxonomy_tree_parser as TaxonomyParser
+import utilities.normalize_classified_matches as ClassifiedMatches
 
 
 def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_extension,
@@ -42,7 +42,7 @@ def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_
   # GET ALIGNMENT NORMALIZATION
   # alignment files
   alignment_file = os.path.join(input_blast_path, filename + ".txt")
-  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_alignment.csv")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_alignment.tsv")
   output_matches_file = os.path.join(output_path, filename + "_contig_matched_alignment.csv")
   # load alignment tree
   ClassifiedMatches.load_alignment_tree(classified_tree, contig_read_count, 
@@ -106,7 +106,8 @@ def main():
   # Load complete taxonomy tree
   names_file = os.path.join(taxonomy_database, "names.dmp")
   nodes_file = os.path.join(taxonomy_database, "nodes.dmp")
-  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
+  merged_file = os.path.join(taxonomy_database, "merged.dmp")
+  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file, merged_file)
   TaxonomyParser.clear_abundance_from_tree(taxonomy_tree)
   
   ########################################################################################################  

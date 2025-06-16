@@ -1,6 +1,6 @@
 import csv
 from collections import defaultdict
-from . import get_fastq_read_info as FastqReadInfo
+from . import fastq_read_info as FastqReadInfo
 from . import taxonomy_tree_parser as TaxonomyParser
 from . import alignment_result_parser as AlignmentResultParser
 
@@ -30,7 +30,7 @@ def count_remaining_contigs_reads(remaining_contigs_file):
   total_abundance = 0
   contig_read_count = defaultdict(int)
   with open(remaining_contigs_file, "r") as file:
-    reader = csv.reader(file, delimiter=",")
+    reader = csv.reader(file, delimiter='\t')
     next(reader) # remove reader
     for row in reader:
       contig_name = row[0].strip()

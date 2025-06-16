@@ -37,8 +37,8 @@ def tabulate_known_viruses(
   # GROUND TRUTH
   # contig to reads files  
   count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
-  output_file = os.path.join(output_path, filename + "_ground_truth.csv")
   mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
+  output_file = os.path.join(output_path, filename + "_ground_truth.csv")
   # create the ground truth tree with the real taxa from the mocks and the number of reads from each one    
   total_abundance, contig_reads, mapped_reads = ConfusionMatrix.load_ground_truth_tree(
     ground_truth_tree, accession_taxids, count_reads_file, count_reads_extension,
@@ -48,11 +48,11 @@ def tabulate_known_viruses(
   # SET ALIGNMENT CONFUSION MATRIX
   # alignment files
   alignment_file = os.path.join(input_alignment_path, filename + ".txt")
-  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.csv")
+  output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_blast.tsv")
   output_matches_file = os.path.join(output_path, filename + "_contig_matched_blast.csv")
   # load alignment tree
   ConfusionMatrix.load_alignment_tree(classified_tree, true_positive_tree,
-    accession_taxids, contig_reads, align_filters, alignment_file, mapping_file,
+    accession_taxids, contig_reads, alignment_file, align_filters,
     output_unmatches_file, output_matches_file)
   # Calculate confusion matrix for alignment
   output_file = os.path.join(output_path, filename + "_blast_metrics.csv")
@@ -118,7 +118,8 @@ def main():
   # Load complete taxonomy tree
   names_file = os.path.join(taxonomy_database, "names.dmp")
   nodes_file = os.path.join(taxonomy_database, "nodes.dmp")
-  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file)
+  merged_file = os.path.join(taxonomy_database, "merged.dmp")
+  _, taxonomy_tree = TaxonomyParser.load_tree_from_taxonomy_files(names_file, nodes_file, merged_file)
   TaxonomyParser.clear_abundance_from_tree(taxonomy_tree)
   # create a copy of the taxonomy tree for the confusion matrix calculation
   ground_truth_tree = taxonomy_tree

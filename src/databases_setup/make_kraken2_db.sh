@@ -10,7 +10,7 @@ grep -F -f /home/pedro/aesop/pipeline/databases/taxdump/taxids_by_taxons/enterov
 
 
 
- nohup kraken2-build --threads 32 --db aesop_k2db_20250207 --build &> kraken_build_entero.log &
+nohup kraken2-build --threads 32 --db aesop_k2db_20250207 --build &> kraken_build_entero.log &
 
 
 

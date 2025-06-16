@@ -70,10 +70,16 @@ done < <(jq -r 'paths(scalars) | join(".")' "$cleaned_json")
 # SAMPLE DATASETS
 # Retrieve the sample_datasets array
 sample_datasets=$(jq -r '.sample_datasets[]' "$cleaned_json")
+# Script that call the pipeline for each dataset
+script_for_datasets="${params[repository_src]}/${params[script_for_datasets]}"
+# Pipeline script to be executed
+pipeline_script="${params[repository_src]}/${params[pipeline_script]}"
 # Get execution command in singularity docker or local
 command="${params[command]}"
 # Remove command from params to avoid passing it as a parameter
-unset params[command] 
+unset params[script_for_datasets]
+unset params[pipeline_script]
+unset params[command]
 
 # CONVERTING PARAMETERS TO A STRING 
 # Initialize an empty string to hold the parameters as a string
@@ -89,11 +95,6 @@ params_str=${params_str%|}
 ################################################################################
 ####################### DEFINE THE EXECUTION PARAMETERS ########################
 ################################################################################
-
-# Script that call the pipeline for each dataset
-script_for_datasets="${params[repository_src]}/${params[script_for_datasets]}"
-# Pipeline script to be executed
-pipeline_script="${params[repository_src]}/${params[pipeline_script]}"
 
 echo "Execution command:" 
 echo "    $command $script_for_datasets $pipeline_script"

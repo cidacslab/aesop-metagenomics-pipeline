@@ -5,13 +5,14 @@ Created: 2023/08/21
 
   Utility class used to load the taxonomic tree from a kraken report file.
 """
-from dataclasses import dataclass
-from typing import List
-from enum import IntEnum
 import csv, time
+from enum import IntEnum
+from typing import List
+from dataclasses import dataclass
+
 
 valid_levels = {
-  'NO RANK','DOMAIN','SUPERKINGDOM','KINGDOM','PHYLUM',
+  'NO RANK','DOMAIN','SUPERKINGDOM', 'ACELLULAR ROOT','KINGDOM','PHYLUM',
   'CLASS','ORDER','FAMILY','GENUS','SPECIES'
   }
 
@@ -62,6 +63,8 @@ class TreeNode:
       self.level = "NO RANK"
     elif self.level == "SUPERKINGDOM":
       self.level = "DOMAIN"
+    elif self.level == "ACELLULAR ROOT":
+      self.level = "DOMAIN"
     self.level_enum = Level[self.level[0]] if self.level[0] in Level.__members__ else None
     self.level = level.strip()
   
@@ -72,9 +75,9 @@ class TreeNode:
     parent_name = self.parent.name if self.parent else ''
     parent_level = self.parent.level if self.parent else ''
     parent_taxid = self.parent.taxid if self.parent else ''
-    return f"{self.taxid},{self.level},{self.level_enum}," + \
-      f"{str(self.level_name_spaces)},{self.name}," + \
-      f"{parent_taxid},{parent_level},{parent_name}"
+    return (f"{self.taxid},{self.level},{self.level_enum},"
+      f"{str(self.level_name_spaces)},{self.name},"
+      f"{parent_taxid},{parent_level},{parent_name}")
   
   def __repr__(self):
     return self.__str__()
@@ -160,7 +163,7 @@ def get_abundance(tree_by_taxid: dict, taxid: int):
   return abundance
 
 
-def load_tree_from_taxonomy_files(names_file: str, nodes_file: str):
+def load_tree_from_taxonomy_files(names_file: str, nodes_file: str, merged_file=""):
   taxid_names = {}
   with open(names_file, "r") as f:
     reader = csv.reader(f, delimiter='|')
@@ -170,7 +173,8 @@ def load_tree_from_taxonomy_files(names_file: str, nodes_file: str):
       name_class = row[3].strip()
       if name_class == "scientific name":
         taxid_names[tax_id] = name_txt
-  print(f"Length of names by taxid tree: {len(taxid_names)}")  
+  print(f"Length of names by taxid tree: {len(taxid_names)}")
+  
   tree_by_taxid = {}
   parent_by_taxid = {}
   with open(nodes_file, "r") as file:
@@ -208,6 +212,20 @@ def load_tree_from_taxonomy_files(names_file: str, nodes_file: str):
         node.level_enum = parent_node.level_enum
       parent_node = parent_node.parent
   print(f"Length of taxonomy taxid tree: {len(tree_by_taxid)}")
+  
+  # include merged taxids
+  if merged_file != "": 
+    print(f"Loading merged taxids from file: {merged_file}")
+    with open(merged_file, "r") as f:
+      reader = csv.reader(f, delimiter='|')
+      for row in reader:      
+        old_tax_id = row[0].strip()
+        new_tax_id = row[1].strip()
+        if old_tax_id not in tree_by_taxid and new_tax_id in tree_by_taxid:
+          tree_by_taxid[old_tax_id] = tree_by_taxid[new_tax_id]
+        else:        
+          print(f"Invalid merged taxid: old='{old_tax_id}' new='{new_tax_id}'")
+  
   return tree_by_taxid["1"], tree_by_taxid
 
 
@@ -250,16 +268,20 @@ def main():
   # Start the timer
   start_time = time.time()
   
-  names_file = "/home/pedro/aesop/viruses_pipeline/viruses_accessions/taxdump_20241211/names.dmp"
-  nodes_file = "/home/pedro/aesop/viruses_pipeline/viruses_accessions/taxdump_20241211/nodes.dmp"
-  root_node,taxid_tree = load_tree_from_taxonomy_files(names_file, nodes_file)
-  # print(f"{root_node}")
-  # print(f"{taxid_tree['131567']}")
-  # print(f"{taxid_tree['2']}")
-  # print(f"{taxid_tree['10239']}")
-  # print(f"{taxid_tree['2157']}")
-  # print(f"{taxid_tree['2759']}")
-  # print(f"{taxid_tree['9606']}")
+  names_file = "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250211/names.dmp"
+  nodes_file = "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250211/nodes.dmp"
+  merged_file = "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250211/merged.dmp"
+  root_node,taxid_tree = load_tree_from_taxonomy_files(names_file, nodes_file, merged_file)
+  print(f"{root_node}")
+  print(f"{taxid_tree['131567']}")
+  print(f"{taxid_tree['2']}")
+  print(f"{taxid_tree['10239']}")
+  print(f"{taxid_tree['2157']}")
+  print(f"{taxid_tree['2759']}")
+  print(f"{taxid_tree['9606']}")
+  print("Domains nodes:\n  " + "\n  ".join([str(n) for n in root_node.get_nodes_from_level(Level.D)]))
+  
+  print(f"{taxid_tree['2999065']}")
   
   # End the timer
   end_time = time.time()  

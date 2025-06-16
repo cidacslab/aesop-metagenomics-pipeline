@@ -1,6 +1,6 @@
 import os, sys, csv, gzip
+from . import fastq_read_info import FastqReads
 from . import taxonomy_tree_parser as TaxonomyParser
-from . import get_fastq_read_info import FastqReads
 
 
 

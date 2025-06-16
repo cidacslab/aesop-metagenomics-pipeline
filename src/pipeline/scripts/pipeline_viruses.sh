@@ -153,7 +153,7 @@ run_pipeline_step "blastn" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-blastn.sh" \
   "${args_dict[blastn_database]}" \
   "${args_dict[blastn_task]}" \
-  "${args_dict[taxonomy_database]}/taxids_by_taxons/${args_dict[blastn_filter_taxon]}" 
+  "${args_dict[taxonomy_database]}/${args_dict[blastn_filter_taxon]}" 
 
 
 ## TABULATE RESULTS

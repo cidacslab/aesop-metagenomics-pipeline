@@ -1,12 +1,12 @@
-import os, csv
+import os, csv, math
 
 
-def is_equal(a: float, b: float, rel_tol=1e-3):
-  return math.isclose(a, b, rel_tol)
+def is_equal(a: float, b: float, tol=1e-3):
+  return math.isclose(a, b, rel_tol=tol)
 
 
-def bigger_or_equal(a: float, b: float, rel_tol=1e-3):
-  return (a > b or is_equal(a, b, rel_tol))
+def bigger_or_equal(a: float, b: float, tol=1e-3):
+  return (a > b or is_equal(a, b, tol))
 
 
 def get_files_in_folder(input_path, input_extension):

@@ -1,4 +1,4 @@
-import csv, math
+import os, csv, copy
 from collections import defaultdict
 from dataclasses import dataclass, field
 from .utility_functions import is_equal, bigger_or_equal
@@ -24,10 +24,10 @@ class ResultInfo:
       self.contig_length = length
       self.contig_coverage = [0] * length
     elif self.contig_length != length:
-      raise ValueError("Trying to include invalid result: " +
+      raise ValueError("Trying to include invalid result: "
         f"contig legth: {self.contig_length} / result: {result_row}")
     # update coverage with best identity for position
-    for i in range(qstart-1, qend):
+    for i in range(min(qstart, qend)-1, max(qstart, qend)):
       if identity > self.contig_coverage[i]:
         self.contig_coverage[i] = identity
     # add hit identity
@@ -35,7 +35,7 @@ class ResultInfo:
   
   def include_result_info(self, result_info):
     if self.contig_length != result_info.contig_length:
-      raise ValueError("Trying to include invalid result: " +
+      raise ValueError("Trying to include invalid result: "
         f"contig legth: {self.contig_length} / result: {result_row}")
     for i in range(self.contig_length):      
       if result_info.contig_coverage[i] > self.contig_coverage[i]:
@@ -57,15 +57,17 @@ class ResultInfo:
 def get_alignment_results(input_file):  
   # Dictionary to store each query ID and its corresponding row
   alignment_results = []
-  # Open the alignment output file and use csv.DictReader to read it
-  with open(input_file, 'r') as infile:
-    filtered_lines = (line for line in infile if not line.startswith('#'))
-    # Use DictReader to automatically map columns to fieldnames
-    reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=['qseqid', 'sseqid', 
-      'pident', 'length', 'qlen', 'slen', 'mismatch', 'gapopen', 'gaps', 'qstart', 'qend',
-      'sstart', 'send', 'evalue', 'bitscore', 'staxids', 'salltitles'])
-    for row in reader:
-      alignment_results.append(row)
+  if os.path.exists(input_file) and os.path.getsize(input_file) > 0:
+    # Open the alignment output file and use csv.DictReader to read it
+    with open(input_file, 'r') as infile:
+      filtered_lines = (line for line in infile if not line.startswith('#'))
+      # Use DictReader to automatically map columns to fieldnames
+      reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=[
+        'qseqid', 'sseqid', 'pident', 'length', 'qlen', 'slen', 'qcovhsp',
+        'mismatch', 'gapopen', 'gaps', 'qstart', 'qend', 'sstart', 'send',
+        'evalue', 'bitscore', 'staxids', 'salltitles'])
+      for row in reader:
+        alignment_results.append(row)
   return alignment_results
 
 
@@ -82,9 +84,17 @@ def get_contig_result_infos(alignment_results, contig, max_evalue=0.00001, min_l
     if contig_id != contig:
       continue
     
-    if (bigger_or_equal(max_evalue, evalue) and length >= min_length):
+    # already_included_hit = False
+    if bigger_or_equal(max_evalue, evalue) and length >= min_length:
       for taxid in taxids:
-        contig_result_infos[taxid].add_alignment_result(row)
+        taxid = taxid.strip()
+        if taxid != '':
+          contig_result_infos[taxid].add_alignment_result(row)
+          # if already_included_hit:
+          #   contig_result_infos[taxid].hits_pident.pop()
+          # already_included_hit = True
+        else:
+          print(f"Query error invalid taxid: {taxid}; in row: {row}")
     else:
       print(f"Query didn't meet the filter criteria: {row}")
   return contig_result_infos
@@ -95,12 +105,12 @@ def get_best_hit_taxids(results, min_identity=97.0, min_coverage=95.0):
   # get result info stats with specified thresholds for each taxid
   for taxid, result_info in results.items():
     result_identity,result_coverage,_,_ = result_info.get_stats_per_identity(min_identity)
-    if  bigger_or_equal(result_identity, min_identity) and
-        bigger_or_equal(result_coverage, min_coverage):
+    if (bigger_or_equal(result_identity, min_identity) and
+        bigger_or_equal(result_coverage, min_coverage)):
       # if identity is bigger than threshold the best hit is the best coverage
       if bigger_or_equal(result_coverage, best_coverage):
         if is_equal(result_coverage, best_coverage):
-          best_coverage = math.min(best_coverage, result_coverage)
+          best_coverage = min(best_coverage, result_coverage)
           best_taxids.append(taxid)
         else: # else if coverage is bigger
           best_coverage = result_coverage
@@ -110,7 +120,8 @@ def get_best_hit_taxids(results, min_identity=97.0, min_coverage=95.0):
 
 #########################################################################################
 #### CALCULATE ALIGNMENT RESULTS PER LEVEL
-def include_results_in_level(previous_results, level_results, included_taxids, level, taxonomy_tree):
+def include_results_in_level(previous_results, level_results, level, taxonomy_tree):
+  included_taxids = []
   for taxid, result_info in previous_results.items():
     node = taxonomy_tree[taxid]
     level_node = node.get_highest_node_at_level(level)
@@ -119,21 +130,23 @@ def include_results_in_level(previous_results, level_results, included_taxids, l
         level_results[level_node.taxid] = result_info
       else:
         level_results[level_node.taxid].include_result_info(result_info)
-      included_taxids.append(taxid)
+      included_taxids.append(taxid)  
+  # Remove the included taxids from previous results
+  for taxid in included_taxids:
+    previous_results.pop(taxid)
 
 
 def get_alignment_result_per_level(contig_results, level, previous_results, taxonomy_tree):
-  level_results, included_taxids = {}, []
-  # Try to include previous results in current level
-  include_results_in_level(previous_results, level_results, included_taxids, level, taxonomy_tree)
-  include_results_in_level(contig_results, level_results, included_taxids, level, taxonomy_tree)
-  # Remove the included taxids from previous results
-  for taxid in included_taxids:
-    contig_results.pop(taxid, None)
-    previous_results.pop(taxid, None)
+  level_results = {}
+  # Try to include previous level results in current level
+  include_results_in_level(previous_results, level_results, level, taxonomy_tree)
+  include_results_in_level(contig_results, level_results, level, taxonomy_tree)
   # Keep the unused results in contig_results dict
   for taxid in previous_results:
-    contig_results[taxid] = previous_results[taxid]
+    if taxid not in contig_results:
+      contig_results[taxid] = previous_results[taxid]
+    else:
+      raise ValueError(f"Taxid {taxid} is in both contig_results and previous_results")
   # Return the level results
   return level_results
 
@@ -158,16 +171,17 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
     contig_species_taxids (dict): mapping of contig to best hit taxids at species level
   """
   # initialize output content
-  output_not_match = "contig,read_count\n"
-  output_matches = "contig,level,taxid,name,identity_threshold," +
-    "mean_identity,coverage_perc,coverage_lenght,hits\n"
+  output_not_match = "contig\tread_count\n"
+  output_matches = ("contig,level,taxid,name,identity_threshold,"
+    "mean_identity,coverage_perc,coverage_lenght,hits\n")
   identity_thresholds = [99, 98, 97, 95, 92, 90, 85, 80, 70, 60, 50, 40, 30]
   # identity_thresholds = [97, 90, 70, 50, 30]
   
   # get alignment results from file
-  alignment_result = get_alignment_results(alignment_file)
+  alignment_results = get_alignment_results(alignment_file)
   
-  contig_results_by_level, contig_species_taxids = {}, {}  
+  contig_species_taxids = {}  
+  contig_results_by_level = defaultdict(dict)
   # get alignment results for the contigs
   for contig in contig_reads:
     # get contig alignment results
@@ -176,12 +190,12 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
       align_filters['evalue'], align_filters['length'])
     # write unmatched contigs with alignment results
     if len(contig_results) == 0:
-      output_not_match += f"{contig},{str(contig_reads[contig])}\n"
+      output_not_match += f"{contig}\t{str(contig_reads[contig])}\n"
       continue
     
     level_results = {}
     # get result info per level
-    for level in reverse(TaxonomyParser.level_list(above_level=1)):
+    for level in reversed(TaxonomyParser.level_list(above_level=1)):
       level_results = get_alignment_result_per_level(
         contig_results, level, level_results, taxonomy_tree)
       # collect matches by identity threshold
@@ -190,8 +204,8 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
           name = taxonomy_tree[taxid].name
           idt,cov,length,hits = result_info.get_stats_per_identity(min_identity)
           # write matches by identity threshold
-          output_matches += f"{contig},{level},{taxid},{name}," +
-            f"{min_identity},{idt},{cov},{length},{hits}\n"
+          output_matches += (f"{contig},{level},{taxid},{name},"
+            f"{min_identity},{idt},{cov},{length},{hits}\n")
       # save level_results in contig_results_by_level
       contig_results_by_level[contig][level] = copy.deepcopy(level_results)
     
@@ -201,10 +215,10 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
     # collect species taxids of best hits
     species_best_hit_taxids = get_best_hit_taxids(species_results,
       align_filters["identity"], align_filters["coverage"])
-    contig_species_taxids[contig] = species_taxids
+    contig_species_taxids[contig] = species_best_hit_taxids
     # write unmatched contigs at species level
-    if len(species_taxids) == 0:
-      output_not_match += f"{contig},{str(contig_reads[contig])}\n"
+    if len(species_best_hit_taxids) == 0:
+      output_not_match += f"{contig}\t{str(contig_reads[contig])}\n"
   
   # write unmatched contigs to results
   with open(output_unmatches_file, "w") as unmatched_file:
