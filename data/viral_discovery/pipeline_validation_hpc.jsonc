@@ -35,20 +35,20 @@
   // DEFINE THE PIPELINE STEPS TO BE EXECUTED
   ///////////////////////////////////////////////////////////////////////////////////////
   // DEFINE THE EXECUTION STEPS
-  "execute_bowtie2_phix": 1,
-  "execute_bowtie2_ercc": 1,
-  "execute_fastp": 1,
+  // "execute_bowtie2_phix": 1,
+  // "execute_bowtie2_ercc": 1,
+  // "execute_fastp": 1,
   // "execute_hisat2_human": 1,
   // "execute_bowtie2_human": 1,
   // "execute_kraken2": 1,
   // "execute_extract_reads": 1,
   // "execute_assembly_metaspades": 1,
-  // "execute_mapping_metaspades": 1,
-  // "execute_blastn": 1,
-  // "execute_tabulate_blastn": 1,
-  // "execute_filter_contigs_blastn": 1,
-  // "execute_diamond": 1,
-  // "execute_tabulate_diamond_fast": 1,
+  "execute_mapping_metaspades": 1,
+  "execute_blastn": 1,
+  "execute_tabulate_blastn": 1,
+  "execute_filter_contigs_blastn": 1,
+  "execute_diamond": 1,
+  "execute_tabulate_diamond_fast": 1,
   // "execute_tabulate_diamond_fast_sensitive": 1,
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +59,8 @@
   "hisat2_human_index": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2",
   "bowtie2_human_index": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/bowtie2_db/human_index_20240725/human_full",
   "kraken2_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/kraken2_db/k2db_20250207_complete",
-  "taxonomy_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/taxdump",
-  "blastn_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/blastn_db/nt_viruses/nt_viruses",
+  "taxonomy_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/taxonomy/taxdump_20250211",
+  "blastn_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/blastn_db/nt_viruses_20250210/nt_viruses",
   "diamond_database": "/opt/storage/transient/aesop/metagenomica/pipeline/databases/blastp_db/ncbi_nr_20250205/nr.dmnd",
   
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -161,8 +161,8 @@
     "log_file": "4.3-viral_discovery-assembly_metaspades_logs.tar.gz"
   },
   "mapping_metaspades": {
-    "nprocesses": 4,
-    "process_nthreads": 15,
+    "nprocesses": 8,
+    "process_nthreads": 12,
     "input_suffix": ".contigs.fa",
     "input_folder": "4.3-viral_discovery_contigs_metaspades",
     "output_folder": "4.3.1-viral_discovery_mapping_metaspades",
@@ -172,8 +172,8 @@
     "origin_input_folder": "4.1-viral_discovery_reads"
   },
   "blastn": {
-    "nprocesses": 4,
-    "process_nthreads": 15,
+    "nprocesses": 8,
+    "process_nthreads": 12,
     "input_suffix": ".contigs.fa",
     "input_folder": "4.3-viral_discovery_contigs_metaspades",
     "output_folder": "4.3.2-blastn_contigs_metaspades",
@@ -192,8 +192,8 @@
     "delete_preexisting_output_folder": 1,
     "log_file": "4.3.3-tabulated_result_blastn_logs.tar.gz",
     "metadata_path": "data/viral_discovery/metadata_accession.tsv",
-    "count_reads_folder": "2.2-bowtie_human_output",
-    "count_reads_extension": "_1.fastq.gz",
+    "count_reads_folder": "2.2-bowtie_human_output", // "0-raw_samples",
+    "count_reads_extension": "_1.fastq.gz", // "_R1.fastq.gz", 
     "mapping_folder": "4.3.1-viral_discovery_mapping_metaspades",
     "kraken_folder": "3-taxonomic_output",
     "align_coverage": 90,
@@ -204,24 +204,34 @@
   "filter_contigs_blastn": {
     "nprocesses": 30,
     "process_nthreads": 1,
-    "input_suffix": "_contig_not_matched_blast.tsv",
+    "input_suffix": "_contig_unmatched_alignment.tsv",
     "input_folder": "4.3.3-tabulated_result_blastn",
     "output_folder": "5.1-filtered_contigs_blastn",
     "delete_preexisting_output_folder": 1,
-    "log_file": "5.1-filtered_contigs_blastn_not_matched_logs.tar.gz",
+    "log_file": "5.1-filtered_contigs_blastn_unmatched_logs.tar.gz",
     "contigs_folder": "4.3-viral_discovery_contigs_metaspades",
     "contigs_extension": ".contigs.fa"
   },
   "diamond": {
     "nprocesses": 8,
-    "process_nthreads": 8,
+    "process_nthreads": 12,
     "input_suffix": ".contigs.fa",
     "input_folder": "5.1-filtered_contigs_blastn",
     "output_folder": "5.2-diamond_filtered_contigs",
     "delete_preexisting_output_folder": 1,
     "log_file": "5.2-diamond_filtered_contigs_logs.tar.gz",
     "sensitivity": "--fast",
-    "filter_taxon": ""
+    "filter_taxon": "2787823,81077,9606"
+    // unclassified_entries = "2787823"
+    // artificial_sequences = "81077"
+    // Homo sapiens = "9606"
+    // viruses="10239"
+    // coronaviridae = "11118"
+    // betacoronavirus = "694002"
+    // sars_cov2 = "2697049"
+    // alphainfluenzavirus = "197911"
+    // enterovirus = "12059"
+    // orthoflavivirus = "3044782"
   },
   "tabulate_diamond_fast": {
     "script": "pipeline/steps/5-tabulate_normalized_viruses.py",
@@ -234,9 +244,9 @@
     "log_file": "5.2.1-tabulated_result_diamond_fast_logs.tar.gz",
     "metadata_path": "data/viral_discovery/metadata_accession.tsv",
     "count_reads_folder": "4.3.3-tabulated_result_blastn",
-    "count_reads_extension": "_contig_not_matched_blast.tsv",
-    "align_coverage": 0,
-    "align_identity": 90,
+    "count_reads_extension": "_contig_unmatched_alignment.tsv",
+    "align_coverage": 90,
+    "align_identity": 97,
     "align_length": 100,
     "align_evalue": 0.00001
   },  
@@ -251,7 +261,7 @@
     "log_file": "5.2.2-tabulated_result_diamond_fast_sensitive_logs.tar.gz",
     "metadata_path": "data/viral_discovery/metadata_accession.tsv",
     "count_reads_folder": "4.3.3-tabulated_result_blastn",
-    "count_reads_extension": "_contig_not_matched_blast.tsv",
+    "count_reads_extension": "_contig_unmatched_alignment.tsv",
     "align_coverage": 0,
     "align_identity": 50,
     "align_length": 30,
