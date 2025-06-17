@@ -55,15 +55,17 @@ def normalize_classified_matches(total_reads, classified_tree, output_file):
   output_content = "level,parent_taxid,taxid,name,sample_total_reads,"
   output_content += "level_total_classified,nt_rpm\n"
   level_list = TaxonomyParser.level_list(above_level=1)
+  included_taxids = set()
   
   for taxid,node in classified_tree.items():
-    if  (node.acumulated_abundance > 0 and
-        (node.level_enum == TaxonomyParser.Level.D or (node.level_enum in level_list and 
-        node.parent is not None and node.level_enum != node.parent.level_enum))):
+    if (node.taxid not in included_taxids and node.acumulated_abundance > 0 and 
+        node.level_enum in level_list and node.parent is not None and
+        node.level_enum != node.parent.level_enum):
       abundance = node.acumulated_abundance
       nt_rpm = int((abundance*1000000)/total_reads)
-      output_content += f"{node.level},{node.parent.taxid},{node.taxid},{node.name},"
+      output_content += f"{node.level_enum},{node.parent.taxid},{node.taxid},{node.name},"
       output_content += f"{total_reads},{abundance},{nt_rpm}\n"
+      included_taxids.add(node.taxid)
   
   with open(output_file, 'w') as file:
     file.write(output_content)

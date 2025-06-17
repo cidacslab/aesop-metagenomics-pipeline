@@ -133,22 +133,17 @@ def main():
   # metadata_file = os.path.join(metadata_path, meta_filename + ".txt")
   accession_taxids = ConfusionMatrix.load_accession_metadata(metadata_file)
   
-  # USE "FOR" IF MULTIPLE FILES
+  # USE "FOR" TO PROCESS MULTIPLE FILES
   for i in range(1, 11):
     # Print start message
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+0000")
     filename = f"{os.path.basename(input_file).rsplit('_', maxsplit=1)[0]}_{i}"
     print(f"\n\nB_PID: {pid} [{timestamp}]: Started task Input: {filename}")
     
-    ## REMOVE "FOR" IF SINGLE FILE
-    # print(f"Analyzing file: {input_file}")
-    # filename = os.path.basename(input_file).split(".")[0]
-    
     tabulate_known_viruses(
       ground_truth_tree, classified_tree, true_positive_tree, accession_taxids,
       input_count_reads_path, count_reads_extension, input_mapping_path, align_filters,
       input_alignment_path, input_kraken_path, kraken_folder, filename, output_path)
-    # break
   
   # Print end message
   print("Finished!")

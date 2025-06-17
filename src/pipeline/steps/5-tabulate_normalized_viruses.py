@@ -41,7 +41,7 @@ def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_
   #######################################################################################################
   # GET ALIGNMENT NORMALIZATION
   # alignment files
-  alignment_file = os.path.join(input_blast_path, filename + ".txt")
+  alignment_file = os.path.join(input_alignment_path, filename + ".txt")
   output_unmatches_file = os.path.join(output_path, filename + "_contig_unmatched_alignment.tsv")
   output_matches_file = os.path.join(output_path, filename + "_contig_matched_alignment.csv")
   # load alignment tree
@@ -93,7 +93,7 @@ def main():
   input_count_reads_path = os.path.join(base_path, count_reads_folder)
   input_mapping_path = os.path.join(base_path, mapping_folder)
   input_kraken_path = os.path.join(base_path, kraken_folder)
-  input_blast_path = input_dir
+  input_alignment_path = input_dir
   align_filters = {
     "length": align_length, "identity": align_identity, 
     "coverage": align_coverage, "evalue": align_evalue }
