@@ -1,11 +1,12 @@
 import os, sys, csv, gzip, shutil
 from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+sys.path.append("/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src")
+sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
-import kraken_report_parser as KrakenParser
-# import utilities.taxonomy_tree_parser as TaxonomyParser
+import utilities.taxonomy_tree_parser as TaxonomyParser
 from utilities.utility_functions import get_files_in_folder
-from utilities.get_fastq_read_info import get_read_abundance
+from utilities.fastq_read_info import get_total_abundance
 
 
 def count_kraken_abundance_by_species(report_file, total_reads, output_file):
@@ -13,16 +14,16 @@ def count_kraken_abundance_by_species(report_file, total_reads, output_file):
   output_content = "parent_tax_id,tax_level,category,tax_id,name,"
   output_content += "kraken_classified_reads,nt_rpm\n"
   
-  _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-  u_count = KrakenParser.get_abundance(report_by_taxid, "0")
-  c_count = KrakenParser.get_abundance(report_by_taxid, "1")
+  _, report_by_taxid = TaxonomyParser.load_kraken_report_tree(report_file)
+  u_count = TaxonomyParser.get_abundance(report_by_taxid, "0")
+  c_count = TaxonomyParser.get_abundance(report_by_taxid, "1")
   print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
   
   for taxid, node in report_by_taxid.items():
-    if node.level == 'S' or node.level_enum == KrakenParser.Level.G:
+    if node.level_enum == TaxonomyParser.Level.S or node.level_enum == TaxonomyParser.Level.G:
       parent_id = node.parent.taxid
-      parent_domain = node.get_parent_by_level(KrakenParser.Level.D)
-      level = KrakenParser.Level.S - node.level_enum + 1
+      parent_domain = node.get_parent_by_level(TaxonomyParser.Level.D)
+      level = TaxonomyParser.Level.S - node.level_enum + 1
       name = node.name.replace(",",";")
       abundance = node.acumulated_abundance
       nt_rpm = int((abundance*1000000)/total_reads)
@@ -38,9 +39,9 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
   output_content = "parent_tax_id,tax_level,category,tax_id,name,"
   output_content += "kraken_classified_reads,bracken_classified_reads,nt_rpm\n"
   
-  _, report_by_taxid = KrakenParser.load_kraken_report_tree(report_file)
-  u_count = KrakenParser.get_abundance(report_by_taxid, "0")
-  c_count = KrakenParser.get_abundance(report_by_taxid, "1")
+  _, report_by_taxid = TaxonomyParser.load_kraken_report_tree(report_file)
+  u_count = TaxonomyParser.get_abundance(report_by_taxid, "0")
+  c_count = TaxonomyParser.get_abundance(report_by_taxid, "1")
   print(f"Total reads on report tree: {u_count+c_count} | U = {u_count} | C = {c_count}")
   
   with open(bracken_file, 'r') as csvfile:
@@ -50,8 +51,8 @@ def count_bracken_abundance_by_species(report_file, bracken_file, total_reads, o
       tax_id = row[1].strip()
       node = report_by_taxid[tax_id]
       parent_id = node.parent.taxid
-      parent_domain = node.get_parent_by_level(KrakenParser.Level.D)
-      level = KrakenParser.Level.S - node.level_enum + 1
+      parent_domain = node.get_parent_by_level(TaxonomyParser.Level.D)
+      level = TaxonomyParser.Level.S - node.level_enum + 1
       tax_name = row[0].strip().replace(",",";")
       kraken_abundance = row[3].strip()
       bracken_abundance = int(row[5].strip())
@@ -85,7 +86,7 @@ def main():
   file = input_file
   
   print(f"Analyzing input file: {file}")
-  total_reads = get_read_abundance(file)
+  total_reads = get_total_abundance(file)
   print(f"Total reads on input fastq: {total_reads}")
   filename = os.path.basename(file).split(input_extension)[0].replace("_metadata", "")
   

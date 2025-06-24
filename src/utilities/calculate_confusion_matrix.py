@@ -293,18 +293,19 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
         ground_truth_tree, true_positive_tree, classified_tree)  
       continue
     
-    nodes_by_level = []
     for level in reversed(TaxonomyParser.level_list(above_level=1)):
       level_node = node.get_highest_node_at_level(level)
-      if level_node is not None:
-        nodes_by_level.append(level_node)
-    
-    for i in range(len(nodes_by_level)):
-      level_node = nodes_by_level[i]
-      parent_taxid = nodes_by_level[i+1].taxid if i+1 < len(nodes_by_level) else 0
-      output_content += get_output_for_confusion_matrix(
-        level_node, parent_taxid, included_taxids, sample_total_reads,
-        ground_truth_tree, true_positive_tree, classified_tree)
+      if level_node is None:
+        continue
+      
+      parent_node = level_node.get_highest_node_at_next_level()
+      parent_taxid = parent.taxid if parent_node is not None else "0"
+      for i in range(len(nodes_by_level)):
+        level_node = nodes_by_level[i]
+        parent_taxid = nodes_by_level[i+1].taxid if i+1 < len(nodes_by_level) else 0
+        output_content += get_output_for_confusion_matrix(
+          level_node, parent_taxid, included_taxids, sample_total_reads,
+          ground_truth_tree, true_positive_tree, classified_tree)
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)

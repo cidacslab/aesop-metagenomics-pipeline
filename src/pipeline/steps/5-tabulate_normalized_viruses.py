@@ -1,6 +1,7 @@
 import os, sys, csv
 from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+sys.path.append("/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src")
 sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
 import utilities.taxonomy_tree_parser as TaxonomyParser
@@ -34,9 +35,10 @@ def tabulate_known_viruses(classified_tree, input_count_reads_path, count_reads_
   # contig to reads files  
   count_reads_file = os.path.join(input_count_reads_path, filename + count_reads_extension)
   mapping_file = os.path.join(input_mapping_path, filename + "_contig_reads.tsv")
+  output_file = os.path.join(output_path, filename + "_ground_truth.csv")
   # create the ground truth tree with the real taxa from the mocks and the number of reads from each one
   total_abundance, contig_read_count, mapped_reads = ClassifiedMatches.load_read_count( 
-    count_reads_file, count_reads_extension, mapping_file)
+    count_reads_file, count_reads_extension, mapping_file, output_file)
   
   #######################################################################################################
   # GET ALIGNMENT NORMALIZATION

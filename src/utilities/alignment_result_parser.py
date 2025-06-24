@@ -45,10 +45,10 @@ class ResultInfo:
   def get_stats_per_identity(self, min_identity):    
     values = [idt for idt in self.contig_coverage if bigger_or_equal(idt, min_identity)]
     mean_identity = sum(values) / len(values) if len(values) > 0 else 0
-    identity_coverage = len(values) * 100.0 / self.contig_length if self.contig_length > 0 else 0
+    coverage_percentage = len(values) * 100.0 / self.contig_length if self.contig_length > 0 else 0
     identity_hits = sum([1 for idt in self.hits_pident if bigger_or_equal(idt, min_identity)])
     coverage_lenght = len(values)
-    return (mean_identity, identity_coverage, coverage_lenght, identity_hits)
+    return (mean_identity, coverage_percentage, coverage_lenght, identity_hits)
 
 
 #########################################################################################
@@ -200,12 +200,16 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
         contig_results, level, level_results, taxonomy_tree)
       # collect matches by identity threshold
       for taxid, result_info in level_results.items():
+        name = taxonomy_tree[taxid].name
+        parent_node = taxonomy_tree[taxid].get_highest_node_at_next_level()
+        parent_taxid = parent.taxid if parent_node is not None else "0"
+        
         for min_identity in identity_thresholds:
-          name = taxonomy_tree[taxid].name
           idt,cov,length,hits = result_info.get_stats_per_identity(min_identity)
           # write matches by identity threshold
-          output_matches += (f"{contig},{level},{taxid},{name},"
-            f"{min_identity},{idt},{cov},{length},{hits}\n")
+          if hits > 0:
+            output_matches += (f"{contig},{level},{parent_taxid},{taxid},"
+              f"{name},{min_identity},{idt},{cov},{length},{hits}\n")
       # save level_results in contig_results_by_level
       contig_results_by_level[contig][level] = copy.deepcopy(level_results)
     

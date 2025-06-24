@@ -1,6 +1,7 @@
 import os, sys, csv, copy
 from datetime import datetime, timezone
 sys.path.append("/home/pedro/aesop/github/aesop-metagenomics-pipeline/src")
+sys.path.append("/home/pablo.viana/jobs/github/aesop-metagenomics-pipeline/src")
 sys.path.append("/mnt/c/Users/pablo/Documents/github/aesop-metagenomics-pipeline/src")
 
 import utilities.taxonomy_tree_parser as TaxonomyParser

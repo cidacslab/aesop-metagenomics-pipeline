@@ -73,7 +73,7 @@ def normalize_classified_matches(total_reads, classified_tree, output_file):
 
 #########################################################################################
 #### CALCULATE CONTIG READ COUNT
-def load_read_count(count_reads_file, count_reads_extension, mapping_file):
+def load_read_count(count_reads_file, count_reads_extension, mapping_file, output_file):
   """
   Load the read count from either a fastq file or a csv file containing
   the remaining contigs after mapping.
@@ -99,6 +99,14 @@ def load_read_count(count_reads_file, count_reads_extension, mapping_file):
     total_abundance, contig_read_count = count_remaining_contigs_reads(count_reads_file)
   else:
     print(f"Count read function doesn't exist for extension: {count_reads_extension}")
+
+  # get contig read count
+  output_content = "contig_name,read_count\n"
+  for contig in contig_read_count:
+    output_content += f"{contig},{contig_read_count[contig]}\n"
+  # write output
+  with open(output_file, "w") as file:
+    file.write(output_content)
   
   return total_abundance, contig_read_count, mapped_reads
 
