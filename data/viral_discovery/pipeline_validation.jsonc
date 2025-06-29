@@ -59,7 +59,7 @@
   "hisat2_human_index": "/home/pedro/aesop/pipeline/databases/hisat2_db/human_index_20240725/human_full_hisat2",
   "bowtie2_human_index": "/home/pedro/aesop/pipeline/databases/bowtie2_db/human_index_20240725/human_full",
   "kraken2_database": "/home/pedro/aesop/pipeline/databases/kraken2_db/k2db_20250207_complete",
-  "taxonomy_database": "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250211",
+  "taxonomy_database": "/home/pedro/aesop/pipeline/databases/taxonomy/taxdump_20250616", // taxdump_20250211
   "blastn_database": "/home/pedro/aesop/pipeline/databases/blastn_db/nt_viruses_20250210/nt_viruses",
   "diamond_database": "/home/pedro/aesop/pipeline/databases/blastp_db/ncbi_nr_20250205/nr.dmnd",
   
@@ -248,24 +248,7 @@
     "count_reads_extension": "_contig_unmatched_alignment.tsv",
     "align_coverage": 90,
     "align_identity": 97,
-    "align_length": 100,
-    "align_evalue": 0.00001
-  },  
-  "tabulate_diamond_fast_sensitive": {
-    "script": "pipeline/steps/5-tabulate_normalized_viruses.py",
-    "nprocesses": 30,
-    "process_nthreads": 1,
-    "input_suffix": ".txt",
-    "input_folder": "5.2-filtered_contigs_diamond",
-    "output_folder": "5.2.2-tabulated_result_diamond_fast_sensitive",
-    "delete_preexisting_output_folder": 1,
-    "log_file": "5.2.2-tabulated_result_diamond_fast_sensitive_logs.tar.gz",
-    "metadata_path": "data/viral_discovery/metadata_accession.tsv",
-    "count_reads_folder": "4.3.3-tabulated_result_blastn",
-    "count_reads_extension": "_contig_unmatched_alignment.tsv",
-    "align_coverage": 0,
-    "align_identity": 50,
     "align_length": 30,
-    "align_evalue": 0.001
+    "align_evalue": 0.00001
   }
 }

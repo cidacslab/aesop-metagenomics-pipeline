@@ -170,7 +170,8 @@ def include_k2result_for_unmatched(classified_tree, mapped_reads, kout_file):
       if len(line) >= 3 and line[0] == "C":
         read_name = line[1].strip()
         taxid = line[2].strip()
-        if len(read_name) == 0 or len(taxid) == 0:
+        if len(read_name) == 0 or len(taxid) == 0 or taxid not in classified_tree:
+          print(f"Error not included k2result: read_name: {read_name}, taxid: {taxid}")
           continue
         # get result if unmapped
         read_unmapped_count = 2 - mapped_reads.get(read_name, 0)

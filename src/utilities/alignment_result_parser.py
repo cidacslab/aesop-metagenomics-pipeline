@@ -1,4 +1,5 @@
 import os, csv, copy
+from typing import List, Tuple
 from collections import defaultdict
 from dataclasses import dataclass, field
 from .utility_functions import is_equal, bigger_or_equal
@@ -11,32 +12,35 @@ from . import taxonomy_tree_parser as TaxonomyParser
 @dataclass
 class ResultInfo:
   contig_length: int = 0
-  contig_coverage: list[int] = field(default_factory=list)
-  hits_pident: list[int] = field(default_factory=list)
+  contig_coverage: List[float] = field(default_factory=list)
+  hits_pident: List[Tuple[str, float]] = field(default_factory=list)
   
   def add_alignment_result(self, result_row):
-    length = int(result_row['qlen'])
+    length   = int(result_row['qlen'])
     identity = float(result_row['pident'])
-    qstart = int(result_row['qstart'])
-    qend = int(result_row['qend'])
+    qstart   = int(result_row['qstart'])
+    qend     = int(result_row['qend'])
+    subject  = result_row['sseqid'].strip()
     # init attributes when adding first result
     if self.contig_length == 0:
       self.contig_length = length
-      self.contig_coverage = [0] * length
+      self.contig_coverage = [0.0] * length
     elif self.contig_length != length:
       raise ValueError("Trying to include invalid result: "
-        f"contig legth: {self.contig_length} / result: {result_row}")
+        f"contig length: {self.contig_length} / result: {result_row}")
     # update coverage with best identity for position
-    for i in range(min(qstart, qend)-1, max(qstart, qend)):
+    start = min(qstart, qend)
+    end = max(qstart, qend)
+    for i in range(start-1, end):
       if identity > self.contig_coverage[i]:
         self.contig_coverage[i] = identity
     # add hit identity
-    self.hits_pident.append(identity)
+    self.hits_pident.append((subject, identity))
   
   def include_result_info(self, result_info):
     if self.contig_length != result_info.contig_length:
       raise ValueError("Trying to include invalid result: "
-        f"contig legth: {self.contig_length} / result: {result_row}")
+        f"contig length: {self.contig_length} / result: {result_row}")
     for i in range(self.contig_length):      
       if result_info.contig_coverage[i] > self.contig_coverage[i]:
         self.contig_coverage[i] = result_info.contig_coverage[i]
@@ -46,9 +50,11 @@ class ResultInfo:
     values = [idt for idt in self.contig_coverage if bigger_or_equal(idt, min_identity)]
     mean_identity = sum(values) / len(values) if len(values) > 0 else 0
     coverage_percentage = len(values) * 100.0 / self.contig_length if self.contig_length > 0 else 0
-    identity_hits = sum([1 for idt in self.hits_pident if bigger_or_equal(idt, min_identity)])
     coverage_lenght = len(values)
-    return (mean_identity, coverage_percentage, coverage_lenght, identity_hits)
+    identity_hits = [sseqid for sseqid,idt in self.hits_pident if bigger_or_equal(idt, min_identity)]
+    total_hits = len(identity_hits)
+    unique_hits = len(set(identity_hits))
+    return (mean_identity, coverage_percentage, coverage_lenght, total_hits, unique_hits)
 
 
 #########################################################################################
@@ -78,9 +84,9 @@ def get_contig_result_infos(alignment_results, contig, max_evalue=0.00001, min_l
   for row in alignment_results:
     # Store the first occurrence of each query in the dictionary
     contig_id = row['qseqid'].strip()
-    evalue = float(row['evalue'])
-    length = int(row['length'])
-    taxids = row['staxids'].strip().split(';')   
+    evalue    = float(row['evalue'])
+    length    = int(row['length'])
+    taxids    = row['staxids'].strip().split(';')   
     if contig_id != contig:
       continue
     
@@ -104,7 +110,7 @@ def get_best_hit_taxids(results, min_identity=97.0, min_coverage=95.0):
   best_taxids, best_coverage = [], 0
   # get result info stats with specified thresholds for each taxid
   for taxid, result_info in results.items():
-    result_identity,result_coverage,_,_ = result_info.get_stats_per_identity(min_identity)
+    result_identity,result_coverage,_,_,_ = result_info.get_stats_per_identity(min_identity)
     if (bigger_or_equal(result_identity, min_identity) and
         bigger_or_equal(result_coverage, min_coverage)):
       # if identity is bigger than threshold the best hit is the best coverage
@@ -172,8 +178,8 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
   """
   # initialize output content
   output_not_match = "contig\tread_count\n"
-  output_matches = ("contig,level,taxid,name,identity_threshold,"
-    "mean_identity,coverage_perc,coverage_lenght,hits\n")
+  output_matches = ("contig,level,parent_taxid,taxid,name,identity_threshold,"
+    "mean_identity,coverage_perc,coverage_lenght,total_hits,unique_hits\n")
   identity_thresholds = [99, 98, 97, 95, 92, 90, 85, 80, 70, 60, 50, 40, 30]
   # identity_thresholds = [97, 90, 70, 50, 30]
   
@@ -185,7 +191,7 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
   # get alignment results for the contigs
   for contig in contig_reads:
     # get contig alignment results
-    print(f"Getting alignment results for contig {contig}: {contig_reads[contig]}")    
+    print(f"Getting alignment results for contig {contig}: {str(contig_reads[contig])}")    
     contig_results = get_contig_result_infos(alignment_results, contig,
       align_filters['evalue'], align_filters['length'])
     # write unmatched contigs with alignment results
@@ -204,12 +210,12 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
         parent_node = taxonomy_tree[taxid].get_highest_node_at_next_level()
         parent_taxid = parent.taxid if parent_node is not None else "0"
         
-        for min_identity in identity_thresholds:
-          idt,cov,length,hits = result_info.get_stats_per_identity(min_identity)
+        for min_idt in identity_thresholds:
+          pidt,pcov,lcov,hits,uhits = result_info.get_stats_per_identity(min_idt)
           # write matches by identity threshold
           if hits > 0:
             output_matches += (f"{contig},{level},{parent_taxid},{taxid},"
-              f"{name},{min_identity},{idt},{cov},{length},{hits}\n")
+              f"{name},{min_idt},{pidt},{pcov},{lcov},{hits},{uhits}\n")
       # save level_results in contig_results_by_level
       contig_results_by_level[contig][level] = copy.deepcopy(level_results)
     

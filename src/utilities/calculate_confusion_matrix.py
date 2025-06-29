@@ -174,7 +174,8 @@ def include_k2result_for_unmatched(classified_tree, true_positive_tree, accessio
         read_name = line[1].strip()
         accession_id = read_name.rsplit('_', 2)[0]
         taxid = line[2].strip()
-        if len(accession_id) == 0 or len(taxid) == 0:
+        if len(accession_id) == 0 or len(taxid) == 0 or taxid not in classified_tree:
+          print(f"Error not included k2result: read_name: {read_name}, taxid: {taxid}")
           continue
         # get result if unmapped
         read_unmapped_count = 2 - mapped_reads.get(read_name, 0)
@@ -299,13 +300,11 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
         continue
       
       parent_node = level_node.get_highest_node_at_next_level()
-      parent_taxid = parent.taxid if parent_node is not None else "0"
-      for i in range(len(nodes_by_level)):
-        level_node = nodes_by_level[i]
-        parent_taxid = nodes_by_level[i+1].taxid if i+1 < len(nodes_by_level) else 0
-        output_content += get_output_for_confusion_matrix(
-          level_node, parent_taxid, included_taxids, sample_total_reads,
-          ground_truth_tree, true_positive_tree, classified_tree)
+      parent_taxid = parent_node.taxid if parent_node is not None else "0"
+      # get confusion matrix output values
+      output_content += get_output_for_confusion_matrix(
+        level_node, parent_taxid, included_taxids, sample_total_reads,
+        ground_truth_tree, true_positive_tree, classified_tree)
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)

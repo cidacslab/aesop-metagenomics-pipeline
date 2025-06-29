@@ -24,7 +24,7 @@ DOC
 
 ################################################################################
 # Path to the JSON file containing the parameters
-default_json_file="pipeline_parameters.jsonc"
+# default_json_file="pipeline_parameters.jsonc"
 # Check if the JSON file is provided as an argument
 json_file="${1:-$default_json_file}"
 
@@ -67,9 +67,11 @@ while IFS= read -r path; do
   params["$new_key"]="$value"
 done < <(jq -r 'paths(scalars) | join(".")' "$cleaned_json")
 
-# SAMPLE DATASETS
+## SAMPLE DATASETS
 # Retrieve the sample_datasets array
 sample_datasets=$(jq -r '.sample_datasets[]' "$cleaned_json")
+
+## COMMAND PARAMETERS
 # Script that call the pipeline for each dataset
 script_for_datasets="${params[repository_src]}/${params[script_for_datasets]}"
 # Pipeline script to be executed
@@ -81,7 +83,7 @@ unset params[script_for_datasets]
 unset params[pipeline_script]
 unset params[command]
 
-# CONVERTING PARAMETERS TO A STRING 
+## CONVERTING PARAMETERS TO A STRING 
 # Initialize an empty string to hold the parameters as a string
 params_str=""
 # Iterate over the dictionary and build the string
