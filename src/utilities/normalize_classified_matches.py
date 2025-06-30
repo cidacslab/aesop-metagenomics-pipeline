@@ -61,9 +61,18 @@ def normalize_classified_matches(total_reads, classified_tree, output_file):
     if (node.taxid not in included_taxids and node.acumulated_abundance > 0 and 
         node.level_enum in level_list and node.parent is not None and
         node.level_enum != node.parent.level_enum):
+      # check if this node is the highest node at its level
+      level_node = node.get_highest_node_at_level(node.level_enum)
+      if level_node is None or level_node.taxid != node.taxid:
+        continue
+      # calculate the nt_rpm value
       abundance = node.acumulated_abundance
       nt_rpm = int((abundance*1000000)/total_reads)
-      output_content += f"{node.level_enum},{node.parent.taxid},{node.taxid},{node.name},"
+      # get parent taxid as highest node at next level
+      parent_node = node.get_highest_node_at_next_level()
+      parent_taxid = parent_node.taxid if parent_node is not None else "0"
+      # write the output content
+      output_content += f"{node.level_enum},{parent_taxid},{node.taxid},{node.name},"
       output_content += f"{total_reads},{abundance},{nt_rpm}\n"
       included_taxids.add(node.taxid)
   

@@ -251,8 +251,8 @@ def get_output_for_confusion_matrix(node, parent_taxid, included_taxids,
     str: output for the node in the confusion matrix
   """
   output_content = ""  
-  if node.taxid not in included_taxids:
-    total_reads = node.acumulated_abundance
+  if node is not None and node.taxid not in included_taxids:
+    total_reads = ground_truth_tree[node.taxid].acumulated_abundance
     correct_reads = true_positive_tree[node.taxid].acumulated_abundance
     total_classified = classified_tree[node.taxid].acumulated_abundance
     #print(f"{node.taxid}, {node.name}, {total_reads}, {correct_reads}, {total_classified}")
@@ -280,6 +280,7 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
   output_content = "level,parent_taxid,taxid,name,sample_total_reads,level_total_reads,"
   output_content += "level_total_classified,level_correct_reads,"
   output_content += "true_positive,true_negative,false_positive,false_negative\n"
+  reversed_level_list = reversed(TaxonomyParser.level_list(above_level=1))
   included_taxids = set()
   
   parent_taxid = 0
@@ -294,11 +295,12 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
         ground_truth_tree, true_positive_tree, classified_tree)  
       continue
     
-    for level in reversed(TaxonomyParser.level_list(above_level=1)):
+    for level in reversed_level_list:
+      # get the highest node at this level
       level_node = node.get_highest_node_at_level(level)
       if level_node is None:
-        continue
-      
+        continue      
+      # get parent taxid as highest node at next level
       parent_node = level_node.get_highest_node_at_next_level()
       parent_taxid = parent_node.taxid if parent_node is not None else "0"
       # get confusion matrix output values
