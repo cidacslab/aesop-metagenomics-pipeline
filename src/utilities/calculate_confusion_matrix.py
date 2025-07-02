@@ -236,13 +236,12 @@ def get_confusion_matrix_values(sample_total_reads, total_tax_reads,
   return (true_positive, true_negative, false_positive, false_negative)
 
 
-def get_output_for_confusion_matrix(node, parent_taxid, included_taxids,
-  sample_total_reads, ground_truth_tree, true_positive_tree, classified_tree):
+def get_output_for_confusion_matrix(node, sample_total_reads,
+  ground_truth_tree, true_positive_tree, classified_tree):
   """
   Get the output for a single node in the confusion matrix.
   Parameters:
     node (Node): node to get the output for
-    included_taxids (set): set of taxids already included in the output
     sample_total_reads (int): total number of reads in the sample
     ground_truth_tree (TaxonomyTree): ground truth tree
     true_positive_tree (TaxonomyTree): true positive tree
@@ -250,17 +249,20 @@ def get_output_for_confusion_matrix(node, parent_taxid, included_taxids,
   Returns:
     str: output for the node in the confusion matrix
   """
-  output_content = ""  
-  if node is not None and node.taxid not in included_taxids:
+  output_content = ""
+  if node is not None and node.acumulated_abundance > 0:
+    # get tax reads counts
     total_reads = ground_truth_tree[node.taxid].acumulated_abundance
     correct_reads = true_positive_tree[node.taxid].acumulated_abundance
     total_classified = classified_tree[node.taxid].acumulated_abundance
-    #print(f"{node.taxid}, {node.name}, {total_reads}, {correct_reads}, {total_classified}")
+    # get parent taxid as highest node at next level
+    parent_node = node.get_highest_node_at_next_level()
+    parent_taxid = parent_node.taxid if parent_node is not None else "0" 
+    # get confusion matrix values
     metrics = get_confusion_matrix_values(sample_total_reads, total_reads, total_classified, correct_reads)
-    output_content += f"{node.level_enum},{parent_taxid},{node.taxid},{node.name},{sample_total_reads},"
-    output_content += f"{total_reads},{total_classified},{correct_reads},"
+    output_content += f"{node.level_enum},{parent_taxid},{node.taxid},{node.name},"
+    output_content += f"{sample_total_reads},{total_reads},{total_classified},{correct_reads},"
     output_content += f"{metrics[0]},{metrics[1]},{metrics[2]},{metrics[3]}\n"
-    included_taxids.add(node.taxid)
   return output_content
 
 
@@ -277,36 +279,39 @@ def calculate_confusion_matrix(accession_taxids, sample_total_reads,
     output_file (str): file to write the output to
   """
   print(f"Calculating confusion matrix: {output_file}")
-  output_content = "level,parent_taxid,taxid,name,sample_total_reads,level_total_reads,"
-  output_content += "level_total_classified,level_correct_reads,"
+  output_content = "level,parent_taxid,taxid,name,sample_total_reads,"
+  output_content += "level_total_reads,level_total_classified,level_correct_reads,"
   output_content += "true_positive,true_negative,false_positive,false_negative\n"
-  reversed_level_list = reversed(TaxonomyParser.level_list(above_level=1))
-  included_taxids = set()
+  # set of nodes already included in the output
+  included_nodes = set()
   
-  parent_taxid = 0
   for accession, taxid in accession_taxids.items():
-    node = ground_truth_tree[taxid]
-    accession_total_reads = node.acumulated_abundance
-    
+    node = ground_truth_tree[taxid]    
     domain_node = node.get_highest_node_at_level(TaxonomyParser.Level.D)
-    if domain_node.name.lower() != "viruses":
-      output_content += get_output_for_confusion_matrix(
-        domain_node, parent_taxid, included_taxids, sample_total_reads,
-        ground_truth_tree, true_positive_tree, classified_tree)  
-      continue
     
-    for level in reversed_level_list:
-      # get the highest node at this level
-      level_node = node.get_highest_node_at_level(level)
-      if level_node is None:
-        continue      
-      # get parent taxid as highest node at next level
-      parent_node = level_node.get_highest_node_at_next_level()
-      parent_taxid = parent_node.taxid if parent_node is not None else "0"
-      # get confusion matrix output values
-      output_content += get_output_for_confusion_matrix(
-        level_node, parent_taxid, included_taxids, sample_total_reads,
-        ground_truth_tree, true_positive_tree, classified_tree)
+    if domain_node is None:
+      continue
+    elif domain_node.name.lower() != "viruses":
+      # print(f"Printing domain node: {domain_node}")
+      # print if domain node is not viruses
+      if domain_node not in included_nodes:
+        # get confusion matrix output values
+        output_content += get_output_for_confusion_matrix(
+          domain_node, sample_total_reads, ground_truth_tree,
+          true_positive_tree, classified_tree)
+        included_nodes.add(domain_node)
+    else:
+      # print(f"Printing levels for node: {node}")
+      # if domain is viruses print all taxonomic levels
+      for level in reversed(TaxonomyParser.level_list(above_level=1)):
+        # get the highest node at this level
+        level_node = node.get_highest_node_at_level(level)
+        if level_node is not None and level_node not in included_nodes:
+          # get confusion matrix output values
+          output_content += get_output_for_confusion_matrix(
+            level_node, sample_total_reads, ground_truth_tree,
+            true_positive_tree, classified_tree)
+          included_nodes.add(level_node)
   
   with open(output_file, "w") as out_file:
     out_file.write(output_content)
@@ -326,7 +331,7 @@ def load_ground_truth_tree(ground_truth_tree, accession_taxids,
     count_reads_extension (str): file extension for the type of count read function to use
     mapping_file (str): file to map read name to contigs
     filename (str): filename to use for the output
-    output_file (str): file to write the output to  
+    output_file (str): file to write the output to
   Returns:
     dict: mapping of accession to count
   """

@@ -88,9 +88,9 @@ find -L "$input_dir" -type f -name "*${input_suffix}" | sort | \
 
 # Check if has to compress the log files
 if [[ "$tar_log_file" == *.tar.gz ]]; then
-  echo "Tar gziping log files: find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${tar_log_file}"
-  find . \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${tar_log_file}"
-
+  echo "Tar gziping log files: find . -maxdepth 1 \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf ${tar_log_file}"
+  find . -maxdepth 1 \( -name '*.log' -or -name '*.err' \) -print0 | xargs -0 tar -czf "${tar_log_file}"
+  
   echo "Removing log files: rm -rf [0-9]*.log"
   rm -rf [0-9]*.log
 else

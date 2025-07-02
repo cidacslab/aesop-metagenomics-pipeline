@@ -63,7 +63,7 @@ def normalize_classified_matches(total_reads, classified_tree, output_file):
         node.level_enum != node.parent.level_enum):
       # check if this node is the highest node at its level
       level_node = node.get_highest_node_at_level(node.level_enum)
-      if level_node is None or level_node.taxid != node.taxid:
+      if level_node.taxid != node.taxid:
         continue
       # calculate the nt_rpm value
       abundance = node.acumulated_abundance

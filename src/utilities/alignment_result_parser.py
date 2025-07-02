@@ -60,7 +60,9 @@ class ResultInfo:
 #########################################################################################
 #### GET RESULTS FROM ALIGNMENT FILE
 
-def get_alignment_results(input_file):  
+def get_alignment_results(input_file):
+  # fixing size limit error
+  csv.field_size_limit(sys.maxsize)
   # Dictionary to store each query ID and its corresponding row
   alignment_results = []
   if os.path.exists(input_file) and os.path.getsize(input_file) > 0:
@@ -73,6 +75,9 @@ def get_alignment_results(input_file):
         'mismatch', 'gapopen', 'gaps', 'qstart', 'qend', 'sstart', 'send',
         'evalue', 'bitscore', 'staxids', 'salltitles'])
       for row in reader:
+        # remove the unused large column
+        row.pop("salltitles", None)
+        # append row
         alignment_results.append(row)
   return alignment_results
 
@@ -208,7 +213,7 @@ def load_alignment_results(contig_reads, alignment_file, align_filters,
       for taxid, result_info in level_results.items():
         name = taxonomy_tree[taxid].name
         parent_node = taxonomy_tree[taxid].get_highest_node_at_next_level()
-        parent_taxid = parent.taxid if parent_node is not None else "0"
+        parent_taxid = parent_node.taxid if parent_node is not None else "0"
         
         for min_idt in identity_thresholds:
           pidt,pcov,lcov,hits,uhits = result_info.get_stats_per_identity(min_idt)

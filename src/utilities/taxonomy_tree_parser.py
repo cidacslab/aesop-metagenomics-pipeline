@@ -70,7 +70,7 @@ class TreeNode:
   
   def __hash__(self):
     return hash(self.taxid)
-
+  
   def __str__(self):
     parent_name = self.parent.name if self.parent else ''
     parent_level = self.parent.level if self.parent else ''
@@ -78,15 +78,15 @@ class TreeNode:
     return (f"{self.taxid},{self.level},{self.level_enum},"
       f"{str(self.level_name_spaces)},{self.name},"
       f"{parent_taxid},{parent_level},{parent_name}")
-
+  
   def __repr__(self):
     return self.__str__()
-
+  
   def set_parent_node(self, parent_node:'TreeNode'):
     # set children and parent attributes
     parent_node.children.append(self)
     self.parent = parent_node
-
+  
   def set_parent(self, last_node:'TreeNode'):
     # initialize parent node
     node = last_node
@@ -99,7 +99,7 @@ class TreeNode:
         return True
       node = node.parent
     return False
-
+  
   def get_highest_node_at_level(self, level: Level):
     node_in_level, current_node = None, self
     while current_node is not None:
@@ -107,20 +107,20 @@ class TreeNode:
         node_in_level = current_node
       current_node = current_node.parent
     return node_in_level
-
+  
   def get_highest_node_at_next_level(self):
     next_node = None
     for next_level in reversed(level_list()):
-      if next_level > self.level_enum:
+      if next_level < self.level_enum:
         next_node = self.get_highest_node_at_level(next_level)
         if next_node is not None:
           break
     return next_node
-
+  
   def clear_abundance(self):
     self.abundance = 0
     self.acumulated_abundance = 0
-
+  
   def add_abundance(self, abundance: int):
     self.abundance += abundance
     self.acumulated_abundance += abundance
