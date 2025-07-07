@@ -1,7 +1,11 @@
 # Folders
+old
+taxdump
 genomes
+dataset_mock
 dataset_test
 rscripts_viral
+rscripts_discovery
 
 # Python files
 venv
