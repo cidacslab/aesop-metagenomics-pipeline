@@ -67,16 +67,16 @@ def get_alignment_results(input_file):
   alignment_results = []
   if os.path.exists(input_file) and os.path.getsize(input_file) > 0:
     # Open the alignment output file and use csv.DictReader to read it
-    with open(input_file, 'r') as infile:
-      filtered_lines = (line for line in infile if not line.startswith('#'))
+    with open(input_file, 'r') as infile:      
+      # remove comments and the last column 'salltitles'
+      uncommented_lines = (line for line in infile if not line.startswith('#'))
+      filtered_lines = (line.rsplit('\t', 1)[0] for line in uncommented_lines)
       # Use DictReader to automatically map columns to fieldnames
       reader = csv.DictReader(filtered_lines, delimiter='\t', fieldnames=[
         'qseqid', 'sseqid', 'pident', 'length', 'qlen', 'slen', 'qcovhsp',
         'mismatch', 'gapopen', 'gaps', 'qstart', 'qend', 'sstart', 'send',
-        'evalue', 'bitscore', 'staxids', 'salltitles'])
+        'evalue', 'bitscore', 'staxids']) #, 'salltitles'
       for row in reader:
-        # remove the unused large column
-        row.pop("salltitles", None)
         # append row
         alignment_results.append(row)
   return alignment_results
@@ -101,9 +101,6 @@ def get_contig_result_infos(alignment_results, contig, max_evalue=0.00001, min_l
         taxid = taxid.strip()
         if taxid != '':
           contig_result_infos[taxid].add_alignment_result(row)
-          # if already_included_hit:
-          #   contig_result_infos[taxid].hits_pident.pop()
-          # already_included_hit = True
         else:
           print(f"Query error invalid taxid: {taxid}; in row: {row}")
     else:
@@ -134,6 +131,9 @@ def get_best_hit_taxids(results, min_identity=97.0, min_coverage=95.0):
 def include_results_in_level(previous_results, level_results, level, taxonomy_tree):
   included_taxids = []
   for taxid, result_info in previous_results.items():
+    if taxid not in taxonomy_tree:
+      print(f"Taxid {taxid} not found in taxonomy tree, skipping.")
+      continue
     node = taxonomy_tree[taxid]
     level_node = node.get_highest_node_at_level(level)
     if level_node is not None:
