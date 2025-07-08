@@ -36,10 +36,10 @@ echo "Started running pipeline script!"
 ################################################################################
 
 # Array of executable names
-executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
-  "FASTP_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
-  "SPADES_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "BLASTN_EXECUTABLE" \
-  "DIAMOND_EXECUTABLE" )
+# executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
+#   "FASTP_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
+#   "SPADES_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "BLASTN_EXECUTABLE" \
+#   "DIAMOND_EXECUTABLE" "PRODIGAL_EXECUTABLE")
 
 ################################################################################
 ################################## INPUT ARGS ##################################
@@ -68,12 +68,12 @@ base_dataset_path=${args_dict["base_dataset_path"]}/${dataset_name}
 # Script to execute the tasks
 custom_script="$repository_src/${args_dict[custom_task_script]}"
 
-# Loop through each executable exporting to child scripts
-for executable in "${executables[@]}"; do
-  if [[ -v args_dict["$executable"] ]]; then
-    export $executable="${args_dict[$executable]}"
-  fi
-done
+# # Loop through each executable exporting to child scripts
+# for executable in "${executables[@]}"; do
+#   if [[ -v args_dict["$executable"] ]]; then
+#     export $executable="${args_dict[$executable]}"
+#   fi
+# done
 
 ################################################################################
 ##################################  PIPELINE  ##################################
@@ -177,6 +177,11 @@ run_pipeline_step "filter_contigs_blastn" "$dataset_name" "$base_dataset_path" \
   "$custom_script python $repository_src/pipeline/steps/5-filter_fasta_by_accessions.py" \
   "$base_dataset_path/${args_dict[filter_contigs_blastn_contigs_folder]}" \
   "${args_dict[filter_contigs_blastn_contigs_extension]}"
+
+
+## PRODIGAL
+run_pipeline_step "prodigal" "$dataset_name" "$base_dataset_path" \
+  "$custom_script $repository_src/pipeline/steps/6-functional_annotation-prodigal.sh"
 
 
 ## DIAMOND ON CONTIGS

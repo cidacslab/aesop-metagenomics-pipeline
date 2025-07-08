@@ -42,14 +42,22 @@ set_values_in_dict() {
   # local exports_str=$3
   
   # Use `declare -n` to create a reference to the dictionary
-  declare -n dict_ref=$dict_var
+  declare -n dict_ref="$dict_var"
   
   # Use IFS to split by | and read each key-value pair
   IFS='|' read -ra pairs <<< "$dict_args"
   # Loop through the key-value pairs
   for pair in "${pairs[@]}"; do
     IFS='=' read -r key value <<< "$pair"
-    dict_ref["$key"]="$value"
+
+    # If the key looks like an executable path, export it
+    if [[ $key == *_EXECUTABLE ]]; then
+      # declare -gx VAR=value  (Bash ≥4.2)  sets + exports in one go
+      declare -gx "$key=$value"
+    else
+      # Store in the dictionary   
+      dict_ref["$key"]="$value"
+    fi
   done
 }
 
@@ -58,7 +66,7 @@ set_values_in_dict() {
 ################################################################################
 
 # Global variable to track if the step was executed successfully
-declare -g STEP_EXECUTED=0  # Default is 0 (Step was not executed)
+declare -gx STEP_EXECUTED=0  # Default is 0 (Step was not executed)
 
 # Function to execute each step
 run_pipeline_step() {

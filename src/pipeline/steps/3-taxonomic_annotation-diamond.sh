@@ -40,9 +40,9 @@ path_to_db=$7
 diamond_sensitivity=$8
 diamond_filter_taxon=$9
 
-# input_id=$(basename $input_file)
-# input_id="${input_id%%.*}"
-input_id=$(basename $input_file $input_suffix)
+input_id=$(basename $input_file)
+input_id="${input_id%.*}"
+# input_id=$(basename $input_file $input_suffix)
 # input_file="${input_dir}/${input_id}${input_suffix}"
 
 output_file="${output_dir}/${input_id}.txt"
