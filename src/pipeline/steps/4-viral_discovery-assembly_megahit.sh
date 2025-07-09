@@ -45,7 +45,6 @@ input_file2="${input_dir}/${input_id}${input_suffix2}"
 
 megahit_script=$MEGAHIT_EXECUTABLE
 
-
 # if not exists input
 if [ ! -f $input_file1 ]; then
   echo "Input file1 not found: $input_file1" >&2
@@ -57,23 +56,23 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running megahit command: "
-echo "$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads" \
-  "-1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id"
-
-$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads \
-  -1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id
+  # Start script profile
+  start=$(date +%s.%N)
   
-rm -rvf $output_dir/$input_id/intermediate_contigs
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running megahit command: "
+  echo "$megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads" \
+    "-1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id"
+  
+  $megahit_script --presets meta-sensitive --min-contig-len 200 -t $nthreads \
+    -1 $input_file1 -2 $input_file2 --out-dir $output_dir/$input_id --out-prefix $input_id
+    
+  rm -rvf $output_dir/$input_id/intermediate_contigs
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

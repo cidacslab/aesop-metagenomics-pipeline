@@ -74,42 +74,42 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-# Initialize output as empty files
-> $output_fastq1
-> $output_fastq1
-
-IFS=',' read -r -a taxon_array <<< "$taxons"
-# Iterate over each taxon in the list and extract reads
-for taxon in "${taxon_array[@]}"; do
-  # Run extract_reads_script for the current taxon
-  echo "Running extract kraken reads command: "
-  echo "$extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children" \
-    "-s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2"
-  $extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children \
-    -s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2
+  # Start script profile
+  start=$(date +%s.%N)
   
-  # Concatenate the current output to the final combined output
-  cat $tmp_output_fastq1 >> $output_fastq1
-  cat $tmp_output_fastq2 >> $output_fastq2
+  echo "Started task Input: $2 Count: $1"
   
-  # Remove the temporary output files to avoid duplication in the next iteration
-  rm -f $tmp_output_fastq1 $tmp_output_fastq2
-done
-
-echo "gzip $output_fastq1"
-gzip $output_fastq1
-
-echo "gzip $output_fastq2"
-gzip $output_fastq2
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Initialize output as empty files
+  > $output_fastq1
+  > $output_fastq1
+  
+  IFS=',' read -r -a taxon_array <<< "$taxons"
+  # Iterate over each taxon in the list and extract reads
+  for taxon in "${taxon_array[@]}"; do
+    # Run extract_reads_script for the current taxon
+    echo "Running extract kraken reads command: "
+    echo "$extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children" \
+      "-s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2"
+    $extract_reads_script -k $kraken_output -r $kraken_report -t $taxon --include-children \
+      -s $input_file1 -s2 $input_file2 --fastq-output -o $tmp_output_fastq1 -o2 $tmp_output_fastq2
+    
+    # Concatenate the current output to the final combined output
+    cat $tmp_output_fastq1 >> $output_fastq1
+    cat $tmp_output_fastq2 >> $output_fastq2
+    
+    # Remove the temporary output files to avoid duplication in the next iteration
+    rm -f $tmp_output_fastq1 $tmp_output_fastq2
+  done
+  
+  echo "gzip $output_fastq1"
+  gzip $output_fastq1
+  
+  echo "gzip $output_fastq2"
+  gzip $output_fastq2
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

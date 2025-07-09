@@ -28,10 +28,10 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_file=$2
-input_suffix=$3
-input_dir=$4
+# input_suffix=$3  # NOT USED
+# input_dir=$4     # NOT USED
 output_dir=$5
-nthreads=$6
+# nthreads=$6      # NOT USED
 
 # Define the input file ID
 input_id=$(basename $input_file)
@@ -55,30 +55,30 @@ if [ ! -f $input_file ]; then
   echo "Input file not found: $input_file" >&2
   exit 1
 fi
-
-{
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running prodigal command: "
-echo "$prodigal_script -p meta -f sco -i $input_file -a $output_faa -o $output_sco"
-$prodigal_script -p meta -f sco -i $input_file -a $output_faa -o $output_sco
-
-# Remove decompressed file if it exists
-if [ -f $unzip_file ]; then
-  echo "Removing decompressed file: rm -v $unzip_file"
-  rm -v $unzip_file
+if [ ! -s $input_file ]; then
+  echo "Input file is empty: $input_file" >&2
+  exit 0
 fi
 
-# Compress the output file
-if [ -f $output_faa ]; then
-  echo "Compressing output file: gzip -v $output_faa"
-  gzip -v $output_faa
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
+{
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running prodigal command: "
+  echo "$prodigal_script -p meta -f sco -i $input_file -a $output_faa -o $output_sco"
+  $prodigal_script -p meta -f sco -i $input_file -a $output_faa -o $output_sco
+  
+  # Compress the output file
+  # if [ -f $output_faa ]; then
+  #   echo "Compressing output file: gzip -v $output_faa"
+  #   gzip -v $output_faa
+  # fi
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

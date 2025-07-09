@@ -32,13 +32,14 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_file=$2
-input_suffix=$3
-# input_dir=$4 # NOT USED
+# input_suffix=$3  # NOT USED 
+# input_dir=$4     # NOT USED
 output_dir=$5
 nthreads=$6 
 path_to_db=$7
-diamond_sensitivity=$8
-diamond_filter_taxon=$9
+diamond_mode=$8
+diamond_sensitivity=$9
+diamond_filter_taxon=${10}
 
 input_id=$(basename $input_file)
 input_id="${input_id%.*}"
@@ -70,24 +71,23 @@ if [ -n "$diamond_filter_taxon" ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running diamond command: "
-echo "$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads " \
-  "--max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file " \
-  "--outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
-
-$diamond_script blastx --db $path_to_db --query $input_file --threads $nthreads \
-  --max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file \
-  --outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
-
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running diamond command: "
+  echo "$diamond_script $diamond_mode --db $path_to_db --query $input_file --threads $nthreads " \
+    "--max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file " \
+    "--outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles"
+  
+  $diamond_script $diamond_mode --db $path_to_db --query $input_file --threads $nthreads \
+    --max-target-seqs 100 $diamond_sensitivity $diamond_filter --out $output_file \
+    --outfmt 6 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

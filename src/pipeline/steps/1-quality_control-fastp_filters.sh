@@ -72,29 +72,29 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Executing FASTP using command:"
-echo "$fastp_script -i $input_file1 -I $input_file2" \
-  "-o $output_file1 -O $output_file2 --thread $nthreads" \
-  "-j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html" \
-  "--cut_front --cut_tail --cut_window_size $cut_window_size --cut_mean_quality $minimum_quality" \
-  "--length_required $minimum_length --average_qual $minimum_quality" \
-  "--n_base_limit $max_n_count"
-
-$fastp_script -i $input_file1 -I $input_file2 \
-  -o $output_file1 -O $output_file2 --thread $nthreads \
-  -j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html \
-  --cut_front --cut_tail --cut_window_size $cut_window_size --cut_mean_quality $minimum_quality \
-  --length_required $minimum_length --average_qual $minimum_quality \
-  --n_base_limit $max_n_count
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Executing FASTP using command:"
+  echo "$fastp_script -i $input_file1 -I $input_file2" \
+    "-o $output_file1 -O $output_file2 --thread $nthreads" \
+    "-j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html" \
+    "--cut_front --cut_tail --cut_window_size $cut_window_size --cut_mean_quality $minimum_quality" \
+    "--length_required $minimum_length --average_qual $minimum_quality" \
+    "--n_base_limit $max_n_count"
+  
+  $fastp_script -i $input_file1 -I $input_file2 \
+    -o $output_file1 -O $output_file2 --thread $nthreads \
+    -j ${input_id}_fastp_report.json -h ${input_id}_fastp_report.html \
+    --cut_front --cut_tail --cut_window_size $cut_window_size --cut_mean_quality $minimum_quality \
+    --length_required $minimum_length --average_qual $minimum_quality \
+    --n_base_limit $max_n_count
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

@@ -32,16 +32,6 @@ echo "Started running pipeline script!"
 
 
 ################################################################################
-######################  SET EXECUTABLES FOR THIS PIPELINE  #####################
-################################################################################
-
-# Array of executable names
-# executables=( "HISAT2_EXECUTABLE" "BOWTIE2_EXECUTABLE" "SAMTOOLS_EXECUTABLE" \
-#   "FASTP_EXECUTABLE" "KRAKEN2_EXECUTABLE" "EXTRACT_READS_EXECUTABLE" \
-#   "SPADES_EXECUTABLE" "BOWTIE2_BUILD_EXECUTABLE" "BLASTN_EXECUTABLE" \
-#   "DIAMOND_EXECUTABLE" "PRODIGAL_EXECUTABLE")
-
-################################################################################
 ################################## INPUT ARGS ##################################
 ################################################################################
 
@@ -57,7 +47,7 @@ declare -A args_dict
 
 # Convert the argument string back to a dictionary
 # Pass the name of the dictionary and the key-value pairs to add/update
-set_values_in_dict "args_dict" "$args_str"
+set_values_in_dict_and_export_executables "args_dict" "$args_str"
 
 # Dataset name
 dataset_name="dataset_${dataset}"
@@ -68,12 +58,6 @@ base_dataset_path=${args_dict["base_dataset_path"]}/${dataset_name}
 # Script to execute the tasks
 custom_script="$repository_src/${args_dict[custom_task_script]}"
 
-# # Loop through each executable exporting to child scripts
-# for executable in "${executables[@]}"; do
-#   if [[ -v args_dict["$executable"] ]]; then
-#     export $executable="${args_dict[$executable]}"
-#   fi
-# done
 
 ################################################################################
 ##################################  PIPELINE  ##################################
@@ -188,6 +172,7 @@ run_pipeline_step "prodigal" "$dataset_name" "$base_dataset_path" \
 run_pipeline_step "diamond" "$dataset_name" "$base_dataset_path" \
   "$custom_script $repository_src/pipeline/steps/3-taxonomic_annotation-diamond.sh" \
   "${args_dict[diamond_database]}" \
+  "${args_dict[diamond_mode]}" \
   "${args_dict[diamond_sensitivity]}" \
   "${args_dict[diamond_filter_taxon]}"
 

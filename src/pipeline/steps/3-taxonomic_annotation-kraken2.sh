@@ -75,23 +75,23 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running kraken command: "
-echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
-  "--report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping"
-
-$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
-  --report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping
-
-# sleep 1
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running kraken command: "
+  echo "$kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output" \
+    "--report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping"
+  
+  $kraken2_script --db $path_to_db --paired $input_file1 $input_file2 --output $output_kraken_output \
+    --report $output_kraken_report --threads $nthreads --confidence $confidence --memory-mapping
+  
+  # sleep 1
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

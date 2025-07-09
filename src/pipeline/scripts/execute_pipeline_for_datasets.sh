@@ -32,11 +32,11 @@ echo "Started running pipeline for all datasets!"
 
 
 ################################################################################
-#########################  SET VALUES IN DICT FUNCTION  ########################
+#############  SET VALUES IN DICT AND EXPORT EXECUTABLES FUNCTION  #############
 ################################################################################
 
 # Function to modify any dictionary variable (associative array)
-set_values_in_dict() {
+set_values_in_dict_and_export_executables() {
   local dict_var=$1  # Name of the dictionary variable
   local dict_args=$2
   # local exports_str=$3
@@ -46,16 +46,16 @@ set_values_in_dict() {
   
   # Use IFS to split by | and read each key-value pair
   IFS='|' read -ra pairs <<< "$dict_args"
+
   # Loop through the key-value pairs
   for pair in "${pairs[@]}"; do
-    IFS='=' read -r key value <<< "$pair"
-
+    IFS='=' read -r key value <<< "$pair"    
     # If the key looks like an executable path, export it
     if [[ $key == *_EXECUTABLE ]]; then
-      # declare -gx VAR=value  (Bash ≥4.2)  sets + exports in one go
+      # declare -gx VAR=value  sets + exports in one go
       declare -gx "$key=$value"
     else
-      # Store in the dictionary   
+      # else store in the dictionary   
       dict_ref["$key"]="$value"
     fi
   done
@@ -99,6 +99,8 @@ run_pipeline_step() {
     script_runner=$1  # First argument is the script runner
     shift  # Remove the first argument from list
     script_command="$*"  # Join remaining words as a single string
+    # This is needed to handle commands with spaces,
+    # ensuring they are not split as distict arguments.
     
     # Execute command with the preserved extra parameters
     if [[ -n "$script_command" ]]; then
@@ -110,9 +112,10 @@ run_pipeline_step() {
     STEP_EXECUTED=1  # Step executed successfully
   fi
 }
+
 ################################################################################
 # make functions available to child processes
-export -f set_values_in_dict
+export -f set_values_in_dict_and_export_executables
 export -f run_pipeline_step
 
 # Pipeline script to be executed

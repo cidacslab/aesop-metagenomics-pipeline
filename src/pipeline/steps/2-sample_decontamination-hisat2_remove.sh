@@ -74,29 +74,30 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-echo "Started task! Input: $2 Count: $1"
-
-# Step 1: Align Reads with hisat2
-echo "$hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam > /dev/null"
-$hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam > /dev/null
-
-# # Step 2: Convert SAM to BAM
-# # Step 3: Filter BAM File with -f 13 Flag
-echo "$samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam"
-$samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam
-
-# Step 4: Convert Filtered BAM to Paired FASTQ Files
-echo "$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_unmapped_bam"
-$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_unmapped_bam
-
-# Step 5: Delete intermediate files
-echo "rm $output_sam $output_unmapped_bam"
-rm $output_sam $output_unmapped_bam
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
+  # Start script profile
+  start=$(date +%s.%N)
+  echo "Started task! Input: $2 Count: $1"
+  
+  # Step 1: Align Reads with hisat2
+  echo "$hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam > /dev/null"
+  $hisat2_script --threads $nthreads --met-stderr -x $path_to_db -q -1 $input_file1 -2 $input_file2 -S $output_sam > /dev/null
+  
+  # # Step 2: Convert SAM to BAM
+  # # Step 3: Filter BAM File with -f 13 Flag
+  echo "$samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam"
+  $samtools_script view -Sb -f 13 $output_sam > $output_unmapped_bam
+  
+  # Step 4: Convert Filtered BAM to Paired FASTQ Files
+  echo "$samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_unmapped_bam"
+  $samtools_script fastq -1 $output_fastq1 -2 $output_fastq2 $output_unmapped_bam
+  
+  # Step 5: Delete intermediate files
+  echo "rm $output_sam $output_unmapped_bam"
+  rm $output_sam $output_unmapped_bam
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

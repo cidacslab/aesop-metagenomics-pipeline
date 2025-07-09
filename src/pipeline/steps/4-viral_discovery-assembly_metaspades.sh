@@ -57,26 +57,26 @@ if [ ! -f $input_file2 ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running megahit command: "
-echo "$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2" \
-  "-o $output_dir/$input_id"
-
-$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2 \
-  -o $output_dir/$input_id
-
-# rm -rvf $output_dir/$input_id/corrected
-# rm -rvf $output_dir/$input_id/K*
-# rm -rvf $output_dir/$input_id/
-mv -vf $output_dir/$input_id/contigs.fasta $output_dir/${input_id}.contigs.fa
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running megahit command: "
+  echo "$spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2" \
+    "-o $output_dir/$input_id"
+  
+  $spades_script --meta -t $nthreads -1 $input_file1 -2 $input_file2 \
+    -o $output_dir/$input_id
+  
+  # rm -rvf $output_dir/$input_id/corrected
+  # rm -rvf $output_dir/$input_id/K*
+  # rm -rvf $output_dir/$input_id/
+  mv -vf $output_dir/$input_id/contigs.fasta $output_dir/${input_id}.contigs.fa
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

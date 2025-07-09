@@ -42,7 +42,7 @@ fi
 
 echo "Parameters: $@"
 # Extract the number of proccesses to be run in parallel
-num_processes="$1"
+# num_processes="$1"  # NOT USED
 # Delete preexisting output directory
 delete_output_dir="$2"
 # Tar Log file name
@@ -54,7 +54,7 @@ download_dir="$5"
 # Destination folder
 output_dir="$6"
 # Number of parallel threads to be run in each process
-nthreads="$7"
+# nthreads="$7"       # NOT USED
 # Basespace access token
 basespace_access_token="$8"
 # Basespace API SERVER
@@ -92,27 +92,27 @@ export BASESPACE_ACCESS_TOKEN=$basespace_access_token
 task_script=$BASESPACE_CLI_EXECUTABLE
 
 {
-echo "Started Executing DOWNLOAD"
-
-args=($@)
-args_str=$(printf '%s ' "${args[@]}")
-echo "Parameters: $args_str"
-
-echo "$task_script list projects"
-$task_script list projects
-
-echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension='$input_suffix' --exclude='*unmapped*' --exclude='*deter*'"
-$task_script download project -v -i $basespace_project_id -o $download_dir --extension="$input_suffix" --exclude='*unmapped*' --exclude='*deter*'
-
-echo "ls -la $download_dir"
-ls -la $download_dir
-
-echo "find $download_dir -type f -name '*.fastq.gz' -exec mv -v {} $output_dir \;"
-find $download_dir -type f -name "*.fastq.gz" -exec mv -v {} $output_dir \;
-
-echo "ls -la $output_dir:"
-ls -la $output_dir
-
+  echo "Started Executing DOWNLOAD"
+  
+  args=($@)
+  args_str=$(printf '%s ' "${args[@]}")
+  echo "Parameters: $args_str"
+  
+  echo "$task_script list projects"
+  $task_script list projects
+  
+  echo "$task_script download project -v -i $basespace_project_id -o $download_dir --extension='$input_suffix' --exclude='*unmapped*' --exclude='*deter*'"
+  $task_script download project -v -i $basespace_project_id -o $download_dir --extension="$input_suffix" --exclude='*unmapped*' --exclude='*deter*'
+  
+  echo "ls -la $download_dir"
+  ls -la $download_dir
+  
+  echo "find $download_dir -type f -name '*.fastq.gz' -exec mv -v {} $output_dir \;"
+  find $download_dir -type f -name "*.fastq.gz" -exec mv -v {} $output_dir \;
+  
+  echo "ls -la $output_dir:"
+  ls -la $output_dir
+  
 } &> ${log_file}
 
 #  Finish task profile

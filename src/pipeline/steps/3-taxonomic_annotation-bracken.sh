@@ -31,10 +31,10 @@ echo "Started task! Input: $2 Count: $1" >&1
 echo "Started task! Input: $2 Count: $1" >&2
 
 input_file=$2
-input_suffix=$3
+# input_suffix=$3  # NOT USED
 input_dir=$4
 output_dir=$5
-nthreads=$6 # NOT USED
+# nthreads=$6      # NOT USED
 path_to_db=$7
 read_length=$8
 threshold=$9
@@ -58,19 +58,19 @@ if [ ! -f $input_kraken_report ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running bracken command: "
-echo "$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold"
-
-$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running bracken command: "
+  echo "$bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold"
+  
+  $bracken_script -d $path_to_db -i $input_kraken_report -o $output_bracken -r $read_length -t $threshold
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log

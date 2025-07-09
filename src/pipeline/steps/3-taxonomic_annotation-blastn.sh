@@ -64,24 +64,23 @@ if [ -f "$blastn_filter_taxon" ]; then
 fi
 
 {
-# Start script profile
-start=$(date +%s.%N)
-
-echo "Started task Input: $2 Count: $1"
-
-echo "Running blastn command: "
-echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter"  \
-  "-outfmt '7 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles'" \
-  "-max_target_seqs 100 -num_threads $nthreads -out $output_file"
-
-$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter \
-  -outfmt "7 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
-  -max_target_seqs 100 -num_threads $nthreads -out $output_file
-
-
-# Finish script profile
-finish=$(date +%s.%N)
-runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
-echo "Finished script! Total elapsed time: ${runtime} min."
-
+  # Start script profile
+  start=$(date +%s.%N)
+  
+  echo "Started task Input: $2 Count: $1"
+  
+  echo "Running blastn command: "
+  echo "$blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter"  \
+    "-outfmt '7 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles'" \
+    "-max_target_seqs 100 -num_threads $nthreads -out $output_file"
+  
+  $blastn_script -db $path_to_db -query $input_file -task $blastn_task $blast_filter \
+    -outfmt "7 qseqid sseqid pident length qlen slen qcovhsp mismatch gapopen gaps qstart qend sstart send evalue bitscore staxids salltitles" \
+    -max_target_seqs 100 -num_threads $nthreads -out $output_file
+  
+  # Finish script profile
+  finish=$(date +%s.%N)
+  runtime=$(awk -v a=$finish -v b=$start 'BEGIN{printf "%.3f", (a-b)/60}')
+  echo "Finished script! Total elapsed time: ${runtime} min."
+  
 } &> ${BASHPID}_${input_id}.log
