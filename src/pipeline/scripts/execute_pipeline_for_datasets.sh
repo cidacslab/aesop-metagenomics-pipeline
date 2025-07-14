@@ -38,15 +38,13 @@ echo "Started running pipeline for all datasets!"
 # Function to modify any dictionary variable (associative array)
 set_values_in_dict_and_export_executables() {
   local dict_var=$1  # Name of the dictionary variable
-  local dict_args=$2
-  # local exports_str=$3
+  local dict_args=$2 # Dictionary key value pairs as a string
   
   # Use `declare -n` to create a reference to the dictionary
   declare -n dict_ref="$dict_var"
   
   # Use IFS to split by | and read each key-value pair
   IFS='|' read -ra pairs <<< "$dict_args"
-
   # Loop through the key-value pairs
   for pair in "${pairs[@]}"; do
     IFS='=' read -r key value <<< "$pair"    
@@ -96,9 +94,9 @@ run_pipeline_step() {
     
     # Convert full_command into an array while preserving spaces inside quotes
     set -- $full_command
-    script_runner=$1  # First argument is the script runner
+    local script_runner=$1  # First argument is the script runner
     shift  # Remove the first argument from list
-    script_command="$*"  # Join remaining words as a single string
+    local script_command="$*"  # Join remaining words as a single string
     # This is needed to handle commands with spaces,
     # ensuring they are not split as distict arguments.
     
